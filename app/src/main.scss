@@ -1,0 +1,57 @@
+@use 'sass:color';
+@use './assets/fonts/inter/inter.css';
+@import './assets/reset.css';
+@import './assets/utilities.scss';
+
+@font-face {
+  font-family: 'Vevey Positive';
+  src: url('./assets/fonts/vevey-positive-webfont.woff2') format('woff2'),
+    url('./assets/fonts/vevey-positive-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --color-background: #616161;
+  --color-active: #d885ff;
+  --color-disabled: #cecece;
+  --color-mapping: #00ce78;
+  --color-modulation: #ffc300;
+  --color-parts: #6171ff;
+  --color-text: white;
+  --color-module-bg: #929292;
+
+  --color-glass: rgb(0, 0, 0, 0.16);
+  --color-glass-solid: #{color.mix(black, #616161, 16%)};
+  --color-glass-dark: rgb(0, 0, 0, 0.45);
+  --color-glass-dark-solid: #{color.mix(black, #616161, 45%)};
+  --color-connection: white;
+
+  --glass-blur: 20px;
+
+  --radius-xs: 4px;
+  --radius-s: 7px;
+
+  --transition-duration-connection: 100ms;
+
+  --z-panel: 1;
+  --z-menu: 2;
+  --z-dialog: 3;
+}
+
+body {
+  overflow: hidden;
+}
+
+#app {
+  font-family: Inter;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-weight: 200;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+*:focus-visible {
+  outline: 2px solid blue;
+}

@@ -1,0 +1,9 @@
+{
+  "folders": [
+    { "path": "app" },
+    { "path": "firmware" },
+    { "path": "engine" },
+    { "path": "bridge" },
+    { "path": "shape" }
+  ]
+}

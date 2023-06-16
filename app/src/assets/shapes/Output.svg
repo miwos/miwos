@@ -1,0 +1,8 @@
+<svg width="75" height="33" viewBox="0 0 75 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Output">
+<path id="shape" d="M5 19C5 11.268 11.268 5 19 5H56C63.732 5 70 11.268 70 19C70 26.732 63.732 33 56 33H19C11.268 33 5 26.732 5 19Z" fill="#C4C4C4"/>
+<path id="props" d="M0 19L10 19" stroke="#00D300"/>
+<path id="props_2" d="M65 19L75 19" stroke="#00D300"/>
+<path id="in" d="M37 10V0" stroke="#0000FF"/>
+</g>
+</svg>

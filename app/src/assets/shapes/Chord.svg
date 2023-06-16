@@ -1,0 +1,9 @@
+<svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Chord">
+<path id="shape" d="M5 44C5 22.4609 21.7334 5 42.375 5H45.625C66.2666 5 83 22.4609 83 44C83 65.5391 66.2666 83 45.625 83H42.375C21.7334 83 5 65.5391 5 44Z" fill="#C4C4C4"/>
+<path id="props" d="M78 44L88 44" stroke="#00D300"/>
+<path id="props_2" d="M0 44L10 44" stroke="#00D300"/>
+<path id="out" d="M44 78V88" stroke="#0000FF"/>
+<path id="in" d="M44 10V0" stroke="#0000FF"/>
+</g>
+</svg>

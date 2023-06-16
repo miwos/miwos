@@ -1,0 +1,23 @@
+.glass {
+  background-color: var(--color-glass);
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.glass-dark {
+  background-color: var(--color-glass-dark);
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 1em;
+  gap: 0.5em;
+  border-radius: calc(2.5rem / 2);
+}
+
+.font-vevey {
+  font-family: 'Vevey Positive';
+  font-size: 16px;
+}
