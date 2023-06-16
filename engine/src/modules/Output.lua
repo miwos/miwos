@@ -1,7 +1,7 @@
 ---@class ModuleOutput : Module
 local Output = Miwos.defineModule('Output', {
   inputs = { 'midi' },
-  label = false,
+  showLabel = false,
   clipContent = false,
   props = {
     device = Prop.Number({
