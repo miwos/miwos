@@ -169,7 +169,7 @@ const setModulation = (modulatorId: number | undefined) => {
 
   if (modulatorId === undefined) {
     modulation.value && modulations.remove(modulation.value.id)
-  } else {
+  } else if (!modulations.getByModuleProp(moduleId, prop )) {
     modulations.add({ modulatorId, moduleId, prop, amount: 0.5 })
   }
 

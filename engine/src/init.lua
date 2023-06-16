@@ -90,6 +90,22 @@ Bridge.addMethod('/e/project/load', function(name)
   Miwos.switchView(PropsView({ patch = Miwos.patch }))
 end)
 
+Bridge.addMethod(
+  '/e/modulations/amount',
+  function(modulatorId, moduleId, prop, amount)
+    for _, modulation in pairs(Miwos.patch.modulations) do
+      if
+        modulation[1] == modulatorId
+        and modulation[2] == moduleId
+        and modulation[3] == prop
+      then
+        modulation[4] = amount
+        return
+      end
+    end
+  end
+)
+
 local menuOpened = false
 Buttons:on('click', function(index)
   if index == 10 then
