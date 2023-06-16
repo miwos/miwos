@@ -47,13 +47,16 @@ const plotValue = (value: number) => {
   if (canvasIsFull) scrollCanvas()
 
   if (prevValue !== undefined) {
-    let x = Math.min(drawOffset, width - pixelRatio)
+    const x = Math.min(drawOffset, width - pixelRatio)
+    const prevY = height - prevValue
+    const y = height - value
+
     ctx.strokeStyle = props.color
     ctx.lineWidth = 2 * pixelRatio
     ctx.lineCap = 'round'
     ctx.beginPath()
-    ctx.moveTo(x - pixelRatio, prevValue)
-    ctx.lineTo(x, value)
+    ctx.moveTo(x - pixelRatio, prevY)
+    ctx.lineTo(x, y)
     ctx.stroke()
   }
 
