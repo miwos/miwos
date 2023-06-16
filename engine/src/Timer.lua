@@ -8,7 +8,7 @@ Timer.Sec = 1000000
 Timer.Milli = 1000
 local events = {}
 local lastModulationUpdate = 0
-local modulationUpdateFrameDuration = 1000 / 24 -- 24fps
+local modulationUpdateInterval = 1000 / 24 -- fps
 
 ---@param now number
 function Timer.update(now)
@@ -25,7 +25,7 @@ function Timer.update(now)
     callback()
   end
 
-  if (now - lastModulationUpdate) > modulationUpdateFrameDuration then
+  if (now - lastModulationUpdate) > modulationUpdateInterval then
     Miwos.patch:updateModulations(now)
     lastModulationUpdate = now
   end
