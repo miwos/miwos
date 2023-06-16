@@ -45,7 +45,11 @@ namespace TimerLib {
   }
 
   void update() {
-    currentTime = ::micros();
+    // Throttle update to once every ms.
+    uint32_t now = ::millis();
+    if (now == currentTime) return;
+
+    currentTime = now;
 
     // Don't log an error if we can't find the function because this gets called
     // thousands of times per second!

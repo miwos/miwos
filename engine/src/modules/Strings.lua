@@ -63,7 +63,7 @@ function Strings:schedule()
     end
 
     self:schedule()
-  end, self.scheduleInterval * 1000)
+  end, self.scheduleInterval)
 end
 
 function Strings:destroy()
@@ -86,7 +86,7 @@ Strings:event('input[1]:noteOn', function(self, note)
     self.chords = self:findFrettedChords(self.notes)
     self.chord = self.chords[1]
     Log.dump(self.chord)
-  end, self.maxNoteInterval * 1000)
+  end, self.maxNoteInterval)
 end)
 
 ---@param notes table<number>

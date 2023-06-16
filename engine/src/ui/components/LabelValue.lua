@@ -65,7 +65,7 @@ LabelValue:event('prop[value]:change', function(self)
   self.viewTimer = Timer.delay(function()
     self.view = self.Views.Label
     self:draw()
-  end, option(self.props.valueViewDuration, 1000) * 1000)
+  end, option(self.props.valueViewDuration, 1000))
 end)
 
 function LabelValue:unmount()

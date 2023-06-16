@@ -8,7 +8,7 @@ Timer.Sec = 1000000
 Timer.Milli = 1000
 local events = {}
 local lastModulationUpdate = 0
-local modulationUpdateFrameDuration = Timer.Sec / 24 -- 24fps
+local modulationUpdateFrameDuration = 1000 / 24 -- 24fps
 
 ---@param now number
 function Timer.update(now)
@@ -62,7 +62,7 @@ end
 ---@param delay number
 ---@return function callback
 function Timer.delay(callback, delay)
-  events[callback] = Timer.micros() + delay
+  events[callback] = Timer.millis() + delay
   return callback
 end
 

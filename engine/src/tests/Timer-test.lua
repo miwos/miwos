@@ -5,20 +5,20 @@ describe('Timer', function()
 
     Timer.delay(event, delay)
 
-    Timer.update(Timer.micros())
+    Timer.update(Timer.millis())
     expect(event):notToBeCalled()
 
-    Timer.update(Timer.micros() + delay)
+    Timer.update(Timer.millis() + delay)
     expect(event):toBeCalled()
   end)
 
   it('schedules an event', function()
     local event = Testing.fn()
-    local time = Timer.micros() + 1000
+    local time = Timer.millis() + 1000
 
     Timer.schedule(event, time)
 
-    Timer.update(Timer.micros())
+    Timer.update(Timer.millis())
     expect(event):notToBeCalled()
 
     Timer.update(time)

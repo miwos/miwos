@@ -113,4 +113,4 @@ Miwos.sendActiveOutputs = Utils.throttle(function()
     if not isSustained then Miwos.activeOutputs[activeOutput] = nil end
   end
   Bridge.notify('/e/modules/active-outputs', unpack(list))
-end, 50 * 1000)
+end, 50)

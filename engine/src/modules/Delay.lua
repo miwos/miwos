@@ -45,7 +45,7 @@ Delay:event('input[1]', function(self, message)
       else
         delay()
       end
-    end, self.props.time * 1000)
+    end, self.props.time)
 
     if isNoteOn then
       ---@cast message MidiNoteOn

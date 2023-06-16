@@ -13,7 +13,7 @@ function Lfo:setup()
 end
 
 function Lfo:value(time)
-  local timeSeconds = time / 1000000
+  local timeSeconds = time / 1000
   local angularFrequency = 2 * math.pi * self.props.rate
   return math.sin(timeSeconds * angularFrequency)
 end

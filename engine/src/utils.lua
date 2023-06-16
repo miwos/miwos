@@ -140,7 +140,7 @@ function Utils.throttle(fn, interval)
 
   return function(...)
     local args = { ... }
-    local now = Timer.micros()
+    local now = Timer.millis()
 
     local function next()
       lastTime = now

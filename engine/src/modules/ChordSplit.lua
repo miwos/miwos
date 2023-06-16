@@ -33,7 +33,7 @@ ChordSplit:event('input[1]:noteOn', function(self, note)
   Timer.cancel(self.timer)
   self.timer = Timer.delay(function()
     self:split()
-  end, self.maxNoteInterval * 1000)
+  end, self.maxNoteInterval)
 end)
 
 ChordSplit:event('input[1]:noteOff', function(self, note)
