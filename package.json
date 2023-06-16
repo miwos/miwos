@@ -1,3 +1,6 @@
 {
-  "name": "@miwos/miwos"
+  "name": "@miwos/miwos",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter \"@miwos/app\" --filter \"@miwos/engine\" run dev"
+  }
 }
