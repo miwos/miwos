@@ -16,6 +16,7 @@ require('modules.Chord')
 require('modules.Delay')
 require('modules.Strings')
 require('modules.ChordSplit')
+require('modules.ControlChange')
 
 require('modulators.Lfo')
 
