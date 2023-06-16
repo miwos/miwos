@@ -1,0 +1,8 @@
+{
+  "Lua.runtime.version": "Lua 5.1",
+  "Lua.diagnostics.globals": ["_LOADED"],
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+  },
+  "editor.formatOnSave": true
+}

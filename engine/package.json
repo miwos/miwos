@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "name": "@miwos/engine",
   "scripts": {
     "dev": "node scripts/sync.js"
   },
