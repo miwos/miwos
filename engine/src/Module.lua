@@ -45,6 +45,7 @@ function Module:serializeDefinition()
     shape = self.__definition.shape,
     label = self.__definition.label,
     clipContent = self.__definition.clipContent,
+    showLabel = self.__definition.showLabel,
     props = props,
   }
 end

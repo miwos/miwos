@@ -8,6 +8,7 @@
 ---@field props table<string, Prop>
 ---@field shape string
 ---@field clipContent boolean
+---@field showLabel boolean
 ---@field label string
 ---@field module Module
 
