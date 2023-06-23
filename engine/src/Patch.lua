@@ -235,7 +235,7 @@ function Patch:updateModulations(time, notifyApp)
   for _, modulation in pairs(self.modulations) do
     local modulator, item, prop, amount = unpack(modulation)
     --Todo: remove, once LuaLS/lua-language-server/issues/1816 is resolved
-    ---@cast modulation Modulator
+    ---@cast modulator -string, -number, -Item
 
     if item and modulator then
       local component, options = unpack(item.__definition.props[prop])
