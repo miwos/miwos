@@ -3,6 +3,6 @@ import { WebSerialTransport } from '@miwos/bridge/src/WebSerialTransport'
 import { markRaw } from 'vue'
 
 let bridge: Bridge | undefined
-const debug = false
+const debug = true
 export const useBridge = () =>
   (bridge ??= markRaw(new Bridge(new WebSerialTransport(), { debug })))

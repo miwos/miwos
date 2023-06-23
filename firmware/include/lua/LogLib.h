@@ -22,7 +22,12 @@ namespace LogLib {
       return 0;
     }
 
-    int flush(lua_State *L) {
+    int beginPacket(lua_State *L) {
+      serial->beginPacket();
+      return 0;
+    }
+
+    int endPacket(lua_State *L) {
       serial->endPacket();
       return 0;
     }
@@ -64,7 +69,8 @@ namespace LogLib {
   void install() {
     luaL_Reg lib[] = {
       {"_log", lib::log},
-      {"flush", lib::flush},
+      {"_beginPacket", lib::beginPacket},
+      {"_endPacket", lib::endPacket},
       {"stack", lib::stack},
       {NULL, NULL}};
 

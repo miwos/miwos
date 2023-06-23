@@ -1,14 +1,5 @@
 <template>
-  <div
-    class="module-prop"
-    :class="[`side-${side}`]"
-    :style="{
-      'z-index': contextIsVisible ? 1 : undefined,
-      top: props.position.y + 'px',
-      left: props.position.x + 'px',
-    }"
-    ref="el"
-  >
+  <div class="module-prop" ref="el">
     <button
       class="module-prop-handle"
       :data-status="handleStatus"
@@ -43,7 +34,7 @@
           @update:value="setMapping"
         />
         <ModulateAmount
-          v-if="amountIsVisible"
+          v-if="amountIsVisible && modulation"
           :value="modulation?.amount"
           :modulation="modulation"
           @update:value="updateModulationAmount"
@@ -63,24 +54,19 @@ import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
 import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
 import { useApp } from '@/stores/app'
 import { useMappings } from '@/stores/mappings'
-import type { Module, Point } from '@/types'
+import { useModulations } from '@/stores/modulations'
 import Number from '@/ui/MNumber.vue'
 import { computed, nextTick, ref, type Component } from 'vue'
 import MappingSelect from './MappingSelect.vue'
-import ModulateSelect from './ModulateSelect.vue'
-import { useModulations } from '@/stores/modulations'
 import ModulateAmount from './ModulateAmount.vue'
+import ModulateSelect from './ModulateSelect.vue'
 
 const props = defineProps<{
   name: string
-  // TODO: change back to `Module[id]`, props of type number
-  // are somehow broken
-  moduleId: any
+  ownerId: any
   type: string
   value: unknown
   options: any
-  position: Point
-  side: 'left' | 'right'
 }>()
 
 const emit = defineEmits<{ (e: 'update:value', value: unknown): void }>()
@@ -101,8 +87,8 @@ const contextIsVisible = ref(false)
 const contextPosition = ref({ x: 0, y: 0 })
 const amountIsVisible = ref(false)
 
-const mapping = mappings.getMapping(props.moduleId, props.name)
-const modulation = modulations.getByModuleProp(props.moduleId, props.name)
+const mapping = mappings.getMapping(props.ownerId, props.name)
+const modulation = modulations.getByProp(props.ownerId, props.name)
 const isMappedOnCurrentPage = computed(
   () => mapping.value?.pageIndex === mappings.pageIndex
 )
@@ -152,25 +138,25 @@ const hideContext = () => {
 }
 
 const setMapping = (slot: number | undefined) => {
-  const { moduleId, name: prop } = props
+  const { ownerId, name: prop } = props
 
   if (slot === undefined) {
-    const mapping = mappings.getMapping(moduleId, prop).value
+    const mapping = mappings.getMapping(ownerId, prop).value
     mapping && mappings.remove(mappings.pageIndex, mapping.slot)
   } else {
-    mappings.add(mappings.pageIndex, { slot, moduleId, prop })
+    mappings.add(mappings.pageIndex, { slot, targetId: ownerId, prop })
   }
 
   hideContext()
 }
 
 const setModulation = (modulatorId: number | undefined) => {
-  const { moduleId, name: prop } = props
+  const { ownerId, name: prop } = props
 
   if (modulatorId === undefined) {
     modulation.value && modulations.remove(modulation.value.id)
-  } else if (!modulations.getByModuleProp(moduleId, prop )) {
-    modulations.add({ modulatorId, moduleId, prop, amount: 0.5 })
+  } else if (!modulations.getByProp(ownerId, prop )) {
+    modulations.add({ modulatorId, targetId: ownerId, prop, amount: 0.5 })
   }
 
   amountIsVisible.value = true
@@ -187,17 +173,10 @@ onMouseDownOutside(context, hideContext)
 
 <style scoped lang="scss">
 .module-prop {
-  position: absolute;
-  transform: translateY(-50%);
   gap: 0.5em;
   height: 2em;
   display: flex;
   align-items: center;
-
-  &.side-left {
-    transform: translate(-100%, -50%);
-    flex-direction: row-reverse;
-  }
 
   &-handle {
     display: block;

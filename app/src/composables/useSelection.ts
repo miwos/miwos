@@ -1,8 +1,8 @@
-import { useEventListener, type MaybeComputedRef } from '@vueuse/core'
+import { useEventListener, type MaybeComputedElementRef } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
 export const useSelection = (
-  el: MaybeComputedRef<HTMLElement | null | undefined>
+  el: MaybeComputedElementRef<HTMLElement | null | undefined>
 ) => {
   let startPoint = { x: 0, y: 0 }
   const rect = ref({ x: 0, y: 0, width: 0, height: 0 })

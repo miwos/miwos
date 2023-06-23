@@ -14,14 +14,14 @@ Miwos = _G.Miwos or {}
 mixin(Miwos, EventEmitter)
 Miwos.__events = {}
 
----@type table<string, ModuleDefinition>
-Miwos.moduleDefinitions = {}
-
----@type table<string, PropDefinition>
-Miwos.propDefinitions = {}
-
----@type table<string, ModulatorDefinition>
-Miwos.modulatorDefinitions = {}
+Miwos.definitions = {
+  ---@type table<string, PropDefinition>
+  props = {},
+  ---@type table<string, ModuleDefinition>
+  modules = {},
+  ---@type table<string, ModulatorDefinition>
+  modulators = {},
+}
 
 ---@type table<number, boolean>
 Miwos.activeOutputs = {}
@@ -34,8 +34,8 @@ function Miwos.defineModule(name, definition)
   module.__type = name
   module.__events = {}
   module.__definition = definition
-  definition.module = module
-  Miwos.moduleDefinitions[name] = definition
+  definition.constructor = module
+  Miwos.definitions.modules[name] = definition
   _G.__propIndex = nil
   return module
 end
@@ -46,8 +46,8 @@ end
 function Miwos.defineModulator(name, definition)
   local modulator = class(Modulator) --[=[@as Modulator]=]
   modulator.__definition = definition
-  definition.modulator = modulator
-  Miwos.modulatorDefinitions[name] = definition
+  definition.constructor = modulator
+  Miwos.definitions.modulators[name] = definition
   _G.__propIndex = nil
   return modulator
 end
@@ -55,7 +55,7 @@ end
 ---@param name string
 ---@param definition PropDefinition
 function Miwos.defineProp(name, definition)
-  Miwos.propDefinitions[name] = definition
+  Miwos.definitions.props[name] = definition
 end
 
 ---@param type string

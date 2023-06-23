@@ -1,32 +1,23 @@
 local class = require('class')
 local Utils = require('utils')
+local createProps = require('props')
 
----@class Module : Class
----@field __type string
----@field __id number set in `Patch:addModule()`
+---@class Module : Item
 ---@field __definition ModuleDefinition
 ---@field __events table<string, function>
 ---@field setup function | nil
 ---@field destroy function | nil
 local Module = class()
 Module.__hmrKeep = {}
+Module.__category = 'modules'
 
 function Module:constructor(props)
   self.__inputs = {}
   self.__outputs = {}
   self.__activeNotes = {}
-
-  self.__propValues =
+  self.props = createProps(
     Utils.getPropsWithDefaults(self.__definition.props, props or {})
-  self.__propValuesModulated = {}
-  self.props = setmetatable({}, {
-    __index = function(_, key)
-      local modulated = self.__propValuesModulated[key]
-      if modulated then return modulated end
-
-      return self.__propValues[key]
-    end,
-  })
+  )
 
   Utils.callIfExists(self.setup, self)
 end

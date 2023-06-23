@@ -29,6 +29,20 @@ local function toBeCalledWith(mockFn, ...)
   return true
 end
 
+local function toEqual(a, b)
+  if type(a) ~= type(a) then return false end
+  if type(a) ~= 'table' then return a == b end
+
+  if Utils.getTableLength(a) ~= Utils.getTableLength(b) then return false end
+
+  for key, valueA in pairs(a) do
+    local valueB = b[key]
+    if not toEqual(valueA, valueB) then return false end
+  end
+
+  return true
+end
+
 register('toBe', toBe)
 
 register('toBeCalled', toBeCalled, function(isNot, received)
@@ -61,7 +75,7 @@ end)
 
 register('toBeCalledWith', toBeCalledWith, function(isNot, received, ...)
   if isNot then
-    return string.format('expected not %s', Testing.serialize(...))
+    return string.format('expected not %s', Test.serialize(...))
   else
     local parts = {}
     local args = { ... }
@@ -69,11 +83,13 @@ register('toBeCalledWith', toBeCalledWith, function(isNot, received, ...)
       parts[i] = string.format(
         '{%s %s}',
         args[i] == received.args[i] and 'success' or 'error',
-        Testing.serialize(received.args[i])
+        Test.serialize(received.args[i])
       )
     end
     return 'received ' .. table.concat(parts, ', ')
   end
 end)
+
+register('toEqual', toEqual)
 
 return assertions

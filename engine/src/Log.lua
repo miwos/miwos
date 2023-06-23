@@ -57,3 +57,13 @@ function Log.timeEnd(label)
   Log.info(label .. ': ' .. Timer.micros() - timers[label] .. 'μs')
   timers[label] = nil
 end
+
+-- Monkey-patch lua's `print()` function so it always calls `Log#flush()`. This
+-- is important because we use a SLIP serial and the the printed output might
+-- not be displayed in the console immediately otherwise.
+local oldPrint = print
+function print(...)
+  Log._beginPacket()
+  oldPrint(...)
+  Log._endPacket()
+end

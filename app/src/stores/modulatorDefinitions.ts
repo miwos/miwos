@@ -1,5 +1,5 @@
 import type { ModulatorDefinition } from '@/types'
-import { defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 
 type Id = ModulatorDefinition['id']
@@ -19,7 +19,16 @@ export const useModulatorDefinitions = defineStore(
                 options: {
                   value: 1,
                   min: 1,
-                  max: 1,
+                  max: 4,
+                  step: 1,
+                },
+              },
+              rate: {
+                type: 'Number',
+                options: {
+                  value: 1,
+                  min: 1,
+                  max: 4,
                   step: 1,
                 },
               },
@@ -57,3 +66,6 @@ export const useModulatorDefinitions = defineStore(
     return { items, get, getDefaultProps }
   }
 )
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useModulatorDefinitions as any, import.meta.hot))

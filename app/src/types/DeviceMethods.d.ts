@@ -9,15 +9,12 @@ export type DeviceMethods = {
   '/e/connections/add': (...args: ConnectionSerialized) => void
   '/e/connections/remove': (...args: ConnectionSerialized) => void
 
-  '/e/modules/add': (id: Module['id'], type: Module['type']) => void
-  '/e/modules/remove': (id: Module['id']) => void
-  '/e/modules/prop': (id: Module['id'], name: string, value: unknown) => boolean
-  '/e/modules/definitions': () => string
-  '/e/modules/definition': (moduleName: string) => string
-
-  '/e/modulators/add': (id: Modulator['id'], type: Modulator['type']) => void
-  '/e/modulators/remove': (id: Modulator['id']) => void
-
+  '/e/items/add': (id: number, category: string, type: string) => void
+  '/e/items/remove': (id: number) => void
+  '/e/items/prop': (id: number, name: string, value: unknown) => boolean
+  '/e/items/definitions': (category: string) => string
+  '/e/items/definition': (category, name: string) => string
+  
   '/e/modulations/add': (...args: ModulationSerialized) => void
   '/e/modulations/remove': (
     modulatorId: Modulator['id'],

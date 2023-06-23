@@ -11,16 +11,13 @@ end
 function PropsView:mount()
   self:renderPage()
 
-  self.propChangeHandler = Miwos:on(
-    'prop:change',
-    function(moduleId, name, value)
-      for _, slot in pairs(self.children) do
-        if slot.__moduleId == moduleId and slot.__propName == name then
-          slot:setProp('value', value)
-        end
+  self.propChangeHandler = Miwos:on('prop:change', function(itemId, name, value)
+    for _, slot in pairs(self.children) do
+      if slot.__itemId == itemId and slot.__propName == name then
+        slot:setProp('value', value)
       end
     end
-  )
+  end)
 
   self.patchChangeHandler = Miwos:on('patch:change', function()
     -- Refresh mappings page.
@@ -45,25 +42,25 @@ function PropsView:renderPage()
 
   local emptySlots = { 1, 2, 3 }
   for slot, mapping in pairs(self.page) do
-    local module, propName = unpack(mapping)
-    local propValue = module.props[propName]
-    local propDefinition = module.__definition.props[propName]
+    local item, propName = unpack(mapping)
+    local propValue = item.props[propName]
+    local propDefinition = item.__definition.props[propName]
 
     if propDefinition then
       emptySlots[slot] = nil
-      local Component, props = unpack(module.__definition.props[propName])
+      local Component, props = unpack(item.__definition.props[propName])
 
       props.value = propValue
       props.label = Utils.capitalize(propName)
 
       local component = Component(props, { slot = slot })
       component.__propName = propName
-      component.__moduleId = module.__id
+      component.__itemId = item.__id
 
       self:addChild('slot' .. slot, component)
     else
       Log.warn(
-        string.format("couldn't find prop '%s' in %s", propName, module.__type)
+        string.format("couldn't find prop '%s' in %s", propName, item.__type)
       )
     end
   end
@@ -100,10 +97,8 @@ function PropsView:handlePropUpdate(slot, value)
     return
   end
 
-  local module, propName = unpack(self.page[slot])
-  self.props.patch:updatePropValue(module.__id, propName, value)
-
-  Bridge.notify('/e/modules/prop', module.__id, propName, value)
+  local item, propName = unpack(self.page[slot])
+  self.props.patch:updatePropValue(item.__id, propName, value)
 end
 
 function PropsView:unmount()

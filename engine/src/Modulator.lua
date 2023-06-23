@@ -1,18 +1,23 @@
 local class = require('class')
 local Utils = require('utils')
+local createProps = require('props')
 
----@class Modulator : Class
+---@class Modulator : Item
 ---@field __definition ModulatorDefinition
+---@field props table
 ---@field value fun(self: Modulator, time: number): number
 ---@field setup function | nil
 ---@field destroy function | nil
 local Modulator = class()
+Modulator.__category = 'modulators'
 
 function Modulator:constructor(props)
   self.__inputs = {}
   self.__outputs = {}
   self.__activeNotes = {}
-  self.props = Utils.getPropsWithDefaults(self.__definition.props, props or {})
+  self.props = createProps(
+    Utils.getPropsWithDefaults(self.__definition.props, props or {})
+  )
 
   Utils.callIfExists(self.setup, self)
 end

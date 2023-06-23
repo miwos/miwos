@@ -1,10 +1,10 @@
 <template>
   <div class="encoders" :class="{ 'show-labels': app.isMapping }">
     <MEncoder
-      v-for="count in 3"
-      :enabled="encoders.has(count - 1)"
-      v-bind="encoders.get(count - 1)"
-      @update:value="updateValue(count - 1, $event)"
+      v-for="(_, i) in 3"
+      :enabled="encoders.has(i)"
+      v-bind="encoders.get(i)"
+      @update:value="updateValue(i, $event)"
       class="encoder"
     />
   </div>
@@ -13,6 +13,8 @@
 <script setup lang="ts">
 import { useApp } from '@/stores/app'
 import { useMappings } from '@/stores/mappings'
+import { useModulatorDefinitions } from '@/stores/modulatorDefinitions'
+import { useModulators } from '@/stores/modulators'
 import { useModuleDefinitions } from '@/stores/moduleDefinitions'
 import { useModules } from '@/stores/modules'
 import MEncoder from '@/ui/MEncoder.vue'
@@ -20,7 +22,9 @@ import { computed } from 'vue'
 
 const app = useApp()
 const modules = useModules()
-const definitions = useModuleDefinitions()
+const modulators = useModulators()
+const moduleDefinitions = useModuleDefinitions()
+const modulatorDefinitions = useModulatorDefinitions()
 const mappings = useMappings()
 
 interface Encoder {
@@ -30,20 +34,33 @@ interface Encoder {
   step?: number
 }
 
+
+const getTargetAndDefinition = (id: number) => {
+  let target, definition
+  if (modules.isModule(id)) {
+    target = modules.get(id)
+    definition = moduleDefinitions.get(target?.type)
+  } else if (modulators.isModulator(id)) {
+    target = modulators.get(id)
+    definition = modulatorDefinitions.get(target?.type)
+  }
+  return { target, definition }
+}
+
 const encoders = computed(() => {
   const page = mappings.getPage(mappings.pageIndex)
   if (!page) return new Map()
 
   const encoders = new Map<number, Encoder>()
-  for (const { moduleId, prop, slot } of page.values()) {
-    const module = modules.get(moduleId)
-    if (!module) continue
+  for (const { targetId, prop, slot } of page.values()) {
+    const { target, definition } = getTargetAndDefinition(targetId)
+    if (!target || !definition) continue
 
-    const propOptions = definitions.get(module.type)?.props[prop]?.options
+    const propOptions = definition.props[prop]?.options
     if (!propOptions) continue
 
     const { min, max, step, value: defaultValue } = propOptions
-    const value = module.props[prop]
+    const value = target.props[prop]
 
     encoders.set(slot, { min, max, step, value: value ?? defaultValue })
   }
@@ -57,8 +74,13 @@ const updateValue = (slot: number, value: number) => {
   const mapping = mappings.getCurrentPage()?.get(slot)
   if (!mapping) return
 
-  const { moduleId, prop } = mapping
-  modules.updateProp(moduleId, prop, value)
+  const { targetId, prop } = mapping
+
+  if (modules.isModule(targetId)) {
+    modules.updateProp(targetId, prop, value)
+  } else if (modulators.isModulator(targetId)) {
+    modulators.updateProp(targetId, prop, value)
+  }
 }
 </script>
 

@@ -46,28 +46,35 @@ const createColorize = (colors: Colors = {}) => {
 const marks = [
   'black', 'white', 'gray', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan',
   'success', 'info', 'warn', 'error', 'specialKey', 'key', 'complexType',
-  'number', 'boolean', 'string'
+  'number', 'boolean', 'string', 
 ]
 const createMark = (name: string, input: string) =>
   `<span class="mark-${name}">${input}</span>`
+
 const colors = Object.fromEntries(
   marks.map((name) => [name, (input: string) => createMark(name, input)])
 )
 
+colors['italic'] = (input: string) => `<i>${input}</i>`
+colors['underline'] = (input: string) => `<u>${input}</u>`
+
 const colorize = createColorize(colors)
+
+const restoreCurlyBraces = (text: string) =>
+  text.replaceAll('#<#', '{').replaceAll('#>#', '}')
 
 export const useLog = defineStore('logs', () => {
   const entries = ref<LogEntry[]>([])
 
   const log = (type: LogType, text: string) => {
-    text = colorize`${text}`
+    text = restoreCurlyBraces(colorize`${text}`)
 
-    const lastEntry = entries.value[entries.value.length - 1]
-    if (lastEntry && lastEntry.type === type && lastEntry.text === text) {
-      lastEntry.count += 1
-    } else {
-      entries.value.push({ type, text, count: 1 })
-    }
+    // const lastEntry = entries.value[entries.value.length - 1]
+    // if (lastEntry && lastEntry.type === type && lastEntry.text === text) {
+    //   lastEntry.count += 1
+    // } else {
+    entries.value.push({ type, text, count: 1 })
+    // }
   }
 
   const info = (text: string) => log('info', text)

@@ -169,16 +169,18 @@ export const useModuleDefinitions = defineStore('module definitions', () => {
   }
 
   const loadAllFromDevice = async () => {
-    const result = await device.request('/e/modules/definitions')
+    const result = await device.request('/e/items/definitions', ['modules'])
     if (!result) return
+    
+    console.log(luaToJson(result))
 
     items.value.clear()
     deserialize(<ModuleDefinitionSerialized[]>luaToJson(result))
     indexSearch(Array.from(items.value.keys()))
   }
 
-  const loadFromDevice = async (moduleName: string) => {
-    const result = await device.request('/e/modules/definition', [moduleName])
+  const loadFromDevice = async (type: string) => {
+    const result = await device.request('/e/items/definition', ['modules', type])
     if (!result) return
     deserialize([luaToJson(result)])
     indexSearch(Array.from(items.value.keys()))

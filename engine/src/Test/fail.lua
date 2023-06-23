@@ -1,7 +1,7 @@
 local Utils = require('Utils')
 
 local function printFailDefault(assertion, received, expected)
-  Testing.print(
+  Test.print(
     string.format(
       '{gray {italic expect(}}{error received}{gray {italic ):%s(}}{success expected}{gray {italic )}} \n',
       assertion
@@ -9,17 +9,17 @@ local function printFailDefault(assertion, received, expected)
   )
 
   if received == expected then
-    Testing.print(
+    Test.print(
       string.format('{gray expected {underline not}} {success %s} \n', expected)
     )
   else
-    Testing.print(string.format('{gray received: {error %s}} \n', received))
-    Testing.print(string.format('{gray expected: {success %s}} \n', expected))
+    Test.print(string.format('{gray received: {error %s}} \n', received))
+    Test.print(string.format('{gray expected: {success %s}} \n', expected))
   end
 end
 
 local function printFailCompact(assertion, received, expected)
-  Testing.print(
+  Test.print(
     string.format(
       '{gray {italic expect(}}{error %s}{gray {italic ):%s(}}{success %s}{gray {italic )}} ',
       received,
@@ -30,9 +30,9 @@ local function printFailCompact(assertion, received, expected)
 end
 
 local function fail(assertion, text, received, ...)
-  local files, suites, tests = Testing._files, Testing._suites, Testing._tests
+  local files, suites, tests = Test._files, Test._suites, Test._tests
   local currentFile, currentSuite, currentTest =
-    Testing._currentFile, Testing._currentSuite, Testing._currentTest
+    Test._currentFile, Test._currentSuite, Test._currentTest
 
   if not currentFile.hasFailed then
     currentFile.hasFailed = true
@@ -50,17 +50,17 @@ local function fail(assertion, text, received, ...)
     currentSuite.hasFailed = true
     suites.failed = suites.failed + 1
 
-    Testing.print(string.format('{error • %s} ', currentSuite.name), -2)
+    Test.print(string.format('{error • %s} ', currentSuite.name), -2)
   end
 
   if not currentTest.hasFailed then
     currentTest.hasFailed = true
     tests.failed = tests.failed + 1
 
-    Testing.print(string.format('{error > %s} ', currentTest.name), -1)
+    Test.print(string.format('{error > %s} ', currentTest.name), -1)
   end
 
-  local receivedSerialized = Testing.serialize(received)
+  local receivedSerialized = Test.serialize(received)
   -- There can be multiple expected values, for example when using
   -- `toBeCalledWith(1, 2, 3)`.
   local expectedSerialized =
@@ -68,7 +68,7 @@ local function fail(assertion, text, received, ...)
 
   if text then
     printFailCompact(assertion, receivedSerialized, expectedSerialized)
-    Testing.print('{gray ' .. text .. '} ')
+    Test.print('{gray ' .. text .. '} ')
   elseif receivedSerialized:len() + expectedSerialized:len() <= 120 then
     printFailCompact(assertion, receivedSerialized, expectedSerialized)
   else

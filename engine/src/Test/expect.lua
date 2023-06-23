@@ -1,5 +1,5 @@
-local assertions = require('Testing.assertions')
-local fail = require('Testing.fail')
+local assertions = require('Test.assertions')
+local fail = require('Test.fail')
 local Expect = {}
 
 for name, value in pairs(assertions) do

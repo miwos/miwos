@@ -35,6 +35,10 @@ export const useDevice = defineStore('device', () => {
     }
   })
 
+  bridge.on('/data/unknown', (data) => {
+    log.log('info', new TextDecoder().decode(data))
+  })
+
   const open = async () => {
     await bridge.open({ baudRate: 9600 })
     isConnected.value = true

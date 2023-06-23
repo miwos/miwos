@@ -1,12 +1,16 @@
 <template>
   <div class="module-props">
-    <ModuleProp
+    <ItemProp
       v-for="(prop, index) in listedProps"
+      class="module-prop"
       :name="prop.name"
       :type="prop.type"
-      :moduleId="module.id"
-      :position="getPosition(index)"
-      :side="index < 3 ? 'right' : 'left'"
+      :ownerId="module.id"
+
+      :data-side="index < 3 ? 'right' : 'left'"
+
+      :style="getPosition(index)"
+
       :options="prop.options"
       :value="module.props[prop.name]"
       @update:value="modules.updateProp(module.id, prop.name, $event)"
@@ -20,7 +24,7 @@ import { useModules } from '@/stores/modules'
 import { useModuleShapes } from '@/stores/moduleShapes'
 import type { Module } from '@/types'
 import { computed } from 'vue'
-import ModuleProp from './ModuleProp.vue'
+import ItemProp from './ItemProp.vue'
 
 const props = defineProps<{
   module: Module
@@ -60,12 +64,22 @@ const getPosition = (index: number) => {
   if (!position) throw new Error(`No position found for prop #${index}`)
 
   const offset = 8 * (side === 'left' ? 1 : -1)
-  return { x: position.x + offset, y: position.y }
+  return { left: `${position.x + offset}px`, top: `${position.y}px` }
 }
 </script>
 
 <style scoped lang="scss">
 .module-props {
   pointer-events: all;
+}
+
+.module-prop {
+  position: absolute;
+  transform: translateY(-50%);
+
+  &[data-side='left'] {
+    transform: translate(-100%, -50%);
+    flex-direction: row-reverse;
+  }
 }
 </style>

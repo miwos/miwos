@@ -46,7 +46,7 @@ export const useModules = defineStore('module-instances', () => {
   const isDragging = ref(false)
   const activeOutputIds = ref(new Set<string>())
 
-  bridge.on('/e/modules/prop', ({ args: [id, name, value] }) => {
+  bridge.on('/e/items/prop', ({ args: [id, name, value] }) => {
     const item = get(id)
     if (!item) return
     item.props[name] = value
@@ -141,6 +141,8 @@ export const useModules = defineStore('module-instances', () => {
     focusedId.value !== undefined ? get(focusedId.value) : undefined
   )
 
+  const isModule = (id: Id) => items.value.has(id)
+
   // Actions
   const serialize = () => Array.from(items.value.values()).map(serializeModule)
 
@@ -151,7 +153,7 @@ export const useModules = defineStore('module-instances', () => {
       add(module, false)
       // Make sure that future module ids won't clash with the currently added
       // module.
-      project.nextId = Math.max(project.nextId, module.id + 1)
+      project.nextItemId = Math.max(project.nextItemId, module.id + 1)
     }
   }
 
@@ -159,14 +161,15 @@ export const useModules = defineStore('module-instances', () => {
     module: Optional<Module, 'id' | 'props' | 'label'>,
     updateDevice = true
   ) => {
-    module.id ??= project.nextId++
+    module.id ??= project.nextItemId++
     module.props ??= definitions.getDefaultProps(module.type)
     module.label ??= module.type
     console.log(module)
     items.value.set(module.id, module as Module)
     sortedIds.value.push(module.id)
 
-    if (updateDevice) device.update('/e/modules/add', [module.id, module.type])
+    if (updateDevice)
+      device.update('/e/items/add', [module.id, 'modules', module.type])
 
     return module as Module
   }
@@ -186,7 +189,7 @@ export const useModules = defineStore('module-instances', () => {
     items.value.delete(id)
     sortedIds.value.splice(sortedIds.value.indexOf(id), 1)
 
-    if (updateDevice) device.update('/e/modules/remove', [id])
+    if (updateDevice) device.update('/e/items/remove', [id])
     return { module, connections: removedConnections }
   }
 
@@ -207,7 +210,7 @@ export const useModules = defineStore('module-instances', () => {
     if (!item) return
 
     item.props[name] = value
-    if (updateDevice) device.update('/e/modules/prop', [id, name, value])
+    if (updateDevice) device.update('/e/items/prop', [id, name, value])
   }
 
   const clear = () => {
@@ -229,6 +232,7 @@ export const useModules = defineStore('module-instances', () => {
     get,
     getConnector,
     getSortIndex,
+    isModule,
     add,
     remove,
     focus,

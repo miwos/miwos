@@ -18,7 +18,7 @@ export const useProject = defineStore('project', () => {
   // be a module and a modulator with the same id), so we can apply a modulation
   // to either a module's or a modulator's prop by just using the id and prop
   // name. `nextId` acts as a source of new ids for both to prevent id clashing.
-  const nextId = ref(1)
+  const nextItemId = ref(1)
 
   const bridge = useBridge()
   const device = useDevice()
@@ -74,7 +74,7 @@ export const useProject = defineStore('project', () => {
     mappings.clear()
     modulations.clear()
     modulators.clear()
-    nextId.value = 1
+    nextItemId.value = 1
     if (updateDevice) device.update('/e/patch/clear')
   }
 
@@ -86,7 +86,7 @@ export const useProject = defineStore('project', () => {
   return {
     name,
     partIndex,
-    nextId,
+    nextItemId,
     isSelecting,
     serialize,
     save,

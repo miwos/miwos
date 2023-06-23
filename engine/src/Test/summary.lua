@@ -22,10 +22,10 @@ end
 
 local function getSummary()
   print()
-  printSummarySection('Files: ', Testing._files.total, Testing._files.failed)
-  printSummarySection('Suites:', Testing._suites.total, Testing._suites.failed)
-  printSummarySection('Tests: ', Testing._tests.total, Testing._tests.failed)
-  return Testing._tests.failed == 0
+  printSummarySection('Files: ', Test._files.total, Test._files.failed)
+  printSummarySection('Suites:', Test._suites.total, Test._suites.failed)
+  printSummarySection('Tests: ', Test._tests.total, Test._tests.failed)
+  return Test._tests.failed == 0
 end
 
 return getSummary

@@ -49,11 +49,12 @@ const addModulator = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 
   &-items {
     display: grid;
-    gap: 0.5rem;
+    column-gap: 1.75rem;
+    row-gap: 0.5rem;
 
     &.multi-column {
       grid-auto-flow: column;

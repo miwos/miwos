@@ -64,6 +64,13 @@ export const useModulators = defineStore('modulators', () => {
     }
   })
 
+  bridge.on('/e/modulators/prop', ({ args: [id, name, value] }) => {
+    console.log(id, name, value)
+    const item = get(id)
+    if (!item) return
+    item.props[name] = value
+  })  
+
   // Getters
   const get = (id: Id) => {
     const item = items.value.get(id)
@@ -76,6 +83,8 @@ export const useModulators = defineStore('modulators', () => {
 
   const list = computed(() => Array.from(items.value.values()))
 
+  const isModulator = (id: Id) => items.value.has(id)
+
   // Actions
   const serialize = (): ModulatorSerialized[] =>
     Array.from(items.value.values()).map(serializeModulator)
@@ -87,7 +96,7 @@ export const useModulators = defineStore('modulators', () => {
       add(modulator, false)
       // Make sure that future modulator ids won't clash with the currently
       // added modulator.
-      project.nextId = Math.max(project.nextId, modulator.id + 1)
+      project.nextItemId = Math.max(project.nextItemId, modulator.id + 1)
     }
   }
 
@@ -95,7 +104,7 @@ export const useModulators = defineStore('modulators', () => {
     modulator: Optional<Modulator, 'id' | 'props'>,
     updateDevice = true
   ) => {
-    modulator.id ??= project.nextId++
+    modulator.id ??= project.nextItemId++
     modulator.props ??= definitions.getDefaultProps(modulator.type)
     items.value.set(modulator.id, modulator as Modulator)
 
@@ -113,7 +122,20 @@ export const useModulators = defineStore('modulators', () => {
 
   const clear = () => items.value.clear()
 
-  return { items, list, get, serialize, deserialize, add, remove, clear }
+  const updateProp = (
+    id: Id,
+    name: string,
+    value: unknown,
+    updateDevice = true
+  ) => {
+    const item = get(id)
+    if (!item) return
+
+    item.props[name] = value
+    if (updateDevice) device.update('/e/modulators/prop', [id, name, value])
+  }  
+
+  return { items, list, get, isModulator, serialize, deserialize, add, remove, clear, updateProp }
 })
 
 if (import.meta.hot)
