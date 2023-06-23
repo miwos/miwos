@@ -1,14 +1,16 @@
 import type {
   Mapping,
   MappingPage,
-  MappingPageSerialized
+  MappingPageSerialized,
 } from '@/types/Mapping'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useDevice } from './device'
 
-const mappingsEqual = (a: Omit<Mapping, 'slot'>, b: Omit<Mapping, 'slot'>) =>
-  a.targetId === b.targetId && a.prop === b.prop
+const mappingsEqual = (
+  a: Pick<Mapping, 'itemId' | 'prop'>,
+  b: Pick<Mapping, 'itemId' | 'prop'>
+) => a.itemId === b.itemId && a.prop === b.prop
 
 export const useMappings = defineStore('mappings', () => {
   const pages = ref(new Map<number, MappingPage>())
@@ -16,26 +18,29 @@ export const useMappings = defineStore('mappings', () => {
 
   const device = useDevice()
 
-  // Getters
-  const getPage = (index: number) => {
-    if (pages.value.has(index)) {
-      return pages.value.get(index)
-    } else {
-      console.warn(`mapping page #${index} not found`)
-    }
-  }
+  const getCurrentPage = () => pages.value.get(pageIndex.value)
 
-  const getCurrentPage = () => getPage(pageIndex.value)
-
-  const getMapping = (targetId: number, prop: string) =>
+  const getMapping = (itemId: number, prop: string) =>
     computed(() => {
       for (const [index, page] of pages.value.entries()) {
         for (const mapping of page.values()) {
-          if (mappingsEqual(mapping, { targetId, prop }))
+          if (mappingsEqual(mapping, { itemId, prop }))
             return { ...mapping, pageIndex: index }
         }
       }
     })
+
+  const getByItemId = (id: number) => {
+    const result = []
+    for (const page of pages.value.values()) {
+      for (const mapping of page.values()) {
+        if (mapping.itemId === id) {
+          result.push(mapping)
+        }
+      }
+    }
+    return result
+  }
 
   // Actions
   const serialize = (): Record<number, MappingPageSerialized> => {
@@ -43,7 +48,7 @@ export const useMappings = defineStore('mappings', () => {
     for (const [index, page] of pages.value.entries()) {
       const luaIndex = index + 1 // use one-based index
       serialized[luaIndex] = {}
-      for (const [slot, { targetId: moduleId, prop }] of page.entries()) {
+      for (const [slot, { itemId: moduleId, prop }] of page.entries()) {
         const luaSlot = slot + 1 // use one-based index
         serialized[luaIndex][luaSlot] = [moduleId, prop]
       }
@@ -53,18 +58,18 @@ export const useMappings = defineStore('mappings', () => {
 
   const deserialize = (serialized: Record<number, MappingPageSerialized>) => {
     pages.value.clear()
-    for (const [luaIndex, pageSerialized] of Object.entries(serialized)) {
-      const index = (+luaIndex - 1) as number // use zero-based index
+    for (const [luaPage, pageSerialized] of Object.entries(serialized)) {
+      const pageIndex = (+luaPage - 1) as number // use zero-based index
       const page = new Map() as MappingPage
       for (const [luaSlot, mappingSerialized] of Object.entries(
         pageSerialized
       )) {
-        const slot = +luaSlot - 1 // use zero-based index
-        const [targetId, prop] = mappingSerialized
-        const mapping = { slot: +slot, targetId, prop }
-        page.set(slot, mapping)
+        const slotIndex = +luaSlot - 1 // use zero-based index
+        const [itemId, prop] = mappingSerialized
+        const mapping = { page: pageIndex, slot: +slotIndex, itemId, prop }
+        page.set(slotIndex, mapping)
       }
-      pages.value.set(index, page)
+      pages.value.set(pageIndex, page)
     }
   }
 
@@ -91,7 +96,7 @@ export const useMappings = defineStore('mappings', () => {
       device.update('/e/mappings/add', [
         pageIndex + 1,
         mapping.slot + 1,
-        mapping.targetId,
+        mapping.itemId,
         mapping.prop,
       ])
     }
@@ -102,6 +107,8 @@ export const useMappings = defineStore('mappings', () => {
     if (!page) return
 
     page.delete(slot)
+    if (!page.size) pages.value.delete(pageIndex)
+
     if (updateDevice)
       // use one-based indexes
       device.update('/e/mappings/remove', [pageIndex + 1, slot + 1])
@@ -115,9 +122,9 @@ export const useMappings = defineStore('mappings', () => {
   return {
     pages,
     pageIndex,
-    getPage,
     getCurrentPage,
     getMapping,
+    getByItemId,
     serialize,
     deserialize,
     add,

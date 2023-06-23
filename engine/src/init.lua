@@ -60,7 +60,7 @@ end)
 Bridge.addMethod(
   '/e/connections/add',
   function(fromId, outputIndex, toId, inputIndex)
-    local fromModule = Miwos.patch.modules[fromId]
+    local fromModule = Miwos.patch:getItem(fromId) --[[@as Module]]
     fromModule:__connect(outputIndex, toId, inputIndex)
   end
 )
@@ -68,7 +68,7 @@ Bridge.addMethod(
 Bridge.addMethod(
   '/e/connections/remove',
   function(fromId, outputIndex, toId, inputIndex)
-    local fromModule = Miwos.patch.modules[fromId]
+    local fromModule = Miwos.patch:getItem(fromId) --[[@as Module]]
     fromModule:__disconnect(outputIndex, toId, inputIndex)
   end
 )
@@ -92,6 +92,19 @@ Bridge.addMethod('/e/mappings/remove', function(page, slot)
 end)
 
 -- Modulations
+Bridge.addMethod(
+  '/e/modulations/add',
+  function(modulatorId, itemId, prop, amount)
+    Miwos.patch:addModulation(modulatorId, itemId, prop, amount)
+    Miwos:emit('patch:change')
+  end
+)
+
+Bridge.addMethod('/e/modulations/remove', function(modulatorId, itemId, prop)
+  Miwos.patch:removeModulation(modulatorId, itemId, prop)
+  Miwos:emit('patch:change')
+end)
+
 Bridge.addMethod(
   '/e/modulations/amount',
   function(modulatorId, moduleId, prop, amount)

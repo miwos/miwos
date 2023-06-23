@@ -9,8 +9,6 @@ local Patch = class()
 
 function Patch:constructor()
   self.items = {}
-  self.modules = {}
-  self.modulators = {}
   self.connections = {}
   self.modulations = {}
   self.mappings = {}
@@ -157,7 +155,7 @@ function Patch:updatePropValue(itemId, name, value, notifyApp)
   local valueHasChanged = item.props.__values[name] ~= value
   if not valueHasChanged then return end
 
-  local itemIsModulator = item.__category == 'modulator'
+  local itemIsModulator = item.__category == 'modulators'
   local propIsModulated = self:getPropModulation(itemId, name)
 
   -- Modulators don't handle events and modules and will receive events for
@@ -301,9 +299,9 @@ function Patch:deserialize(serialized)
   for i, modulation in pairs(serialized.modulations) do
     -- Resolve the item and store it instead of it's id for quicker access.
     local modulatorId, itemId, prop, amount = unpack(modulation)
-    local modulator = self:getItem(modulatorId)
+    local modulator = self:getItem(modulatorId) --[[@as Modulator]]
     local item = self:getItem(itemId)
-    modulation[i] = { modulator, item, prop, amount }
+    self.modulations[i] = { modulator, item, prop, amount }
   end
 
   self.mappings = {}

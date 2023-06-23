@@ -64,13 +64,6 @@ export const useModulators = defineStore('modulators', () => {
     }
   })
 
-  bridge.on('/e/modulators/prop', ({ args: [id, name, value] }) => {
-    console.log(id, name, value)
-    const item = get(id)
-    if (!item) return
-    item.props[name] = value
-  })  
-
   // Getters
   const get = (id: Id) => {
     const item = items.value.get(id)
@@ -109,7 +102,7 @@ export const useModulators = defineStore('modulators', () => {
     items.value.set(modulator.id, modulator as Modulator)
 
     if (updateDevice)
-      device.update('/e/modulators/add', [modulator.id, modulator.type])
+      device.update('/e/items/add', [modulator.id, 'modulators', modulator.type])
   }
 
   const remove = (id: Id, updateDevice = true) => {
@@ -117,25 +110,12 @@ export const useModulators = defineStore('modulators', () => {
 
     modulations.getByModulatorId(id).forEach(({ id }) => modulations.remove(id))
 
-    if (updateDevice) device.update('/e/modulators/remove', [id])
+    if (updateDevice) device.update('/e/items/remove', [id])
   }
 
   const clear = () => items.value.clear()
 
-  const updateProp = (
-    id: Id,
-    name: string,
-    value: unknown,
-    updateDevice = true
-  ) => {
-    const item = get(id)
-    if (!item) return
-
-    item.props[name] = value
-    if (updateDevice) device.update('/e/modulators/prop', [id, name, value])
-  }  
-
-  return { items, list, get, isModulator, serialize, deserialize, add, remove, clear, updateProp }
+  return { items, list, get, isModulator, serialize, deserialize, add, remove, clear }
 })
 
 if (import.meta.hot)

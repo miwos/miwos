@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModules } from '@/stores/modules'
+import { useProject } from '@/stores/project'
 import type { Module } from '@/types'
 import { computed, defineAsyncComponent } from 'vue'
 
@@ -28,12 +28,12 @@ const moduleContents = new Map(
   })
 )
 
-const modules = useModules()
+const project = useProject()
 const updatePropHandlers = computed(() =>
   Object.fromEntries(
     Object.keys(props.module.props).map((name) => [
       `update:${name}`,
-      (value: any) => modules.updateProp(props.module.id, name, value),
+      (value: any) => project.updateProp(props.module.id, name, value),
     ])
   )
 )

@@ -5,11 +5,12 @@
       class="modulator-prop"
       :name="name"
       :type="prop.type"
-      :ownerId="modulator.id"
+      :itemId="modulator.id"
       :options="prop.options"
-      :value="modulator.props[name]"
       :position="{ x: 0, y: 0 }"
       side="left"
+      :value="modulator.props[name]"
+      @update:value="project.updateProp(modulator.id, name, $event)"
     />
   </div>
 </template>
@@ -18,11 +19,13 @@
 import { useModulatorDefinitions } from '@/stores/modulatorDefinitions';
 import type { Modulator } from '@/types';
 import ItemProp from './ItemProp.vue';
+import { useProject } from '@/stores/project';
 
 const props = defineProps<{
   modulator: Modulator
 }>()
 
+const project = useProject()
 const definition = useModulatorDefinitions().get(props.modulator.type)
 </script>
 

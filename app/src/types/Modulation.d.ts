@@ -18,16 +18,16 @@ export interface ModulatorDefinitionSerialized {
 }
 
 export interface Modulation {
-  id: `${Modulation['targetId']}-${Modulation['prop']}`
+  id: `${Modulation['itemId']}-${Modulation['prop']}`
   modulatorId: Modulator['id']
-  targetId: number
+  itemId: number
   prop: string
   amount: number
 }
 
 export type ModulationSerialized = [
   modulatorId: Modulator['id'],
-  targetId: number,
+  itemId: number,
   prop: string,
   amount: number
 ]

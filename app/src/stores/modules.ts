@@ -8,6 +8,8 @@ import { useDevice } from './device'
 import { useModuleDefinitions } from './moduleDefinitions'
 import { useModuleShapes } from './moduleShapes'
 import { useProject } from './project'
+import { useMappings } from './mappings'
+import { useModulations } from './modulations'
 
 type Id = Module['id']
 
@@ -36,6 +38,8 @@ export const useModules = defineStore('module-instances', () => {
   const device = useDevice()
   const definitions = useModuleDefinitions()
   const connections = useConnections()
+  const mappings = useMappings()
+  const modulations = useModulations()
   const shapes = useModuleShapes()
   const bridge = useBridge()
 
@@ -45,12 +49,6 @@ export const useModules = defineStore('module-instances', () => {
   const selectedIds = ref(new Set<Id>())
   const isDragging = ref(false)
   const activeOutputIds = ref(new Set<string>())
-
-  bridge.on('/e/items/prop', ({ args: [id, name, value] }) => {
-    const item = get(id)
-    if (!item) return
-    item.props[name] = value
-  })
 
   const outputResetTimers: Record<string, number> = {}
   let sustainedIds = new Set<string>()
@@ -178,10 +176,20 @@ export const useModules = defineStore('module-instances', () => {
     const module = get(id)
     if (!module) return
 
-    const removedConnections = connections.getByModuleId(id)
-    removedConnections.forEach(({ id }) => connections.remove(id, false))
-    // Wait for the connections to be removed, otherwise they might still be
-    // there after the module has been deleted, causing warnings.
+    // Cleanup everything that was related to the deleted module.
+    connections
+      .getByModuleId(id)
+      .forEach(({ id }) => connections.remove(id, false))
+
+    mappings
+      .getByItemId(id)
+      .forEach(({ page, slot }) => mappings.remove(page, slot))
+
+    modulations.getByItemId(id).forEach(({ id }) => modulations.remove(id))
+
+    // Wait until everything is cleaned up. Otherwise there might still be
+    // references around to the cleaned up objects. E.g.: omitting this throws
+    // a warning caused by a ConnectionPoint still referencing the module.
     await nextTick()
 
     if (focusedId.value === id) focusedId.value = undefined
@@ -190,7 +198,6 @@ export const useModules = defineStore('module-instances', () => {
     sortedIds.value.splice(sortedIds.value.indexOf(id), 1)
 
     if (updateDevice) device.update('/e/items/remove', [id])
-    return { module, connections: removedConnections }
   }
 
   const focus = (id: Id | undefined) => {
@@ -198,19 +205,6 @@ export const useModules = defineStore('module-instances', () => {
     if (id === undefined) return
     sortedIds.value.splice(sortedIds.value.indexOf(id), 1).push(id)
     sortedIds.value.push(id)
-  }
-
-  const updateProp = (
-    id: Id,
-    name: string,
-    value: unknown,
-    updateDevice = true
-  ) => {
-    const item = get(id)
-    if (!item) return
-
-    item.props[name] = value
-    if (updateDevice) device.update('/e/items/prop', [id, name, value])
   }
 
   const clear = () => {
@@ -236,7 +230,6 @@ export const useModules = defineStore('module-instances', () => {
     add,
     remove,
     focus,
-    updateProp,
     clear,
   }
 })

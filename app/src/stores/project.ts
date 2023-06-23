@@ -39,6 +39,15 @@ export const useProject = defineStore('project', () => {
     load()
   })
 
+  bridge.on('/e/items/prop', ({ args: [id, name, value] }) => {
+    // Todo: find a better abstraction, e.g. a weak map or central list
+    // Todo of all items.
+    const item = modules.items.get(id) ?? modulators.items.get(id)
+    if (!item) return
+    item.props[name] = value
+  })
+
+
   // Actions
   const serialize = (): ProjectSerialized => ({
     connections: connections.serialize(),
@@ -83,6 +92,23 @@ export const useProject = defineStore('project', () => {
     if (updateDevice) device.update('/e/parts/select', [index])
   }
 
+
+  const updateProp = (
+    id: number,
+    name: string,
+    value: unknown,
+    updateDevice = true
+  ) => {
+    // Todo: find a better abstraction, e.g. a weak map or central list
+    // Todo of all items.
+    const item = modules.items.get(id) ?? modulators.items.get(id)
+    if (!item) return
+
+    item.props[name] = value
+    if (updateDevice) device.update('/e/items/prop', [id, name, value])
+  }
+
+
   return {
     name,
     partIndex,
@@ -93,6 +119,7 @@ export const useProject = defineStore('project', () => {
     load,
     clear,
     selectPart,
+    updateProp
   }
 })
 

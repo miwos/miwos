@@ -97,6 +97,7 @@ function Module:output(index, message, cable)
   else
     Miwos.activeOutputs[activeOutputKey] = isSustained
   end
+
   self:__output(index, message)
   Miwos.sendActiveOutputs()
 end
@@ -105,15 +106,16 @@ function Module:__output(index, message)
   if self.__outputs[index] then
     for _, input in pairs(self.__outputs[index]) do
       local inputId, inputIndex = unpack(input)
-      local inputModule = Miwos.patch and Miwos.patch.modules[inputId]
-      if inputModule then
+      local item = Miwos.patch and Miwos.patch:getItem(inputId)
+      if item and item.__category == 'modules' then
+        ---@cast item Module
         local name = message and message.name or 'trigger'
         local numberedInput = 'input[' .. inputIndex .. ']'
 
-        inputModule:callEvent('input', inputIndex, message)
-        inputModule:callEvent('input:' .. name, inputIndex, message)
-        inputModule:callEvent(numberedInput, message)
-        inputModule:callEvent(numberedInput .. ':' .. name, message)
+        item:callEvent('input', inputIndex, message)
+        item:callEvent('input:' .. name, inputIndex, message)
+        item:callEvent(numberedInput, message)
+        item:callEvent(numberedInput .. ':' .. name, message)
       end
     end
   end

@@ -8,7 +8,7 @@ Timer.Sec = 1000000
 Timer.Milli = 1000
 local events = {}
 local lastModulationUpdate = 0
-local modulationUpdateInterval = 1000 / 1 -- fps
+local modulationUpdateInterval = 1000 / 24 -- fps
 
 ---@param now number
 function Timer.update(now)

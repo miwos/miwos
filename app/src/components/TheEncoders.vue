@@ -17,10 +17,12 @@ import { useModulatorDefinitions } from '@/stores/modulatorDefinitions'
 import { useModulators } from '@/stores/modulators'
 import { useModuleDefinitions } from '@/stores/moduleDefinitions'
 import { useModules } from '@/stores/modules'
+import { useProject } from '@/stores/project'
 import MEncoder from '@/ui/MEncoder.vue'
 import { computed } from 'vue'
 
 const app = useApp()
+const project = useProject()
 const modules = useModules()
 const modulators = useModulators()
 const moduleDefinitions = useModuleDefinitions()
@@ -33,7 +35,6 @@ interface Encoder {
   max: number
   step?: number
 }
-
 
 const getTargetAndDefinition = (id: number) => {
   let target, definition
@@ -48,12 +49,12 @@ const getTargetAndDefinition = (id: number) => {
 }
 
 const encoders = computed(() => {
-  const page = mappings.getPage(mappings.pageIndex)
+  const page = mappings.getCurrentPage()
   if (!page) return new Map()
 
   const encoders = new Map<number, Encoder>()
-  for (const { targetId, prop, slot } of page.values()) {
-    const { target, definition } = getTargetAndDefinition(targetId)
+  for (const { itemId, prop, slot } of page.values()) {
+    const { target, definition } = getTargetAndDefinition(itemId)
     if (!target || !definition) continue
 
     const propOptions = definition.props[prop]?.options
@@ -74,13 +75,8 @@ const updateValue = (slot: number, value: number) => {
   const mapping = mappings.getCurrentPage()?.get(slot)
   if (!mapping) return
 
-  const { targetId, prop } = mapping
-
-  if (modules.isModule(targetId)) {
-    modules.updateProp(targetId, prop, value)
-  } else if (modulators.isModulator(targetId)) {
-    modulators.updateProp(targetId, prop, value)
-  }
+  const { itemId, prop } = mapping
+  project.updateProp(itemId, prop, value)
 }
 </script>
 

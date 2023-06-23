@@ -5,23 +5,20 @@
       class="module-prop"
       :name="prop.name"
       :type="prop.type"
-      :ownerId="module.id"
-
+      :itemId="module.id"
       :data-side="index < 3 ? 'right' : 'left'"
-
       :style="getPosition(index)"
-
       :options="prop.options"
       :value="module.props[prop.name]"
-      @update:value="modules.updateProp(module.id, prop.name, $event)"
+      @update:value="project.updateProp(module.id, prop.name, $event)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModules } from '@/stores/modules'
 import { useModuleShapes } from '@/stores/moduleShapes'
+import { useProject } from '@/stores/project'
 import type { Module } from '@/types'
 import { computed } from 'vue'
 import ItemProp from './ItemProp.vue'
@@ -30,7 +27,7 @@ const props = defineProps<{
   module: Module
 }>()
 
-const modules = useModules()
+const project = useProject()
 const definition = computed(
   () => useModuleDefinitions().get(props.module.type)!
 )

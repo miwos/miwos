@@ -63,7 +63,7 @@ import ModulateSelect from './ModulateSelect.vue'
 
 const props = defineProps<{
   name: string
-  ownerId: any
+  itemId: any
   type: string
   value: unknown
   options: any
@@ -87,8 +87,8 @@ const contextIsVisible = ref(false)
 const contextPosition = ref({ x: 0, y: 0 })
 const amountIsVisible = ref(false)
 
-const mapping = mappings.getMapping(props.ownerId, props.name)
-const modulation = modulations.getByProp(props.ownerId, props.name)
+const mapping = mappings.getMapping(props.itemId, props.name)
+const modulation = modulations.getByProp(props.itemId, props.name)
 const isMappedOnCurrentPage = computed(
   () => mapping.value?.pageIndex === mappings.pageIndex
 )
@@ -138,25 +138,26 @@ const hideContext = () => {
 }
 
 const setMapping = (slot: number | undefined) => {
-  const { ownerId, name: prop } = props
+  const { itemId, name: prop } = props
 
   if (slot === undefined) {
-    const mapping = mappings.getMapping(ownerId, prop).value
+    const mapping = mappings.getMapping(itemId, prop).value
     mapping && mappings.remove(mappings.pageIndex, mapping.slot)
   } else {
-    mappings.add(mappings.pageIndex, { slot, targetId: ownerId, prop })
+    const page = mappings.pageIndex
+    mappings.add(mappings.pageIndex, { page, slot, itemId, prop })
   }
 
   hideContext()
 }
 
 const setModulation = (modulatorId: number | undefined) => {
-  const { ownerId, name: prop } = props
+  const { itemId, name: prop } = props
 
   if (modulatorId === undefined) {
     modulation.value && modulations.remove(modulation.value.id)
-  } else if (!modulations.getByProp(ownerId, prop )) {
-    modulations.add({ modulatorId, targetId: ownerId, prop, amount: 0.5 })
+  } else if (!modulation.value) {
+    modulations.add({ modulatorId, itemId, prop, amount: 0.5 })
   }
 
   amountIsVisible.value = true

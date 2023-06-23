@@ -15,7 +15,7 @@ type Id = Modulation['id']
 const modulationsAreEqual = (
   a: Omit<Modulation, 'amount' | 'id'>,
   b: Omit<Modulation, 'amount' | 'id'>
-) => a.targetId === b.targetId && a.prop === b.prop
+) => a.itemId === b.itemId && a.prop === b.prop
 
 export const useModulations = defineStore('modulations', () => {
   const items = ref(new Map<Id, Modulation>())
@@ -23,14 +23,17 @@ export const useModulations = defineStore('modulations', () => {
   const device = useDevice()
 
   // Getters
-  const getByProp = (targetId: number, prop: string) =>
+  const getByProp = (itemId: number, prop: string) =>
     computed(() =>
       Array.from(items.value.values()).find(
-        (item) => item.targetId === targetId && item.prop === prop
+        (item) => item.itemId === itemId && item.prop === prop
       )
     )
 
   const list = computed(() => Array.from(items.value.values()))
+
+  const getByItemId = (id: number) =>
+    list.value.filter(({ itemId }) => itemId === id)
 
   const getByModulatorId = (id: Modulator['id']) =>
     list.value.filter((item) => item.modulatorId === id)
@@ -38,7 +41,7 @@ export const useModulations = defineStore('modulations', () => {
   // Actions
   const serialize = (): ModulationSerialized[] =>
     Array.from(items.value.values()).map(
-      ({ modulatorId, targetId: moduleId, prop, amount }) => [
+      ({ modulatorId, itemId: moduleId, prop, amount }) => [
         modulatorId,
         moduleId,
         prop,
@@ -49,19 +52,19 @@ export const useModulations = defineStore('modulations', () => {
   const deserialize = (serialized: ModulationSerialized[]) => {
     items.value.clear()
     serialized.forEach(([modulatorId, moduleId, prop, amount]) =>
-      add({ modulatorId, targetId: moduleId, prop, amount })
+      add({ modulatorId, itemId: moduleId, prop, amount })
     )
   }
 
   const add = (modulation: Optional<Modulation, 'id'>, updateDevice = true) => {
     console.log('update device')
-    modulation.id ??= `${modulation.targetId}-${modulation.prop}`
+    modulation.id ??= `${modulation.itemId}-${modulation.prop}`
     items.value.set(modulation.id, modulation as Modulation)
 
     if (updateDevice) {
       device.update('/e/modulations/add', [
         modulation.modulatorId,
-        modulation.targetId,
+        modulation.itemId,
         modulation.prop,
         modulation.amount,
       ])
@@ -75,7 +78,7 @@ export const useModulations = defineStore('modulations', () => {
     items.value.delete(id)
 
     if (updateDevice) {
-      const { modulatorId, targetId: moduleId, prop } = modulation
+      const { modulatorId, itemId: moduleId, prop } = modulation
       device.update('/e/modulations/remove', [modulatorId, moduleId, prop])
     }
   }
@@ -90,7 +93,7 @@ export const useModulations = defineStore('modulations', () => {
 
     modulation.amount = amount
     if (updateDevice) {
-      const { modulatorId, targetId: moduleId, prop } = modulation
+      const { modulatorId, itemId: moduleId, prop } = modulation
       device.update('/e/modulations/amount', [
         modulatorId,
         moduleId,
@@ -105,6 +108,7 @@ export const useModulations = defineStore('modulations', () => {
   return {
     items,
     getByProp,
+    getByItemId,
     getByModulatorId,
     serialize,
     deserialize,

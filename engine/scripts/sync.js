@@ -20,16 +20,16 @@ wss.on('connection', (socket) => {
   socket.on('message', async (buffer) => {
     const data = JSON.parse(new TextDecoder().decode(buffer))
 
-    if (data.method === 'deviceConnected' && !initialFilesSynced) {
-      for (let path of filesToSync) {
-        syncFile(path, false)
-        console.log('sync', path)
-        // Todo: make `syncFile` async and get rid of `delay()` workaround.
-        await delay(200)
-      }
-      initialFilesSynced = true
-      return
-    }
+    // if (data.method === 'deviceConnected' && !initialFilesSynced) {
+    //   for (let path of filesToSync) {
+    //     syncFile(path, false)
+    //     console.log('sync', path)
+    //     // Todo: make `syncFile` async and get rid of `delay()` workaround.
+    //     await delay(200)
+    //   }
+    //   initialFilesSynced = true
+    //   return
+    // }
 
     if (data.method === 'launchEditor') {
       const file = data.file.replace(/^lua\//, 'src/')
