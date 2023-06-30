@@ -1,5 +1,4 @@
 local class = require('class')
-local Utils = require('utils')
 
 ---@class Patch: Class
 ---@field items table<number, Item>

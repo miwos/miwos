@@ -2,7 +2,6 @@ local ProgressBar = require('ui.components.ProgressBar')
 local LabelValue = require('ui.components.LabelValue')
 local Encoder = require('ui.components.Encoder')
 local Display = require('ui.components.Display')
-local Utils = require('Utils')
 
 ---@class NumberProps
 ---@field value number

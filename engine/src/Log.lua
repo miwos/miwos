@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 Log = _G.Log or {}
 
 ---@enum LogType

@@ -1,4 +1,3 @@
-local Utils = require('Utils')
 Hmr = _G.Hmr or {}
 
 ---@param modulePath string

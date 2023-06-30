@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 local function printFailDefault(assertion, received, expected)
   Test.print(
     string.format(

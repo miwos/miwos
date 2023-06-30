@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 ---@class EventEmitter
 ---@field __events table
 EventEmitter = {}

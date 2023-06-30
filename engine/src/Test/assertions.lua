@@ -1,4 +1,3 @@
-local Utils = require('Utils')
 local assertions = {}
 
 local function register(name, fn, text)

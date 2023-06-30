@@ -1,5 +1,4 @@
 local class = require('class')
-local Utils = require('Utils')
 
 ---@class Component : Class
 ---@field __events { [string]: function }

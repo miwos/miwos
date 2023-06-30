@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 describe('isArray', function()
   it('handles numbers', function()
     expect(Utils.isArray(99)):toBe(false)

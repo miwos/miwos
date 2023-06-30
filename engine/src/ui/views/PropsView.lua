@@ -1,4 +1,3 @@
-local Utils = require('Utils')
 local PropsView = Miwos.defineComponent('PropsView')
 local Buttons = require('ui.components.Buttons')
 local Leds = require('ui.components.Leds')

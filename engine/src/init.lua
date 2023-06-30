@@ -1,3 +1,4 @@
+require('Utils')
 require('Bridge')
 require('Buttons')
 require('Encoders')
@@ -8,8 +9,6 @@ require('Midi')
 require('Miwos')
 require('Prop')
 require('Timer')
-require('utils')
-local Utils = require('Utils')
 
 require('modules.Input')
 require('modules.Output')

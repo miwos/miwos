@@ -1,4 +1,3 @@
-local Utils = require('Utils')
 ---@class ModuleDelay : Module
 local Delay = Miwos.defineModule('Delay', {
   inputs = { 'midi' },

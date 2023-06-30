@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 ---@class ChordSplit : Module
 local ChordSplit = Miwos.defineModule('ChordSplit', {
   label = 'Chord\\nSplit',

@@ -163,5 +163,3 @@ function Utils.getPropsWithDefaults(propDefinitions, props)
   end
   return props
 end
-
-return Utils

@@ -1,4 +1,3 @@
-local Utils = require('utils')
 local Lfo = Miwos.defineModulator('Lfo', {
   bipolar = true,
   props = {

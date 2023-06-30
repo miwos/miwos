@@ -1,5 +1,3 @@
-local Utils = require('Utils')
-
 Test = {
   fn = require('Test.mock'),
   expect = require('Test.expect'),

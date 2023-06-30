@@ -1,4 +1,4 @@
-local option = require('Utils').option
+local option = Utils.option
 local Display = require('ui.components.Display')
 
 ---@class LabelValueProps

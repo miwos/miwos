@@ -5,7 +5,6 @@ local Patch = require('Patch')
 local EventEmitter = require('EventEmitter')
 local Component = require('Component')
 local mixin = require('mixin')
-local Utils = require('Utils')
 
 ---@class Miwos : EventEmitter
 ---@field patch Patch | nil

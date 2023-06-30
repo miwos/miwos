@@ -2,7 +2,6 @@ local class = require('class')
 local EventEmitter = require('EventEmitter')
 local MidiMessage = require('MidiMessage')
 local mixin = require('mixin')
-local Utils = require('Utils')
 
 ---@class Midi : EventEmitter
 ---@field private __send fun(index: number, type: number, data1: number, data2: number, channel: number, cable: number)

@@ -1,5 +1,4 @@
 local class = require('class')
-local Utils = require('utils')
 local createProps = require('props')
 
 ---@class Modulator : Item

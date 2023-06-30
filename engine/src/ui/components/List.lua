@@ -1,6 +1,5 @@
 local Display = require('ui.components.Display')
 local Encoder = require('ui.components.Encoder')
-local Utils = require('Utils')
 
 ---@class ListProps
 ---@field values string

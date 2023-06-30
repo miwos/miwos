@@ -1,4 +1,3 @@
-local Utils = require('Utils')
 ---@class ModuleStrings : Module
 local Strings = Miwos.defineModule('Strings', {
   shape = 'Chord',
