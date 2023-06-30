@@ -168,16 +168,15 @@ function Module:__destroy()
   Utils.callIfExists(self.destroy, self)
 end
 
-function Module.__hmrAccept(definition)
-  if Miwos.patch then Miwos.patch:updateModuleDefinition(definition) end
+function Module.__hmrAccept(module)
+  if Miwos.patch then Miwos.patch:updateItemInstances(module) end
 end
 
-function Module.__hmrDecline(definition)
-  return true
+function Module.__hmrDecline(module)
   -- We only want to hot replace actual modules, not the (abstract) module base
   -- class itself. Only modules registered with `Miwos.defineModule()` have a
   -- `__type`.
-  -- return not definition.__type
+  return not module.__type
 end
 
 return Module
