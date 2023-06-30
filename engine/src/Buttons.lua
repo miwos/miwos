@@ -1,9 +1,7 @@
-local mixin = require('mixin')
-local EventEmitter = require('EventEmitter')
-
 Buttons = _G.Buttons or {}
+
+Utils.mixin(Buttons, require('EventEmitter'))
 Buttons.__events = {}
-mixin(Buttons, EventEmitter)
 
 ---@param index number
 ---@param duration number

@@ -68,8 +68,6 @@ function PropsView:renderPage()
     Displays.clear(slot)
     Displays.update(slot)
   end
-
-  Log.dump(self.children.slot1)
 end
 
 PropsView:event('buttons:click', function(self, index)

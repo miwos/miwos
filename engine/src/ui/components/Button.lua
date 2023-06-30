@@ -35,7 +35,7 @@ function Button:draw()
 
   local width = 14
   local height = 8
-  local buttonHeight = self.props.value and height or 5
+  local buttonHeight = self.props.value and 5 or height
   local buttonWidth = 8
   local x = 0
   local y = Display.height - height

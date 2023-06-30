@@ -18,7 +18,7 @@ Delay:event('input[1]', function(self, message)
   ---@cast self ModuleDelay
   ---@cast message MidiMessage|MidiNoteOn
 
-  local isNoteOn = message:is(Midi.NoteOn)
+  local isNoteOn = message.type == Midi.Type.NoteOn
   if isNoteOn and self.mono then self:cleanUpNote(message) end
 
   local dryGain = Utils.dryWetGain(self.props.dryWet / 100)

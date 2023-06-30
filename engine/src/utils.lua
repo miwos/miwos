@@ -9,6 +9,16 @@ function Utils.option(value, default)
   return value == nil and default or value
 end
 
+---@param destination table
+---@param source table
+---@return table
+function Utils.mixin(destination, source)
+  for k, v in pairs(source) do
+    destination[k] = v
+  end
+  return destination
+end
+
 ---From https://stackoverflow.com/a/66370080/12207499, thanks PiFace!
 function Utils.isArray(t)
   return type(t) == 'table' and #t > 0 and next(t, #t) == nil

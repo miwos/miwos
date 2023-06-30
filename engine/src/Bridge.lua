@@ -1,12 +1,10 @@
-local EventEmitter = require('EventEmitter')
-local mixin = require('mixin')
-
 ---@class Bridge: EventEmitter
 ---@field notify fun(address: string, ...: number | boolean | string)
 Bridge = _G.Bridge or {}
 Bridge.__methods = {}
+
+Utils.mixin(Bridge, require('EventEmitter'))
 Bridge.__events = {}
-mixin(Bridge, EventEmitter)
 
 ---@param address any
 ---@param ... any

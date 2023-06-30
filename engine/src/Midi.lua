@@ -1,44 +1,39 @@
-local class = require('class')
-local EventEmitter = require('EventEmitter')
-local MidiMessage = require('MidiMessage')
-local mixin = require('mixin')
-
 ---@class Midi : EventEmitter
 ---@field private __send fun(index: number, type: number, data1: number, data2: number, channel: number, cable: number)
 ---@field start fun()
 ---@field stop fun()
 ---@field setTempo fun(bpm: number)
+---@field NoteOn fun(note, velocity, channel): MidiNoteOn
+---@field NoteOff fun(note, velocity, channel): MidiNoteOff
+---@field ControlChange fun(note, velocity, channel): MidiControlChange
 Midi = _G.Midi or {}
+
+Utils.mixin(Midi, require('EventEmitter'))
 Midi.__events = {}
-mixin(Midi, EventEmitter)
 
----@type { [number]: MidiMessage }
-local messageDict = {}
+---@enum MidiType
+Midi.Type = {
+  NoteOn = 0x90,
+  NoteOff = 0x80,
+  ControlChange = 0xB0,
+}
 
-local function defineMidiMessage(type, name, keys)
-  local Message = class(MidiMessage) --[=[@as MidiMessage]=]
-  Message.type = type
-  Message.keys = keys
-  Message.name = name
-  messageDict[type] = Message
-  return Message
+Midi.TypeName = {
+  [Midi.Type.NoteOn] = 'NoteOn',
+  [Midi.Type.NoteOff] = 'NoteOff',
+  [Midi.Type.ControlChange] = 'ControlChange',
+}
+
+-- `MidiMessage` depends on `Midi.Type`, so we have to require it after it
+-- is initialized.
+Midi.Message = require('MidiMessage')
+
+-- Shorthand MidiMessage factories
+for _, type in pairs(Midi.Type) do
+  Midi[Midi.TypeName[type]] = function(...)
+    return Midi.Message(type, ...)
+  end
 end
-
----@class MidiNoteOn : MidiMessage
----@field note number
----@field velocity number
-Midi.NoteOn = defineMidiMessage(0x90, 'noteOn', { 'note', 'velocity' })
-
----@class MidiNoteOff : MidiMessage
----@field note number
----@field velocity number
-Midi.NoteOff = defineMidiMessage(0x80, 'noteOff', { 'note', 'velocity' })
-
----@class MidiControlChange : MidiMessage
----@field controler number
----@field value number
-Midi.ControlChange =
-  defineMidiMessage(0xB0, 'controlChange', { 'controler', 'value' })
 
 ---@param index number
 ---@param type number
@@ -47,10 +42,7 @@ Midi.ControlChange =
 ---@param channel number
 ---@param cable number
 function Midi.handleInput(index, type, data1, data2, channel, cable)
-  local Message = messageDict[type]
-  if Message == nil then return end
-
-  local message = Message(data1, data2, channel)
+  local message = Midi.Message(type, data1, data2, channel)
   Midi:emit('input', index, message, cable)
 end
 

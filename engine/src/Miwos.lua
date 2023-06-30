@@ -2,15 +2,14 @@ local class = require('class')
 local Module = require('Module')
 local Modulator = require('Modulator')
 local Patch = require('Patch')
-local EventEmitter = require('EventEmitter')
 local Component = require('Component')
-local mixin = require('mixin')
 
 ---@class Miwos : EventEmitter
 ---@field patch Patch | nil
 ---@field view Component | nil
 Miwos = _G.Miwos or {}
-mixin(Miwos, EventEmitter)
+
+Utils.mixin(Miwos, require('EventEmitter'))
 Miwos.__events = {}
 
 Miwos.definitions = {
