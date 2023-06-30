@@ -69,4 +69,8 @@ Button:event('encoder:click', function(self)
   self:emit('updateValue', self.props.value)
 end)
 
+Button:event('prop[value]:change', function(self)
+  self:draw()
+end)
+
 return Button

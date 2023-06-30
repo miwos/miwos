@@ -15,6 +15,7 @@ function Module:constructor(props)
   self.__outputs = {}
   self.__activeNotes = {}
   self.props = createProps(
+    self,
     Utils.getPropsWithDefaults(self.__definition.props, props or {})
   )
 
@@ -70,8 +71,7 @@ end
 
 ---@param index number
 ---@param message MidiMessage|nil
----@param cable number
-function Module:output(index, message, cable)
+function Module:output(index, message)
   local signal = message and 'midi' or 'trigger'
   local isNoteOn = message and message:is(Midi.NoteOn)
   local isNoteOff = message and message:is(Midi.NoteOff)
@@ -99,6 +99,15 @@ function Module:output(index, message, cable)
 
   self:__output(index, message)
   Miwos.sendActiveOutputs()
+end
+
+---@param index number
+---@param message MidiMessage
+---@param time number
+---@param useTicks? boolean
+function Module:scheduleOutput(index, message, time, useTicks)
+  message.__scheduleAt = { time, useTicks }
+  self:output(index, message)
 end
 
 function Module:__output(index, message)

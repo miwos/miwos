@@ -34,7 +34,13 @@ end)
 ---Override `Module.__output()` to send the message directly via midi.
 ---@param message MidiMessage
 function Output:__output(_, message)
-  Midi:send(self.props.device, message, 1)
+  local scheduleAt = message.__scheduleAt
+  if scheduleAt then
+    local time, useTicks = unpack(scheduleAt)
+    Timer.scheduleMidi(message, self.props.device, 1, time, useTicks)
+  else
+    Midi:send(self.props.device, message, 1)
+  end
 end
 
 return Output

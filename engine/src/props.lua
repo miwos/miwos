@@ -7,12 +7,18 @@ local mt = {
       return self.__values[key]
     end
   end,
+
+  __newindex = function(self, key, value)
+    Miwos:emit('prop:change', self.__item.__id, key, value)
+    self.__values[key] = value
+  end,
 }
 
 ---@param values table<string, any>
 ---@return table<string, any>
-local function createProps(values)
+local function createProps(item, values)
   return setmetatable({
+    __item = item,
     __values = values,
     __modulatedValues = {},
   }, mt)

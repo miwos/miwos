@@ -30,7 +30,7 @@ end
 function Input:handleMidiInput(device, message, cable)
   local isSameDevice = device == self.props.device
   local isSameCable = cable == self.props.cable
-  if isSameDevice and isSameCable then self:output(1, message, cable) end
+  if isSameDevice and isSameCable then self:output(1, message) end
 end
 
 Input:event('prop:beforeChange', function(self)

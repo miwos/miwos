@@ -64,7 +64,7 @@ function Delay:sendWithGain(message, gain)
     message = Midi.NoteOn(message.note, velocity, message.channel)
   end
 
-  self:output(1, message, 1)
+  self:output(1, message)
 end
 
 function Delay:cleanUpNote(note)
@@ -74,7 +74,7 @@ function Delay:cleanUpNote(note)
     Timer.cancel(timer)
     self.timers[noteId] = nil
   end
-  self:output(1, Midi.NoteOff(note.note, 0, note.channel), 1)
+  self:output(1, Midi.NoteOff(note.note, 0, note.channel))
 end
 
 function Delay:destroy()

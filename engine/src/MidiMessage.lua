@@ -7,6 +7,7 @@ local typeKeysLookup = {
 }
 
 ---@class MidiMessage : Class
+---@field __scheduleAt {[1]: number, [2]: boolean}
 local MidiMessage = class()
 
 ---@param type MidiType

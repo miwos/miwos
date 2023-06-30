@@ -139,13 +139,13 @@ Buttons:on('click', function(index)
   end
 end)
 
--- Miwos.loadSettings()
--- Miwos.loadProject('test')
--- Miwos.switchView(PropsView({ patch = Miwos.patch }))
+Miwos.loadSettings()
+Miwos.loadProject('test')
+Miwos.switchView(PropsView({ patch = Miwos.patch }))
 
--- Midi.start()
+Midi.start()
 
 -- Log.info(Utils.getUsedMemory())
 
-require('Test')
-Test.runFile('lua/tests/Midi-test.lua')
+-- require('Test')
+-- Test.runFile('lua/tests/Midi-test.lua')

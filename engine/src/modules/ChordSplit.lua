@@ -43,7 +43,7 @@ ChordSplit:event('input[1]:noteOff', function(self, note)
   self.noteOutputs[noteId] = nil
 
   if outputIndex then
-    self:output(outputIndex, note, 1)
+    self:output(outputIndex, note)
   else
     -- If the note is shorter than the maxNoteInterval, is hasn't been send
     -- yet (because the split didn't happen). So instead of sending the noteOff
@@ -59,7 +59,7 @@ function ChordSplit:split()
 
   for id, note in pairs(self.notes) do
     self.noteOutputs[id] = outputIndex
-    self:output(outputIndex, note, 1)
+    self:output(outputIndex, note)
   end
 end
 

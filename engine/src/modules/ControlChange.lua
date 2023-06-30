@@ -16,7 +16,7 @@ ControlChange:event('prop[value]:change', function(self, value)
   local message =
     Midi.ControlChange(self.props.control, value, self.props.channel)
 
-  self:output(1, message, 1)
+  self:output(1, message)
 end)
 
 return ControlChange

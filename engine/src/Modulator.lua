@@ -15,6 +15,7 @@ function Modulator:constructor(props)
   self.__outputs = {}
   self.__activeNotes = {}
   self.props = createProps(
+    self,
     Utils.getPropsWithDefaults(self.__definition.props, props or {})
   )
 
