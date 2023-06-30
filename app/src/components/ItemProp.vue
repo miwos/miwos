@@ -4,7 +4,7 @@
     <div class="item-prop-content" ref="content">
       <button
         v-if="nameIsVisible"
-        ref="name"
+        ref="label"
         class="item-prop-name"
         @click="showField"
         @focus="showField"
@@ -15,6 +15,7 @@
         v-if="fieldIsVisible"
         :is="components[type] ?? Number"
         v-bind="options"
+        :name="name"
         :value="value"
         ref="field"
         class="item-prop-field glass"
@@ -52,6 +53,7 @@ import { useApp } from '@/stores/app'
 import { useMappings } from '@/stores/mappings'
 import { useModulations } from '@/stores/modulations'
 import Number from '@/ui/MNumber.vue'
+import Button from './PropButton.vue'
 import { computed, nextTick, ref, type Component } from 'vue'
 import MappingSelect from './MappingSelect.vue'
 import ModulateAmount from './ModulateAmount.vue'
@@ -68,7 +70,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'update:value', value: unknown): void }>()
 
-const components: Record<string, Component> = { Number }
+const components: Record<string, Component> = { Number, Button }
 
 const app = useApp()
 const el = ref<HTMLElement>()
@@ -90,7 +92,7 @@ const isMappedOnCurrentPage = computed(
   () => mapping.value?.pageIndex === mappings.pageIndex
 )
 
-const name = ref<HTMLElement>()
+const label = ref<HTMLElement>()
 const nameIsVisible = computed(
   () => app.showPropFields || !fieldIsVisible.value
 )
@@ -111,7 +113,7 @@ const showField = async () => {
   if (app.showPropFields) return
   fieldIsVisible.value = true
   await nextTick()
-  field.value?.focus()
+  field.value?.focus?.()
 }
 
 const hideField = () => {
@@ -222,15 +224,16 @@ onMouseDownOutside(context, hideContext)
     cursor: pointer;
   }
 
-  &-field {
-    display: flex;
-    border-radius: var(--radius-xs);
-    width: 6em;
-    height: 1.5em;
-    padding: 0 0.3em;
-    box-sizing: border-box;
-    font-weight: 300;
-  }
+  // ? How to style fields?
+  // &-field {
+  //   display: flex;
+  //   border-radius: var(--radius-xs);
+  //   width: 6em;
+  //   height: 1.5em;
+  //   padding: 0 0.3em;
+  //   box-sizing: border-box;
+  //   font-weight: 300;
+  // }
 
   &-context {
     position: absolute;

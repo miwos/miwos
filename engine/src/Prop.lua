@@ -1,5 +1,9 @@
 local Number = require('ui.components.Number')
+local Button = require('ui.components.Button')
 
+---@class Prop
+---@field Number fun(props: NumberProps)
+---@field Button fun(props: ButtonProps)
 Prop = {}
 
 setmetatable(Prop, {
@@ -20,13 +24,19 @@ setmetatable(Prop, {
   end,
 })
 
----@class Prop
----@field Number fun(props: NumberProps)
 Miwos.defineProp('Number', {
   component = Number,
   modulateValue = function(value, modulation, amount, options)
     local modulationRange = (options.max - options.min) * (amount / 2)
     local newValue = value + modulationRange * modulation
     return math.min(math.max(newValue, options.min), options.max)
+  end,
+})
+
+Miwos.defineProp('Button', {
+  component = Button,
+  modulateValue = function(value, modulation, amount, options)
+    -- TODO: implement
+    return value
   end,
 })
