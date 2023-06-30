@@ -30,17 +30,18 @@ export const useMappings = defineStore('mappings', () => {
       }
     })
 
-  const getByItemId = (id: number) => {
-    const result = []
-    for (const page of pages.value.values()) {
-      for (const mapping of page.values()) {
-        if (mapping.itemId === id) {
-          result.push(mapping)
+  const getByItemId = (id: number) =>
+    computed(() => {
+      const result = []
+      for (const page of pages.value.values()) {
+        for (const mapping of page.values()) {
+          if (mapping.itemId === id) {
+            result.push(mapping)
+          }
         }
       }
-    }
-    return result
-  }
+      return result
+    })
 
   // Actions
   const serialize = (): Record<number, MappingPageSerialized> => {

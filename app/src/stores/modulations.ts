@@ -33,8 +33,9 @@ export const useModulations = defineStore('modulations', () => {
   const list = computed(() => Array.from(items.value.values()))
 
   const getByItemId = (id: number) =>
-    list.value.filter(({ itemId }) => itemId === id)
+    computed(() => list.value.filter(({ itemId }) => itemId === id))
 
+  // Todo: make this computed as well
   const getByModulatorId = (id: Modulator['id']) =>
     list.value.filter((item) => item.modulatorId === id)
 
@@ -71,7 +72,7 @@ export const useModulations = defineStore('modulations', () => {
     }
   }
 
-  const remove = (id: Id, updateDevice = false) => {
+  const remove = (id: Id, updateDevice = true) => {
     const modulation = items.value.get(id)
     if (!modulation) return
 

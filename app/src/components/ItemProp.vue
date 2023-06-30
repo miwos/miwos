@@ -1,15 +1,11 @@
 <template>
-  <div class="module-prop" ref="el">
-    <button
-      class="module-prop-handle"
-      :data-status="handleStatus"
-      @click="showContext"
-    ></button>
-    <div class="module-prop-content" ref="content">
+  <div class="item-prop" ref="el">
+    <ItemPropHandle :status="handleStatus" @click="showContext" />
+    <div class="item-prop-content" ref="content">
       <button
         v-if="nameIsVisible"
         ref="name"
-        class="module-prop-name"
+        class="item-prop-name"
         @click="showField"
         @focus="showField"
       >
@@ -21,15 +17,15 @@
         v-bind="options"
         :value="value"
         ref="field"
-        class="module-prop-field glass"
+        class="item-prop-field glass"
         @update:value="emit('update:value', $event)"
         @blur="hideField"
       />
     </div>
     <Teleport to="body">
-      <div v-if="contextIsVisible" ref="context" class="module-prop-context">
+      <div v-if="contextIsVisible" ref="context" class="item-prop-context">
         <MappingSelect
-          class="module-prop-mapping"
+          class="item-prop-mapping"
           :value="mapping?.slot"
           @update:value="setMapping"
         />
@@ -60,6 +56,7 @@ import { computed, nextTick, ref, type Component } from 'vue'
 import MappingSelect from './MappingSelect.vue'
 import ModulateAmount from './ModulateAmount.vue'
 import ModulateSelect from './ModulateSelect.vue'
+import ItemPropHandle from './ItemPropHandle.vue'
 
 const props = defineProps<{
   name: string
@@ -105,7 +102,9 @@ const handleStatus = computed(() =>
     ? 'mapped'
     : modulation.value
     ? 'modulated'
-    : 'mapped-inactive'
+    : mapping.value
+    ? 'mapped-other-page'
+    : 'none'
 )
 
 const showField = async () => {
@@ -173,7 +172,7 @@ onMouseDownOutside(context, hideContext)
 </script>
 
 <style scoped lang="scss">
-.module-prop {
+.item-prop {
   gap: 0.5em;
   height: 2em;
   display: flex;
@@ -185,11 +184,10 @@ onMouseDownOutside(context, hideContext)
     height: 1rem;
     border-radius: 50%;
     box-sizing: border-box;
-    background-color: var(--color-module-bg);
+    background-color: var(--color-glass-solid);
     cursor: pointer;
     transition: fill var(--fade-duration);
 
-    .mapping-modal &,
     &[data-status='mapped'] {
       background: var(--color-mapping);
     }

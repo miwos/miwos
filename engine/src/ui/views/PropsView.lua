@@ -33,7 +33,7 @@ end
 function PropsView:renderPage()
   for i = 1, 3 do
     local child = self.children['slot' .. i]
-    if child then child:__unmount() end
+    if child then self:removeChild(child) end
 
     local ledState = i == self.pageIndex
     local ledIndex = i + 3 -- leds 4,5,6 represent pages 1,2,3
@@ -69,6 +69,8 @@ function PropsView:renderPage()
     Displays.clear(slot)
     Displays.update(slot)
   end
+
+  Log.dump(self.children.slot1)
 end
 
 PropsView:event('buttons:click', function(self, index)

@@ -16,7 +16,7 @@
       :class="{ focused: index === focusedIndex }"
       role="option"
       :aria-selected="props.value === option.id"
-      @click="emit('update:value', option.id)"
+      @click.stop="emit('update:value', option.id)"
       @mouseenter="focus(index)"
     >
       <slot name="option" v-bind="option" :isFocused="index === focusedIndex">
@@ -25,7 +25,7 @@
       <button
         v-if="showUnset && option.id === value"
         class="m-select-unset"
-        @click="emit('update:value', undefined)"
+        @click.stop="emit('update:value', undefined)"
       >
         <svg viewBox="0 0 10 10" class="icon">
           <line x1="0" y1="0" x2="10" y2="10" />
