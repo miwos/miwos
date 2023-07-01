@@ -149,3 +149,16 @@ Midi.start()
 
 -- require('Test')
 -- Test.runFile('lua/tests/Midi-test.lua')
+
+-- TODO: Find good GC settings
+-- collectgarbage('setpause', 100)
+-- collectgarbage('setstepmul', 400)
+collectgarbage('setpause', 50)
+collectgarbage('setstepmul', 500)
+
+local function logUsedMemory()
+  Bridge.notify('/e/memory', collectgarbage('count'))
+  Timer.delay(logUsedMemory, 1000)
+end
+
+logUsedMemory()

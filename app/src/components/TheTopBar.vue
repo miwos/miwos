@@ -1,12 +1,15 @@
 <template>
-  <MNavBar class="m-top-bar">
-    <MButtonCircle
-      :style="`background-color: var(${statusColor})`"
-      @click="toggleDeviceConnection"
-    ></MButtonCircle>
-    <button @click="toggleDeviceConnection">{{ statusText }}</button>
-    <button @click="clear">Clear</button>
-  </MNavBar>
+  <div class="top-bar">
+    <MNavBar class="nav-bar">
+      <MButtonCircle
+        :style="`background-color: var(${statusColor})`"
+        @click="toggleDeviceConnection"
+      ></MButtonCircle>
+      <button @click="toggleDeviceConnection">{{ statusText }}</button>
+      <button @click="clear">Clear</button>
+    </MNavBar>
+    <MemoryMonitor />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -15,6 +18,7 @@ import { useProject } from '@/stores/project'
 import MButtonCircle from '@/ui/MButtonCircle.vue'
 import MNavBar from '@/ui/MNavBar.vue'
 import { computed } from 'vue'
+import MemoryMonitor from './MemoryMonitor.vue'
 
 const device = useDevice()
 const project = useProject()
@@ -37,8 +41,13 @@ const statusText = computed(() =>
 </script>
 
 <style scoped>
-.m-top-bar {
+.top-bar {
+  display: flex;
+  gap: 1rem;
+
+  padding: 1rem;
+}
+.nav-bar {
   padding-left: 0 !important;
-  margin: 1rem;
 }
 </style>

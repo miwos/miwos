@@ -7,6 +7,7 @@ import { ref } from 'vue'
 import { useLog } from './log'
 import { useModuleDefinitions } from './moduleDefinitions'
 import { useProject } from './project'
+import { useEventBus } from '@vueuse/core'
 
 export const useDevice = defineStore('device', () => {
   const isConnected = ref(false)
@@ -22,6 +23,7 @@ export const useDevice = defineStore('device', () => {
   const project = useProject()
   const moduleDefinitions = useModuleDefinitions()
   const log = useLog()
+  const deviceMemoryBus = useEventBus<number>('device-memory')
 
   bridge.on('/close', () => (isConnected.value = false))
 
@@ -38,6 +40,8 @@ export const useDevice = defineStore('device', () => {
   bridge.on('/data/unknown', (data) => {
     log.log('info', new TextDecoder().decode(data))
   })
+
+  bridge.on('/e/memory', ({ args: [memory] }) => deviceMemoryBus.emit(memory))
 
   const open = async () => {
     await bridge.open({ baudRate: 9600 })
