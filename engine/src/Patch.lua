@@ -225,6 +225,8 @@ function Patch:updateModulations(time, notifyApp)
     end
   end
 
+  if #modulatorValues == 0 then return end
+
   if Utils.option(notifyApp, true) then
     Bridge.notify('/e/modulators/values', unpack(modulatorValues))
   end

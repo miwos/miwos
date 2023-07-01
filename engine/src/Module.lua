@@ -79,7 +79,7 @@ function Module:output(index, message)
   if isNoteOn or isNoteOff then
     ---@cast message MidiNoteOn | MidiNoteOff
     local activeNoteKey = Utils.packBytes(index, message.note, message.channel)
-    self.__activeNotes[activeNoteKey] = isNoteOn and true or nil
+    self.__activeNotes[activeNoteKey] = isNoteOn or nil
   end
 
   -- We distinguish between two types of active outputs:

@@ -6,7 +6,13 @@
 import { map } from '@/utils'
 import { onMounted, ref } from 'vue'
 
-const props = defineProps<{ color: string }>()
+const props = withDefaults(
+  defineProps<{ color: string; min?: number; max?: number }>(),
+  {
+    min: -1,
+    max: 1,
+  }
+)
 
 const canvas = ref<HTMLCanvasElement>()
 let ctx: CanvasRenderingContext2D | null
@@ -18,11 +24,12 @@ let prevValue: number | undefined
 const pixelRatio = Math.ceil(window.devicePixelRatio)
 const lineWidth = 2 * pixelRatio
 const marginHorizontal = lineWidth / 2
+const step = pixelRatio
 
 const scrollCanvas = () => {
   if (!ctx) return
   ctx.globalCompositeOperation = 'copy'
-  ctx.drawImage(ctx.canvas, -pixelRatio, 0)
+  ctx.drawImage(ctx.canvas, -step, 0)
   ctx.globalCompositeOperation = 'source-over'
 }
 
@@ -42,12 +49,18 @@ onMounted(() => {
 const plotValue = (value: number) => {
   if (!width || !height || !ctx) return
 
-  value = map(value, -1, 1, marginHorizontal, height - marginHorizontal)
+  value = map(
+    value,
+    props.min,
+    props.max,
+    marginHorizontal,
+    height - marginHorizontal
+  )
   const canvasIsFull = drawOffset >= width
   if (canvasIsFull) scrollCanvas()
 
   if (prevValue !== undefined) {
-    const x = Math.min(drawOffset, width - pixelRatio)
+    const x = Math.min(drawOffset, width - step)
     const prevY = height - prevValue
     const y = height - value
 
@@ -55,13 +68,13 @@ const plotValue = (value: number) => {
     ctx.lineWidth = 2 * pixelRatio
     ctx.lineCap = 'round'
     ctx.beginPath()
-    ctx.moveTo(x - pixelRatio, prevY)
+    ctx.moveTo(x - step, prevY)
     ctx.lineTo(x, y)
     ctx.stroke()
   }
 
   prevValue = value
-  if (!canvasIsFull) drawOffset += pixelRatio
+  if (!canvasIsFull) drawOffset += step
 }
 
 defineExpose({ plotValue })

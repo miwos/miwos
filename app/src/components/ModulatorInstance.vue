@@ -15,13 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Modulator } from '@/types'
-import ScrollingPlot from './ScrollingPlot.vue'
-import { onMounted, onUnmounted, ref } from 'vue'
-import { useEventBus } from '@vueuse/core'
-import { useModulators } from '@/stores/modulators'
-import ModulatorProps from './ModulatorProps.vue'
 import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
+import { useModulators } from '@/stores/modulators'
+import type { Modulator } from '@/types'
+import { useEventBus } from '@vueuse/core'
+import { ref } from 'vue'
+import ModulatorProps from './ModulatorProps.vue'
+import ScrollingPlot from './ScrollingPlot.vue'
 
 const props = defineProps<{ modulator: Modulator }>()
 
@@ -31,15 +31,10 @@ const modulatorValueBus = useEventBus('modulator-value')
 const plot = ref<InstanceType<typeof ScrollingPlot>>()
 const propsMenu = ref<InstanceType<typeof ModulatorProps>>()
 const propsMenuIsVisible = ref(false)
-let unsubscribe: Function | undefined
 
-onMounted(() => {
-  unsubscribe = modulatorValueBus.on((modulatorId, value) => {
-    if (modulatorId === props.modulator.id) plot.value?.plotValue(value)
-  })
+modulatorValueBus.on((modulatorId, value) => {
+  if (modulatorId === props.modulator.id) plot.value?.plotValue(value)
 })
-
-onUnmounted(() => unsubscribe?.())
 
 const showPropsMenu = () => (propsMenuIsVisible.value = true)
 
