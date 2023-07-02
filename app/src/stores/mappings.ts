@@ -6,6 +6,7 @@ import type {
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useDevice } from './device'
+import { useBridge } from '@/bridge'
 
 const mappingsEqual = (
   a: Pick<Mapping, 'itemId' | 'prop'>,
@@ -17,6 +18,9 @@ export const useMappings = defineStore('mappings', () => {
   const pageIndex = ref(0)
 
   const device = useDevice()
+  const bridge = useBridge()
+
+  bridge.on('/n/pages/select', ({ args: [index] }) => (pageIndex.value = index))
 
   const getCurrentPage = () => pages.value.get(pageIndex.value)
 
@@ -74,6 +78,11 @@ export const useMappings = defineStore('mappings', () => {
     }
   }
 
+  const selectPage = (index: number, updateDevice = true) => {
+    pageIndex.value = index
+    if (updateDevice) device.notify('/n/pages/select', [index])
+  }
+
   const add = (pageIndex: number, mapping: Mapping, updateDevice = true) => {
     // Remove any previous mappings, because a module prop should only be mapped
     // once at a time.
@@ -94,7 +103,7 @@ export const useMappings = defineStore('mappings', () => {
     page.set(mapping.slot, mapping)
     if (updateDevice) {
       // use one-based indexes
-      device.update('/e/mappings/add', [
+      device.update('/r/mappings/add', [
         pageIndex + 1,
         mapping.slot + 1,
         mapping.itemId,
@@ -112,7 +121,7 @@ export const useMappings = defineStore('mappings', () => {
 
     if (updateDevice)
       // use one-based indexes
-      device.update('/e/mappings/remove', [pageIndex + 1, slot + 1])
+      device.update('/r/mappings/remove', [pageIndex + 1, slot + 1])
   }
 
   const clear = () => {
@@ -128,6 +137,7 @@ export const useMappings = defineStore('mappings', () => {
     getByItemId,
     serialize,
     deserialize,
+    selectPage,
     add,
     remove,
     clear,

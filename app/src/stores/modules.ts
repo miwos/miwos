@@ -52,7 +52,7 @@ export const useModules = defineStore('module-instances', () => {
 
   const outputResetTimers: Record<string, number> = {}
   let sustainedIds = new Set<string>()
-  bridge.on('/e/modules/active-outputs', ({ args }) => {
+  bridge.on('/r/modules/active-outputs', ({ args }) => {
     const newSustainedIds = new Set<string>()
     for (const packed of args) {
       const [moduleId, indexAndSustained] = unpackBytes(packed)
@@ -167,7 +167,7 @@ export const useModules = defineStore('module-instances', () => {
     sortedIds.value.push(module.id)
 
     if (updateDevice)
-      device.update('/e/items/add', [module.id, 'modules', module.type])
+      device.update('/r/items/add', [module.id, 'modules', module.type])
 
     return module as Module
   }
@@ -197,7 +197,7 @@ export const useModules = defineStore('module-instances', () => {
     items.value.delete(id)
     sortedIds.value.splice(sortedIds.value.indexOf(id), 1)
 
-    if (updateDevice) device.update('/e/items/remove', [id])
+    if (updateDevice) device.update('/r/items/remove', [id])
   }
 
   const focus = (id: Id | undefined) => {

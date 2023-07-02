@@ -23,6 +23,10 @@ function PropsView:mount()
     self.page = self.props.patch.mappings[self.pageIndex] or {}
     self:renderPage()
   end)
+
+  Bridge:on('/r/pages/select', function(index)
+    Log.info('fu', index)
+  end)
 end
 
 function PropsView:render()
@@ -74,6 +78,7 @@ PropsView:event('buttons:click', function(self, index)
   if index < 4 or index > 6 then return end
   self.pageIndex = index - 3 -- buttons 4,5,6 select page 1,2,3
   self.page = self.props.patch.mappings[self.pageIndex] or {}
+  Bridge.notify('/n/pages/select', self.pageIndex - 1)
   self:renderPage()
 end)
 

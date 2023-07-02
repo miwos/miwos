@@ -98,7 +98,7 @@ export const useConnections = defineStore('connections', () => {
     items.value.set(connection.id, connection as Connection)
     if (updateDevice) {
       const serialized = serializeConnection(connection as Connection)
-      device.update('/e/connections/add', serialized)
+      device.update('/r/connections/add', serialized)
     }
     return connection.id
   }
@@ -107,7 +107,7 @@ export const useConnections = defineStore('connections', () => {
     const connection = items.value.get(id)
     items.value.delete(id)
     if (updateDevice && connection)
-      device.update('/e/connections/remove', serializeConnection(connection))
+      device.update('/r/connections/remove', serializeConnection(connection))
     return connection
   }
 

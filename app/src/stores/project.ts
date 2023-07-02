@@ -31,22 +31,21 @@ export const useProject = defineStore('project', () => {
   const folder = computed(() => `lua/projects/${name.value}`)
   const file = computed(() => `${folder.value}/part-${partIndex.value + 1}.lua`)
 
-  bridge.on('/e/parts/select', ({ args: [index] }) => selectPart(index, false))
+  bridge.on('/r/parts/select', ({ args: [index] }) => selectPart(index, false))
 
-  bridge.on('/e/project/open', ({ args: [projectName] }) => {
+  bridge.on('/r/project/open', ({ args: [projectName] }) => {
     name.value = projectName
     partIndex.value = 0
     load()
   })
 
-  bridge.on('/e/items/prop', ({ args: [id, name, value] }) => {
+  bridge.on('/r/items/prop', ({ args: [id, name, value] }) => {
     // Todo: find a better abstraction, e.g. a weak map or central list
     // Todo of all items.
     const item = modules.items.get(id) ?? modulators.items.get(id)
     if (!item) return
     item.props[name] = value
   })
-
 
   // Actions
   const serialize = (): ProjectSerialized => ({
@@ -84,14 +83,13 @@ export const useProject = defineStore('project', () => {
     modulations.clear()
     modulators.clear()
     nextItemId.value = 1
-    if (updateDevice) device.update('/e/patch/clear')
+    if (updateDevice) device.update('/r/patch/clear')
   }
 
   const selectPart = (index: number, updateDevice = true) => {
     partIndex.value = index
-    if (updateDevice) device.update('/e/parts/select', [index])
+    if (updateDevice) device.update('/r/parts/select', [index])
   }
-
 
   const updateProp = (
     id: number,
@@ -105,9 +103,8 @@ export const useProject = defineStore('project', () => {
     if (!item) return
 
     item.props[name] = value
-    if (updateDevice) device.update('/e/items/prop', [id, name, value])
+    if (updateDevice) device.update('/r/items/prop', [id, name, value])
   }
-
 
   return {
     name,
@@ -119,7 +116,7 @@ export const useProject = defineStore('project', () => {
     load,
     clear,
     selectPart,
-    updateProp
+    updateProp,
   }
 })
 

@@ -1,5 +1,5 @@
 export * from './Connection'
-export * from './DeviceMethods'
+export * from './OscMessages'
 export * from './Module'
 export * from './Modulation'
 export * from './Optional'

@@ -13,7 +13,40 @@ namespace BridgeLib {
   };
 
   void begin() {
-    Bridge::addMethod("/e/*/*", [](Data &data) {
+    // Handle a notify (/n/) OSC message. Notify means, we don't expect any
+    // response and just forward the message to the lua engine.
+    Bridge::addMethod("/n/*/*", [](Data &data) {
+      if (handleOscRef == -1)
+        handleOscRef = Lua::storeFunction("Bridge", "handleOsc");
+      if (!Lua::getFunction(handleOscRef)) return;
+
+      static char address[256];
+      data.getAddress(address, 0, 256);
+      lua_pushstring(Lua::L, address);
+
+      byte numArguments = data.size();
+      for (int i = 0; i < numArguments; i++) {
+        char type = data.getType(i);
+        if (type == 'i') {
+          lua_pushinteger(Lua::L, data.getInt(i));
+        } else if (type == 'f') {
+          lua_pushnumber(Lua::L, data.getFloat(i));
+        } else if (type == 's') {
+          char string[256];
+          data.getString(i, string, 256);
+          lua_pushstring(Lua::L, string);
+        } else {
+          Logger::beginError();
+          Logger::serial->printf(F("OSC type `%c` is not supported."), type);
+          Logger::endError();
+          return;
+        }
+      }
+    });
+
+    // Handle a request (/r/) OSC message. Request means we do expect a response
+    // from the lua engine (similar to an RPC).
+    Bridge::addMethod("/r/*/*", [](Data &data) {
       RequestId id = data.getInt(0);
       byte numArguments = data.size();
 

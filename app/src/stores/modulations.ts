@@ -63,7 +63,7 @@ export const useModulations = defineStore('modulations', () => {
     items.value.set(modulation.id, modulation as Modulation)
 
     if (updateDevice) {
-      device.update('/e/modulations/add', [
+      device.update('/r/modulations/add', [
         modulation.modulatorId,
         modulation.itemId,
         modulation.prop,
@@ -80,7 +80,7 @@ export const useModulations = defineStore('modulations', () => {
 
     if (updateDevice) {
       const { modulatorId, itemId: moduleId, prop } = modulation
-      device.update('/e/modulations/remove', [modulatorId, moduleId, prop])
+      device.update('/r/modulations/remove', [modulatorId, moduleId, prop])
     }
   }
 
@@ -95,7 +95,7 @@ export const useModulations = defineStore('modulations', () => {
     modulation.amount = amount
     if (updateDevice) {
       const { modulatorId, itemId: moduleId, prop } = modulation
-      device.update('/e/modulations/amount', [
+      device.update('/r/modulations/amount', [
         modulatorId,
         moduleId,
         prop,

@@ -53,7 +53,7 @@ export const useModulators = defineStore('modulators', () => {
   const bridge = useBridge()
   const modulatorValueBus = useEventBus('modulator-value')
 
-  bridge.on('/e/modulators/values', ({ args }) => {
+  bridge.on('/r/modulators/values', ({ args }) => {
     for (const packed of args) {
       const [modulatorId, value] = unpackBytes(packed)
       const modulator = items.value.get(modulatorId)
@@ -102,7 +102,11 @@ export const useModulators = defineStore('modulators', () => {
     items.value.set(modulator.id, modulator as Modulator)
 
     if (updateDevice)
-      device.update('/e/items/add', [modulator.id, 'modulators', modulator.type])
+      device.update('/r/items/add', [
+        modulator.id,
+        'modulators',
+        modulator.type,
+      ])
   }
 
   const remove = (id: Id, updateDevice = true) => {
@@ -110,12 +114,22 @@ export const useModulators = defineStore('modulators', () => {
 
     modulations.getByModulatorId(id).forEach(({ id }) => modulations.remove(id))
 
-    if (updateDevice) device.update('/e/items/remove', [id])
+    if (updateDevice) device.update('/r/items/remove', [id])
   }
 
   const clear = () => items.value.clear()
 
-  return { items, list, get, isModulator, serialize, deserialize, add, remove, clear }
+  return {
+    items,
+    list,
+    get,
+    isModulator,
+    serialize,
+    deserialize,
+    add,
+    remove,
+    clear,
+  }
 })
 
 if (import.meta.hot)

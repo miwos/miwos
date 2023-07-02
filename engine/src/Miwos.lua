@@ -82,7 +82,7 @@ function Miwos.loadProject(name, updateApp)
   Miwos:emit('patch:change', Miwos.patch)
 
   if Utils.option(updateApp, true) then
-    Bridge.notify('/e/project/open', name)
+    Bridge.notify('/n/project/open', name)
   end
 end
 
@@ -110,5 +110,5 @@ Miwos.sendActiveOutputs = Utils.throttle(function()
     -- Reset non-sustained ouputs as soon es they are send.
     if not isSustained then Miwos.activeOutputs[activeOutput] = nil end
   end
-  Bridge.notify('/e/modules/active-outputs', unpack(list))
+  Bridge.notify('/n/modules/active-outputs', unpack(list))
 end, 50)

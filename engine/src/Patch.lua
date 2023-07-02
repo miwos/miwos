@@ -168,7 +168,7 @@ function Patch:updatePropValue(itemId, name, value, notifyApp)
   end
 
   if Utils.option(notifyApp, true) then
-    Bridge.notify('/e/items/prop', item.__id, name, value)
+    Bridge.notify('/n/items/prop', item.__id, name, value)
   end
 end
 
@@ -228,7 +228,7 @@ function Patch:updateModulations(time, notifyApp)
   if #modulatorValues == 0 then return end
 
   if Utils.option(notifyApp, true) then
-    Bridge.notify('/e/modulators/values', unpack(modulatorValues))
+    Bridge.notify('/n/modulators/values', unpack(modulatorValues))
   end
 
   for _, modulation in pairs(self.modulations) do

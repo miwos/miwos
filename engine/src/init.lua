@@ -25,26 +25,26 @@ local PropsView = require('ui.views.PropsView')
 local MenuView = require('ui.views.MenuView')
 
 -- Items
-Bridge.addMethod('/e/items/add', function(...)
+Bridge.addMethod('/r/items/add', function(...)
   return Miwos.patch:addItem(...)
 end)
 
-Bridge.addMethod('/e/items/remove', function(...)
+Bridge.addMethod('/r/items/remove', function(...)
   return Miwos.patch:removeItem(...)
 end)
 
-Bridge.addMethod('/e/items/prop', function(itemId, name, value)
+Bridge.addMethod('/r/items/prop', function(itemId, name, value)
   Miwos.patch:updatePropValue(itemId, name, value, false)
   Miwos:emit('prop:change', itemId, name, value)
 end)
 
-Bridge.addMethod('/e/items/definition', function(category, type)
+Bridge.addMethod('/r/items/definition', function(category, type)
   local cachedItem = _LOADED[category .. '.' .. type]
   local item = cachedItem or loadfile('lua/' .. category .. '/' .. type)()
   return Utils.serialize(item:serializeDefinition())
 end)
 
-Bridge.addMethod('/e/items/definitions', function(category)
+Bridge.addMethod('/r/items/definitions', function(category)
   local definitions = {}
   local files = FileSystem.listFiles('lua/' .. category)
   for _, baseName in pairs(files) do
@@ -58,7 +58,7 @@ end)
 
 -- Connections
 Bridge.addMethod(
-  '/e/connections/add',
+  '/r/connections/add',
   function(fromId, outputIndex, toId, inputIndex)
     local fromModule = Miwos.patch:getItem(fromId) --[[@as Module]]
     fromModule:__connect(outputIndex, toId, inputIndex)
@@ -66,7 +66,7 @@ Bridge.addMethod(
 )
 
 Bridge.addMethod(
-  '/e/connections/remove',
+  '/r/connections/remove',
   function(fromId, outputIndex, toId, inputIndex)
     local fromModule = Miwos.patch:getItem(fromId) --[[@as Module]]
     fromModule:__disconnect(outputIndex, toId, inputIndex)
@@ -74,39 +74,39 @@ Bridge.addMethod(
 )
 
 -- Patch
-Bridge.addMethod('/e/patch/clear', function()
+Bridge.addMethod('/r/patch/clear', function()
   Miwos.patch:clear()
   Miwos:emit('patch:change')
 end)
 
 -- Mappings
 
-Bridge.addMethod('/e/mappings/add', function(page, slot, id, prop)
+Bridge.addMethod('/r/mappings/add', function(page, slot, id, prop)
   Miwos.patch:addMapping(page, slot, id, prop)
   Miwos:emit('patch:change')
 end)
 
-Bridge.addMethod('/e/mappings/remove', function(page, slot)
+Bridge.addMethod('/r/mappings/remove', function(page, slot)
   Miwos.patch:removeMapping(page, slot)
   Miwos:emit('patch:change')
 end)
 
 -- Modulations
 Bridge.addMethod(
-  '/e/modulations/add',
+  '/r/modulations/add',
   function(modulatorId, itemId, prop, amount)
     Miwos.patch:addModulation(modulatorId, itemId, prop, amount)
     Miwos:emit('patch:change')
   end
 )
 
-Bridge.addMethod('/e/modulations/remove', function(modulatorId, itemId, prop)
+Bridge.addMethod('/r/modulations/remove', function(modulatorId, itemId, prop)
   Miwos.patch:removeModulation(modulatorId, itemId, prop)
   Miwos:emit('patch:change')
 end)
 
 Bridge.addMethod(
-  '/e/modulations/amount',
+  '/r/modulations/amount',
   function(modulatorId, moduleId, prop, amount)
     for _, modulation in pairs(Miwos.patch.modulations) do
       if
@@ -122,7 +122,7 @@ Bridge.addMethod(
 )
 
 -- Project
-Bridge.addMethod('/e/project/load', function(name)
+Bridge.addMethod('/r/project/load', function(name)
   Miwos.loadProject(name, false)
   Miwos.switchView(PropsView({ patch = Miwos.patch }))
 end)
@@ -157,7 +157,7 @@ collectgarbage('setpause', 50)
 collectgarbage('setstepmul', 500)
 
 local function logUsedMemory()
-  Bridge.notify('/e/memory', collectgarbage('count'))
+  Bridge.notify('/n/info/memory', collectgarbage('count'))
   Timer.delay(logUsedMemory, 1000)
 end
 

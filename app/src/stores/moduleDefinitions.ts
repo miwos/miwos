@@ -169,9 +169,9 @@ export const useModuleDefinitions = defineStore('module definitions', () => {
   }
 
   const loadAllFromDevice = async () => {
-    const result = await device.request('/e/items/definitions', ['modules'])
+    const result = await device.request('/r/items/definitions', ['modules'])
     if (!result) return
-    
+
     console.log(luaToJson(result))
 
     items.value.clear()
@@ -180,7 +180,10 @@ export const useModuleDefinitions = defineStore('module definitions', () => {
   }
 
   const loadFromDevice = async (type: string) => {
-    const result = await device.request('/e/items/definition', ['modules', type])
+    const result = await device.request('/r/items/definition', [
+      'modules',
+      type,
+    ])
     if (!result) return
     deserialize([luaToJson(result)])
     indexSearch(Array.from(items.value.keys()))
