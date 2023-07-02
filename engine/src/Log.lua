@@ -65,3 +65,7 @@ function print(...)
   oldPrint(...)
   Log._endPacket()
 end
+
+Log.messageItemNotFound = function(id)
+  return string.format('item with id `%s` not found', id)
+end

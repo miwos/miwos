@@ -114,7 +114,9 @@ function Module:__output(index, message)
   if self.__outputs[index] then
     for _, input in pairs(self.__outputs[index]) do
       local inputId, inputIndex = unpack(input)
-      local item = Miwos.patch and Miwos.patch:getItem(inputId)
+      local item = Miwos.patch and Miwos.patch.items[inputId]
+      if not item then error(Log.messageItemNotFound(inputId)) end
+
       if item and item.__category == 'modules' then
         ---@cast item Module
         local name = message and message.name or 'trigger'

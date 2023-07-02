@@ -21,14 +21,6 @@ describe('Patch', function()
     expect(Utils.getTableLength(patch.items)):toBe(0)
   end)
 
-  it('retrieves an item', function()
-    ---@type Patch
-    local patch = Patch()
-
-    patch:addItem(1, 'modules', 'Input', {})
-    expect(patch:getItem(1)):toBe(patch.items[1])
-  end)
-
   it('updates item instances', function()
     ---@type Patch
     local patch = Patch()
@@ -111,7 +103,7 @@ describe('Patch', function()
     mock:event('prop[num]:change', handleNamedChange)
 
     patch:addItem(1, 'modules', '__Mock', { num = 3 })
-    local instance = patch:getItem(1) --[[@as Module]]
+    local instance = patch.items[1] --[[@as Module]]
 
     patch:updatePropValue(1, 'num', 4, false)
 
@@ -149,7 +141,7 @@ describe('Patch', function()
     patch:addItem(2, 'modules', '__Mock', { num = 3 })
     patch:addModulation(1, 2, 'num', 0.75)
 
-    local moduleInstance = patch:getItem(2) --[[@as Module]]
+    local moduleInstance = patch.items[2] --[[@as Module]]
     patch:updateModulations(0.5)
 
     local modulatedValue =

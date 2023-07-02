@@ -3,9 +3,9 @@ local Clip = Miwos.defineModule('Clip', {
   shape = 'Chord',
   showLabel = false,
   props = {
-    record = Prop.Button({ toggle = true }),
-    play = Prop.Button({ toggle = true }),
-    loop = Prop.Button({ toggle = true }),
+    record = Prop.Button({ toggle = true, value = false }),
+    play = Prop.Button({ toggle = true, value = false }),
+    loop = Prop.Button({ toggle = true, value = false }),
   },
   inputs = { 'midi' },
   outputs = { 'midi' },
@@ -85,7 +85,8 @@ function Clip:schedule()
 
   if isFinished and isLoop then
     self.playIndex = 1
-    local duration = self.recording[#self.recording][1]
+    local lastEntry = self.recording[#self.recording]
+    local duration = lastEntry and lastEntry[1] or 0
     self.playStartTime = self.playStartTime + duration
   end
 

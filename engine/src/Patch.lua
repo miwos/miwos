@@ -49,17 +49,6 @@ function Patch:removeItem(id)
   self.items[id] = nil
 end
 
----Get an item or log a warning
----@param id number
----@return Item | nil
-function Patch:getItem(id)
-  local item = self.items[id]
-  if not item then
-    Log.warn(string.format('item with id `%s` not found', id))
-  end
-  return item
-end
-
 ---Hot replace any existing items of a certain category and type.
 ---@param constructor Item
 function Patch:updateItemInstances(constructor)
@@ -92,8 +81,8 @@ end
 ---@param prop string
 function Patch:addMapping(page, slot, id, prop)
   self.mappings[page] = self.mappings[page] or {}
-  local item = self:getItem(id)
-  if not item then return end
+  local item = self.items[id]
+  if not item then error(Log.messageItemNotFound(id)) end
   self.mappings[page][slot] = { item, prop }
 end
 
@@ -111,9 +100,12 @@ end
 ---@param prop string
 ---@param amount number
 function Patch:addModulation(modulatorId, itemId, prop, amount)
-  local modulator = self:getItem(modulatorId) --[[@as Modulator]]
-  local item = self:getItem(itemId)
-  if not modulator or not item then return end
+  local modulator = self.items[modulatorId] --[[@as Modulator]]
+  if not modulator then error(Log.messageItemNotFound(modulatorId)) end
+
+  local item = self.items[itemId]
+  if not item then error(Log.messageItemNotFound(itemId)) end
+
   self.modulations[#self.modulations + 1] = { modulator, item, prop, amount }
 end
 
@@ -135,7 +127,9 @@ end
 ---@param name string
 ---@return table?
 function Patch:getPropModulation(itemId, name)
-  local item = self:getItem(itemId)
+  local item = self.items[itemId]
+  if not item then error(Log.messageItemNotFound(itemId)) end
+
   for _, modulation in pairs(self.modulations) do
     if modulation[2] == item and modulation[3] == name then
       return modulation
@@ -148,8 +142,8 @@ end
 ---@param name string
 ---@param value any
 function Patch:updatePropValue(itemId, name, value, notifyApp)
-  local item = self:getItem(itemId)
-  if not item then return end
+  local item = self.items[itemId]
+  if not item then error(Log.messageItemNotFound(itemId)) end
 
   local valueHasChanged = item.props.__values[name] ~= value
   if not valueHasChanged then return end
@@ -300,8 +294,13 @@ function Patch:deserialize(serialized)
   for i, modulation in pairs(serialized.modulations) do
     -- Resolve the item and store it instead of it's id for quicker access.
     local modulatorId, itemId, prop, amount = unpack(modulation)
-    local modulator = self:getItem(modulatorId) --[[@as Modulator]]
-    local item = self:getItem(itemId)
+
+    local modulator = self.items[modulatorId] --[[@as Modulator]]
+    if not modulator then error(Log.messageItemNotFound(modulatorId)) end
+
+    local item = self.items[itemId]
+    if not item then error(Log.messageItemNotFound(itemId)) end
+
     self.modulations[i] = { modulator, item, prop, amount }
   end
 
@@ -311,7 +310,10 @@ function Patch:deserialize(serialized)
     for slot, mapping in pairs(page) do
       -- Resolve the item and store it instead of it's id for quicker access.
       local itemId, prop = unpack(mapping)
-      local item = self:getItem(itemId)
+
+      local item = self.items[itemId]
+      if not item then error(Log.messageItemNotFound(itemId)) end
+
       page[slot] = { item, prop }
     end
   end
