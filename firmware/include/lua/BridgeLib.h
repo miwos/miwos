@@ -42,6 +42,10 @@ namespace BridgeLib {
           return;
         }
       }
+
+      // Number of arguments is received numArguments + the address.
+      if (lua_pcall(Lua::L, numArguments + 1, 1, 0))
+        return Logger::error(lua_tostring(Lua::L, -1));
     });
 
     // Handle a request (/r/) OSC message. Request means we do expect a response
