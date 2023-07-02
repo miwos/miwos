@@ -29,6 +29,7 @@
     </div>
   </div>
   <TheEncoders />
+  <ThePagesButtons />
   <MenuAdd />
 </template>
 
@@ -39,6 +40,7 @@ import MenuAdd from '@/components/MenuAdd.vue'
 import ModuleInstance from '@/components/ModuleInstance.vue'
 import TheEncoders from '@/components/TheEncoders.vue'
 import TheModulators from '@/components/TheModulators.vue'
+import ThePagesButtons from '@/components/ThePagesButtons.vue'
 import { useSelection } from '@/composables/useSelection'
 import { useApp } from '@/stores/app'
 import { useConnections } from '@/stores/connections'

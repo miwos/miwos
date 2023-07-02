@@ -24,8 +24,10 @@ function PropsView:mount()
     self:renderPage()
   end)
 
-  Bridge:on('/r/pages/select', function(index)
-    Log.info('fu', index)
+  self.selectPageHandler = Bridge:on('/n/pages/select', function(index)
+    self.pageIndex = index
+    self.page = self.props.patch.mappings[self.pageIndex] or {}
+    self:renderPage()
   end)
 end
 
@@ -108,6 +110,7 @@ end
 function PropsView:unmount()
   Miwos:off('prop:change', self.propChangeHandler)
   Miwos:off('patch:change', self.patchChangeHandler)
+  Bridge:off('/n/pages/select', self.selectPageHandler)
 end
 
 return PropsView

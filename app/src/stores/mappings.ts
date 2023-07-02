@@ -80,7 +80,7 @@ export const useMappings = defineStore('mappings', () => {
 
   const selectPage = (index: number, updateDevice = true) => {
     pageIndex.value = index
-    if (updateDevice) device.notify('/n/pages/select', [index])
+    if (updateDevice) device.notify('/n/pages/select', [index + 1]) // one-based index
   }
 
   const add = (pageIndex: number, mapping: Mapping, updateDevice = true) => {
