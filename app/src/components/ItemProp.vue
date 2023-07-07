@@ -180,38 +180,6 @@ onMouseDownOutside(context, hideContext)
   display: flex;
   align-items: center;
 
-  &-handle {
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    box-sizing: border-box;
-    background-color: var(--color-glass-solid);
-    cursor: pointer;
-    transition: fill var(--fade-duration);
-
-    &[data-status='mapped'] {
-      background: var(--color-mapping);
-    }
-
-    &[data-status='mapped-inactive'] {
-      // A bit darker than the glass color.
-      background-color: hsl(0deg 0% 29%);
-    }
-
-    &[data-status='modulated'] {
-      background: var(--color-modulation);
-    }
-
-    &[data-status='mapped-and-modulated'] {
-      background: linear-gradient(
-        90deg,
-        var(--color-mapping) 50%,
-        var(--color-modulation) 50%
-      );
-    }
-  }
-
   &-content {
     position: relative;
   }

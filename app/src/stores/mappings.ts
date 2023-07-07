@@ -22,6 +22,12 @@ export const useMappings = defineStore('mappings', () => {
 
   bridge.on('/n/pages/select', ({ args: [index] }) => (pageIndex.value = index))
 
+  const currentPage = computed(() => pages.value.get(pageIndex.value))
+  const currentPageList = computed(
+    () => currentPage.value && Array.from(currentPage.value?.values())
+  )
+
+  // ? use `currentPage` instead?
   const getCurrentPage = () => pages.value.get(pageIndex.value)
 
   const getMapping = (itemId: number, prop: string) =>
@@ -46,6 +52,12 @@ export const useMappings = defineStore('mappings', () => {
       }
       return result
     })
+
+  const getOnCurrentPageByItemId = (id: number) =>
+    computed(
+      () =>
+        currentPageList.value?.filter((mapping) => mapping.itemId === id) ?? []
+    )
 
   // Actions
   const serialize = (): Record<number, MappingPageSerialized> => {
@@ -135,6 +147,7 @@ export const useMappings = defineStore('mappings', () => {
     getCurrentPage,
     getMapping,
     getByItemId,
+    getOnCurrentPageByItemId,
     serialize,
     deserialize,
     selectPage,

@@ -5,7 +5,11 @@
       class="modulator-plot glass-dark"
       color="orange"
     />
-    <button class="props-menu-button" @click="showPropsMenu"></button>
+    <ItemPropHandle
+      class="modulator-props-menu-handle"
+      :status="status"
+      @click="showPropsMenu"
+    />
     <ModulatorProps
       v-if="propsMenuIsVisible"
       ref="propsMenu"
@@ -19,14 +23,19 @@ import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
 import { useModulators } from '@/stores/modulators'
 import type { Modulator } from '@/types'
 import { useEventBus } from '@vueuse/core'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import ItemPropHandle from './ItemPropHandle.vue'
 import ModulatorProps from './ModulatorProps.vue'
 import ScrollingPlot from './ScrollingPlot.vue'
+import { useModulations } from '@/stores/modulations'
+import { useMappings } from '@/stores/mappings'
 
 const props = defineProps<{ modulator: Modulator }>()
 
 const modulators = useModulators()
 const modulatorValueBus = useEventBus('modulator-value')
+const modulations = useModulations()
+const mappings = useMappings()
 
 const plot = ref<InstanceType<typeof ScrollingPlot>>()
 const propsMenu = ref<InstanceType<typeof ModulatorProps>>()
@@ -36,13 +45,37 @@ modulatorValueBus.on((modulatorId, value) => {
   if (modulatorId === props.modulator.id) plot.value?.plotValue(value)
 })
 
+const status = computed(() => {
+  const { id } = props.modulator
+  const hasModulations = !!modulations.getByItemId(id).value.length
+  const hasMappings = !!mappings.getByItemId(id).value.length
+  const hasMappingsOnCurrentPage =
+    !!mappings.getOnCurrentPageByItemId(id).value.length
+
+  return hasMappingsOnCurrentPage && hasModulations
+    ? 'mapped-and-modulated'
+    : hasMappingsOnCurrentPage
+    ? 'mapped'
+    : hasModulations
+    ? 'modulated'
+    : hasMappings
+    ? 'mapped-other-page'
+    : 'none'
+})
+
 const showPropsMenu = () => (propsMenuIsVisible.value = true)
 
 const hidePropsMenu = () => (propsMenuIsVisible.value = false)
 
 const remove = () => modulators.remove(props.modulator.id)
 
-onMouseDownOutside(propsMenu, hidePropsMenu)
+onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
+  // The item prop's context menu is teleported to the body so this is a quick
+  // and dirty workaround to prevent clicks inside the context menu from closing
+  // the modulators props menu.
+  if (target instanceof HTMLElement && !target.closest('.item-prop-context'))
+    hidePropsMenu()
+})
 </script>
 
 <style scoped lang="scss">
@@ -65,28 +98,7 @@ onMouseDownOutside(propsMenu, hidePropsMenu)
   border-radius: var(--radius-s);
 }
 
-.props-menu-button {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background: var(--color-glass-solid);
+.modulator-props-menu-handle {
   margin-left: 12px; // Same as module props, see `shape` package.
-  cursor: pointer;
-
-  .modulator:has([data-status='mapped-other-page']) & {
-    background: var(--prop-bg-mapped-other-page);
-  }
-
-  .modulator:has([data-status='mapped']) & {
-    background: var(--prop-bg-mapped);
-  }
-
-  .modulator:has([data-status='modulated']) & {
-    background: var(--prop-bg-modulated);
-  }
-
-  .modulator:has([data-status='mapped-and-modulated']) & {
-    background: var(--prop-bg-mapped-and-modulated);
-  }
 }
 </style>

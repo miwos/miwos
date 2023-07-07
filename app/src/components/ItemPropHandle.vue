@@ -27,7 +27,12 @@ defineProps<{
 }
 
 .item-prop-handle {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
   background-color: var(--color-glass-solid);
+  cursor: pointer;
 
   &[data-status='mapped'] {
     background: var(--prop-bg-mapped);
