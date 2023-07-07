@@ -164,5 +164,3 @@ local function logUsedMemory()
 end
 
 logUsedMemory()
-
-Log.info('fuu')
