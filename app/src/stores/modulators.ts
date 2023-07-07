@@ -53,7 +53,7 @@ export const useModulators = defineStore('modulators', () => {
   const bridge = useBridge()
   const modulatorValueBus = useEventBus('modulator-value')
 
-  bridge.on('/r/modulators/values', ({ args }) => {
+  bridge.on('/n/modulators/values', ({ args }) => {
     for (const packed of args) {
       const [modulatorId, value] = unpackBytes(packed)
       const modulator = items.value.get(modulatorId)

@@ -52,7 +52,7 @@ export const useModules = defineStore('module-instances', () => {
 
   const outputResetTimers: Record<string, number> = {}
   let sustainedIds = new Set<string>()
-  bridge.on('/r/modules/active-outputs', ({ args }) => {
+  bridge.on('/n/modules/active-outputs', ({ args }) => {
     const newSustainedIds = new Set<string>()
     for (const packed of args) {
       const [moduleId, indexAndSustained] = unpackBytes(packed)
@@ -183,9 +183,11 @@ export const useModules = defineStore('module-instances', () => {
 
     mappings
       .getByItemId(id)
-      .forEach(({ page, slot }) => mappings.remove(page, slot))
+      .value.forEach(({ page, slot }) => mappings.remove(page, slot))
 
-    modulations.getByItemId(id).forEach(({ id }) => modulations.remove(id))
+    modulations
+      .getByItemId(id)
+      .value.forEach(({ id }) => modulations.remove(id))
 
     // Wait until everything is cleaned up. Otherwise there might still be
     // references around to the cleaned up objects. E.g.: omitting this throws
