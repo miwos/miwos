@@ -12,6 +12,9 @@ local Display = require('ui.components.Display')
 ---@field showScale boolean
 ---@field scaleUnit number
 ---@field scaleCount number
+---@field zoom number | false
+---@field before string?
+---@field after string?
 
 ---@class Number : Component
 ---@field props NumberProps
@@ -50,25 +53,70 @@ function Number:render()
       y = 0,
       width = Display.width,
       height = Display.height - 7,
-      label = self.props.label,
+      label = props.label,
+      before = props.before,
+      after = props.after,
     }),
   }
 end
 
 function Number:mount()
+  -- Define a good encoder sensitivity, that is, the amount of physical encoder
+  -- rotation required to go from min to max value. We do this by defining a
+  -- number of steps representing the max value. If we have a floating value
+  -- (no step defined) we'll use at least 127 steps, otherwise it would be
+  -- very difficult to make fine adjustments to, say, a floating value between 1
+  -- and 5.
   local props = self.props
-  self.encoderMax = math.floor(ease((props.max - props.min) / 127) * 127)
+  local step = props.step
+  local steps = props.max - props.min
+  if step then steps = math.ceil(steps / step) end
+  if not step then steps = math.max(steps, 127) end
+  self.encoderMax = math.floor(ease(steps / 127) * 127)
 
-  local encoder = self.children.encoder --[=[@as Encoder]=]
+  local encoder = self.children.encoder --[[@as Encoder]]
   encoder:setRange(0, self.encoderMax)
-  encoder:write(self:encodeValue(self.props.value))
+  encoder:write(self:encodeValue(props.value))
+
+  self.isInteger = Utils.isInteger(props.step)
+  self.zoomIsEnabled = false
+  self.zoomStartValue = nil
+  self.zoomFactor = self.props.zoom
+  self.zoomEncoderRange = { 0, 0 }
 end
 
 Number:event('encoder:change', function(self, rawValue)
+  ---@cast self Number
   local props = self.props
 
-  local value = self:decodeValue(rawValue)
-  self.children.labelValue:setProp('value', value)
+  local value
+  if self.zoomIsEnabled then
+    -- When we're in zoom mode, the raw encoder value isn't representing the
+    -- absolute value but a negative or positive adjustment to the zoom starting
+    -- value.
+    value = self.zoomStartValue
+      + Utils.mapValue(
+        rawValue,
+        self.zoomEncoderRange[1],
+        self.zoomEncoderRange[2],
+        (self.zoomStartValue - props.min) * -1,
+        (props.max - props.min - self.zoomStartValue)
+      )
+
+    if props.step then value = math.ceil(value / props.step) * props.step end
+  else
+    value = self:decodeValue(rawValue)
+  end
+
+  local displayValue
+  if self.isInteger then
+    displayValue = value
+  else
+    -- TODO adjust rounding based on step (e.g. deal with 0.001 step)
+    displayValue = string.format('%.2f', value)
+  end
+
+  self.children.labelValue:setProp('value', displayValue)
   local normalizedValue = Utils.mapValue(value, props.min, props.max, 0, 1)
   self.children.progressBar:setProp('value', normalizedValue)
 
@@ -77,9 +125,47 @@ Number:event('encoder:change', function(self, rawValue)
   if value ~= oldValue then self:emit('updateValue', value) end
 end)
 
+Number:event('encoder:press', function(self)
+  ---@cast self Number
+  local props = self.props
+  local encoder = self.children.encoder --[[@as Encoder]]
+  if not props.zoom then return end
+
+  -- Enable enocder zoom mode with the current value as our starting value.
+  -- Therefore we set a 'zoomed in' encoder range (meaning a greater range
+  -- allowing finer adjustments).
+
+  local normalizedValue =
+    Utils.mapValue(props.value, props.min, props.max, 0, 1)
+
+  -- This would be the zoomed in range starting at 0 ...
+  local zoomedEncoderMax = self.encoderMax * self.zoomFactor
+  -- ... but we make the range bipolar so we can start at encoder position 0 and
+  -- then eailsy subtract or add to our starting value.
+  local rangeMin = math.ceil(normalizedValue * zoomedEncoderMax) * -1
+  local rangeMax = math.ceil((1 - normalizedValue) * zoomedEncoderMax)
+
+  encoder:setRange(rangeMin, rangeMax)
+  encoder:write(0)
+
+  self.zoomIsEnabled = true
+  self.zoomEncoderRange = { rangeMin, rangeMax }
+  self.zoomStartValue = self.props.value
+end)
+
+Number:event('encoder:release', function(self)
+  ---@cast self Number
+  if not self.props.zoom then return end
+
+  self.zoomIsEnabled = false
+  local encoder = self.children.encoder --[[@as Encoder]]
+  encoder:setRange(0, self.encoderMax)
+  encoder:write(self:encodeValue(self.props.value))
+end)
+
 Number:event('prop[value]:change', function(self, value)
   local props = self.props
-  local encoder = self.children.encoder --[=[@as Encoder]=]
+  local encoder = self.children.encoder --[[@as Encoder]]
   encoder:write(self:encodeValue(props.value))
 
   self.children.progressBar:setProp(

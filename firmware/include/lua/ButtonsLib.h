@@ -42,10 +42,10 @@ namespace ButtonsLib {
     return &(buttons[index]);
   }
 
-  void handleClick(byte encoderIndex, uint32_t duration) {
-    if (!Lua::getFunction("Buttons", "handleClick")) return;
+  void handleEvent(byte encoderIndex, Button::Event event) {
+    if (!Lua::getFunction("Buttons", "handleEvent")) return;
     lua_pushinteger(Lua::L, encoderIndex + 1); // one-based index
-    lua_pushinteger(Lua::L, duration);
+    lua_pushinteger(Lua::L, event);
     Lua::check(lua_pcall(Lua::L, 2, 0, 0));
   }
 
@@ -59,11 +59,10 @@ namespace ButtonsLib {
     uint32_t currentTime = millis();
     if (currentTime - lastUpdate < throttleInterval) return;
 
-    bool clicked;
-    uint32_t duration = 0;
+    Button::Event event;
     for (byte i = 0; i < maxButtons; i++) {
-      clicked = buttons[i].clicked(duration);
-      if (clicked) handleClick(i, duration);
+      event = buttons[i].check();
+      if (event != Button::EventNone) handleEvent(i, event);
     }
 
     lastUpdate = currentTime;

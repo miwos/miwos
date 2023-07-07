@@ -24,6 +24,10 @@ function Utils.isArray(t)
   return type(t) == 'table' and #t > 0 and next(t, #t) == nil
 end
 
+function Utils.isInteger(n)
+  return n % 1 == 0
+end
+
 local function serializeValue(value)
   local valueType = type(value)
 

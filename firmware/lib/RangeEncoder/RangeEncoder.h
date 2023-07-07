@@ -14,7 +14,7 @@ private:
 
   int32_t constrainValue(int32_t value) {
     if (value < min) {
-      value = 0;
+      value = min;
       encoder->write(min - 1);
     } else if (value > max) {
       value = max;

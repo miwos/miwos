@@ -6,10 +6,12 @@ private:
   byte pin;
   bool state = false;
   uint32_t lastPressed = 0;
+  uint32_t longClickDuration = 2000;
 
 public:
   enum Type { ActiveLow, ActiveHigh };
   Type type = Type::ActiveLow;
+  enum Event { EventNone, EventPress, EventClick, EventLongClick };
 
   Button(byte pin) {
     this->pin = pin;
@@ -31,25 +33,18 @@ public:
     return state;
   }
 
-  bool clicked(uint32_t &duration) {
-    uint32_t currentTime = millis();
-
+  Event check() {
     bool changed;
     read(changed);
+    if (!changed) return EventNone;
 
-    bool clicked = false;
-    if (changed) {
-      if (state) {
-        // Button was pressed.
-        lastPressed = currentTime;
-      } else {
-        // Button was released.
-        duration = currentTime - lastPressed;
-        clicked = true;
-      }
+    if (state) {
+      lastPressed = millis();
+      return EventPress;
+    } else {
+      uint32_t duration = millis() - lastPressed;
+      return duration >= longClickDuration ? EventLongClick : EventClick;
     }
-
-    return clicked;
   }
 };
 

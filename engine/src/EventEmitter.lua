@@ -45,6 +45,15 @@ function EventEmitter:emit(event, ...)
       Utils.callIfExists(handlers[i], ...)
     end
   end
+
+  local catchAllHandlers = self.__events['*']
+  if catchAllHandlers ~= nil then
+    for i = 1, #catchAllHandlers do
+      -- An event handler might alter the handlers list by calling `off()` so
+      -- we have to assume that the handler might be nil.
+      Utils.callIfExists(catchAllHandlers[i], event, ...)
+    end
+  end
 end
 
 return EventEmitter
