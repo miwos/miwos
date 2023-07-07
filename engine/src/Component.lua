@@ -24,8 +24,8 @@ end
 
 function Component:emit(name, ...)
   if not self.parent then return end
-  local event = self.name .. ':' .. name
-  self.parent:callEvent(event, ...)
+  self.parent:callEvent(self.name, name, ...)
+  self.parent:callEvent(self.name .. ':' .. name, ...)
 end
 
 function Component:setProp(key, value)

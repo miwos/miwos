@@ -84,19 +84,19 @@ PropsView:event('buttons:click', function(self, index)
   self:renderPage()
 end)
 
-PropsView:event('slot1:updateValue', function(self, value)
-  self:handlePropUpdate(1, value)
+PropsView:event('slot1', function(self, name, arg)
+  self:handleSlotEvent(1, name, arg)
 end)
 
-PropsView:event('slot2:updateValue', function(self, value)
-  self:handlePropUpdate(2, value)
+PropsView:event('slot2', function(self, name, arg)
+  self:handleSlotEvent(2, name, arg)
 end)
 
-PropsView:event('slot3:updateValue', function(self, value)
-  self:handlePropUpdate(3, value)
+PropsView:event('slot3', function(self, name, arg)
+  self:handleSlotEvent(3, name, arg)
 end)
 
-function PropsView:handlePropUpdate(slot, value)
+function PropsView:handleSlotEvent(slot, event, arg)
   local mapping = self.page[slot]
   if not mapping then
     Log.warn(string.format('mapping for slot %s not found', slot))
@@ -104,7 +104,13 @@ function PropsView:handlePropUpdate(slot, value)
   end
 
   local item, propName = unpack(self.page[slot])
-  self.props.patch:updatePropValue(item.__id, propName, value)
+  if event == 'updateValue' then
+    self.props.patch:updatePropValue(item.__id, propName, arg)
+  else
+    -- forward any other events
+    item:callEvent('prop:' .. event, propName, arg)
+    item:callEvent('prop[' .. propName .. ']:' .. event, arg)
+  end
 end
 
 function PropsView:unmount()

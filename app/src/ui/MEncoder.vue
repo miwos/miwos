@@ -12,7 +12,7 @@ import { map } from '@/utils'
 import { computed, ref } from 'vue'
 
 export interface Props {
-  value?: number
+  value?: number | boolean
   min?: number
   max?: number
   step?: number
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{ (e: 'update:value', value: number): void }>()
 
 const el = ref<HTMLElement>()
-const angle = computed(() => valueToAngle(props.value ?? 0))
+const angle = computed(() => valueToAngle(+(props.value ?? 0)))
 
 const onRotate = (angle: number) => {
   const constrainedAngle = Math.max(Math.min(angle, 135), -135)

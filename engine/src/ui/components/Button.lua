@@ -67,6 +67,11 @@ Button:event('encoder:click', function(self)
     self:draw()
   end
   self:emit('updateValue', self.props.value)
+  self:emit('click')
+end)
+
+Button:event('encoder:longClick', function(self)
+  self:emit('longClick')
 end)
 
 Button:event('prop[value]:change', function(self)

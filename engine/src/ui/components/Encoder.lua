@@ -15,6 +15,10 @@ function Encoder:setup()
   self.clickHandler = Encoders:on('click', function(index)
     if index == self.index then self:emit('click') end
   end)
+
+  self.longClickHandler = Encoders:on('longClick', function(index)
+    if index == self.index then self:emit('longClick') end
+  end)
 end
 
 function Encoder:write(value)
@@ -28,6 +32,7 @@ end
 function Encoder:unmount()
   Encoders:off('change', self.changeHandler)
   Encoders:off('click', self.clickHandler)
+  Encoders:off('longClick', self.longClickHandler)
 end
 
 return Encoder

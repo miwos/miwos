@@ -61,9 +61,7 @@ Bridge.addMethod(
   '/r/connections/add',
   function(fromId, outputIndex, toId, inputIndex)
     local fromModule = Miwos.patch.items[fromId] --[[@as Module]]
-    if not fromModule then
-      error(string.format('item with id `%s` not found', fromId))
-    end
+    if not fromModule then error(Log.messageItemNotFound(fromId)) end
     fromModule:__connect(outputIndex, toId, inputIndex)
   end
 )
@@ -166,3 +164,5 @@ local function logUsedMemory()
 end
 
 logUsedMemory()
+
+Log.info('fuu')
