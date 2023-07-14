@@ -5,6 +5,7 @@
 #include <AnyMidiSerial.h>
 #include <AnyMidiUsb.h>
 #include <AnyMidiUsbHub.h>
+#include <Bridge.h>
 #include <IntervalTimer.h>
 #include <Logger.h>
 #include <MIDI.h>
@@ -76,7 +77,10 @@ namespace MidiLib {
   IntervalTimer clockTimer;
   float bpm = 120.0;
   int ppq = 24;
+  bool isPlaying = false;
   uint32_t currentTick = 0;
+  // Metronome side is alternating between left and right each quarter note.
+  bool metronomeSideIsLeft = true;
 
   Device *getDevice(byte index) {
     if (index >= maxDevices) {
@@ -127,6 +131,14 @@ namespace MidiLib {
     TimerLib::updateEvents(currentTick, true);
     currentTick++;
     TimerLib::currentTick = currentTick;
+
+    // TODO: check if connected to app
+    if (currentTick % ppq == 0) {
+      OSCMessage message("/n/transport/quarter");
+      message.add(metronomeSideIsLeft);
+      Bridge::sendOscMessage(message);
+      metronomeSideIsLeft = !metronomeSideIsLeft;
+    }
   }
 
   void begin() {
@@ -180,6 +192,15 @@ namespace MidiLib {
       // TODO: sync selected midi devices
       usbMIDI.sendRealTime(usbMIDI.Start);
       clockTimer.begin(handleMidiClock, (60000000 / bpm) / ppq);
+      isPlaying = true;
+      return 0;
+    }
+
+    int stop(lua_State *L) {
+      // TODO: sync selected midi devices
+      usbMIDI.sendRealTime(usbMIDI.Stop);
+      clockTimer.end();
+      isPlaying = false;
       return 0;
     }
 
@@ -189,11 +210,14 @@ namespace MidiLib {
       return 0;
     }
 
-    int stop(lua_State *L) {
-      // TODO: sync selected midi devices
-      usbMIDI.sendRealTime(usbMIDI.Stop);
-      clockTimer.end();
-      return 0;
+    int getTempo(lua_State *L) {
+      lua_pushnumber(L, bpm);
+      return 1;
+    }
+
+    int getIsPlaying(lua_State *L) {
+      lua_pushboolean(L, isPlaying);
+      return 1;
     }
   } // namespace lib
 
@@ -207,7 +231,9 @@ namespace MidiLib {
       {"parseNoteId", lib::parseNoteId},
       {"start", lib::start},
       {"stop", lib::stop},
+      {"getIsPlaying", lib::getIsPlaying},
       {"setTempo", lib::setTempo},
+      {"getTempo", lib::getTempo},
       {NULL, NULL}};
 
     luaL_register(Lua::L, "Midi", lib);

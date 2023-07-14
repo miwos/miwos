@@ -57,6 +57,12 @@ export type OscMessages = {
 
   // Pages
   '/n/pages/select': (page: number) => void
+
+  // Transport
+  '/r/transport/start': () => void
+  '/r/transport/stop': () => void
+  '/r/transport/tempo': (bpm: number) => void
+  '/r/transport/info': () => string
 }
 
 export type OscRequestMessages = KeysStartWith<OscMessages, '/r/'>

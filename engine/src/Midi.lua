@@ -2,7 +2,9 @@
 ---@field private __send fun(index: number, type: number, data1: number, data2: number, channel: number, cable: number)
 ---@field start fun()
 ---@field stop fun()
+---@field getIsPlaying fun(): boolean
 ---@field setTempo fun(bpm: number)
+---@field getTempo fun(): number
 ---@field NoteOn fun(note, velocity, channel): MidiNoteOn
 ---@field NoteOff fun(note, velocity, channel): MidiNoteOff
 ---@field ControlChange fun(note, velocity, channel): MidiControlChange

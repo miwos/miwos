@@ -129,6 +129,17 @@ Bridge.addMethod('/r/project/load', function(name)
   Miwos.switchView(PropsView({ patch = Miwos.patch }))
 end)
 
+-- Transport
+Bridge.addMethod('/r/transport/start', Midi.start)
+Bridge.addMethod('/r/transport/stop', Midi.stop)
+Bridge.addMethod('/r/transport/tempo', Midi.setTempo)
+Bridge.addMethod('/r/transport/info', function()
+  return Utils.serialize({
+    tempo = Midi.getTempo(),
+    isPlaying = Midi.getIsPlaying(),
+  })
+end)
+
 local menuOpened = false
 Buttons:on('click', function(index)
   if index == 10 then
@@ -145,7 +156,7 @@ Miwos.loadSettings()
 Miwos.loadProject('test')
 Miwos.switchView(PropsView({ patch = Miwos.patch }))
 
-Midi.start()
+-- Midi.start()
 
 -- Log.info(Utils.getUsedMemory())
 

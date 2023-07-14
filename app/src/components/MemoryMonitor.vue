@@ -85,11 +85,11 @@ deviceMemoryBus.on((value) => {
   position: relative;
   width: 9rem;
   height: 5rem;
-  border-radius: var(--radius-s);
+  border-radius: 1.25rem;
   overflow: hidden;
 
   &[data-usage='normal'] {
-    --color: aqua;
+    --color: hsl(180 71% 50%);
   }
 
   &[data-usage='increased'] {
@@ -127,7 +127,7 @@ deviceMemoryBus.on((value) => {
 
   .area {
     fill: var(--color);
-    opacity: 0.3;
+    // opacity: 0.3;
   }
 
   .label {
