@@ -1,7 +1,7 @@
 local ButtonsComponent = Miwos.defineComponent('Buttons')
 
 function ButtonsComponent:mount()
-  self.clickHanddler = Buttons:on('click', function(index)
+  self.clickHandler = Buttons:on('click', function(index)
     self:emit('click', index)
   end)
 end
