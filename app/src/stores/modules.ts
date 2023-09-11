@@ -162,7 +162,6 @@ export const useModules = defineStore('module-instances', () => {
     module.id ??= project.nextItemId++
     module.props ??= definitions.getDefaultProps(module.type)
     module.label ??= module.type
-    console.log(module)
     items.value.set(module.id, module as Module)
     sortedIds.value.push(module.id)
 
@@ -179,7 +178,7 @@ export const useModules = defineStore('module-instances', () => {
     // Cleanup everything that was related to the deleted module.
     connections
       .getByModuleId(id)
-      .forEach(({ id }) => connections.remove(id, false))
+      .forEach(({ id }) => connections.remove(id))
 
     mappings
       .getByItemId(id)

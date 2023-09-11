@@ -61,9 +61,9 @@ end
 ---@param moduleId number
 ---@param inputIndex number
 function Module:__disconnect(outputIndex, moduleId, inputIndex)
-  for index, connection in pairs(self.__outputs[outputIndex] or {}) do
-    if connection[0] == moduleId and connection[1] == inputIndex then
-      connection[index] = nil
+  for connectionIndex, connection in pairs(self.__outputs[outputIndex] or {}) do
+    if connection[1] == moduleId and connection[2] == inputIndex then
+      self.__outputs[outputIndex][connectionIndex] = nil
       return
     end
   end
