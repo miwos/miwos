@@ -1,12 +1,12 @@
 ---@class ModuleClip : Module
 local Clip = Miwos.defineModule('Clip', {
-  shape = 'Chord',
+  shape = 'Clip',
   showLabel = false,
   props = {
-    recPlay = Prop.Button({ value = false }),
+    recPlayClear = Prop.Button({ value = false }),
     loop = Prop.Button({ toggle = true, value = false }),
   },
-  inputs = { 'midi' },
+  inputs = { 'midi', 'trigger' },
   outputs = { 'midi' },
 })
 
@@ -99,6 +99,10 @@ function Clip:requestNextSchedule()
 end
 
 Clip:event('prop[loop]:longClick', function()
+  Log.info('click!')
+end)
+
+Clip:event('prop[recPlayClear]:click', function()
   Log.info('click!')
 end)
 

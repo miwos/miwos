@@ -1,12 +1,13 @@
 import { parseSVG, type Shape } from '@miwos/shape'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import inputShape from '@/assets/shapes/Input.svg'
 import outputShape from '@/assets/shapes/Output.svg'
 import chordShape from '@/assets/shapes/Chord.svg'
 import delayShape from '@/assets/shapes/Delay.svg'
 import splitShape from '@/assets/shapes/Split.svg'
+import clipShape from '@/assets/shapes/Clip.svg'
 
 import type { Module } from '@/types'
 import { useModuleDefinitions } from './moduleDefinitions'
@@ -21,6 +22,7 @@ export const useModuleShapes = defineStore('module shapes', () => {
       ['Chord', parseSVG('Chord', chordShape)],
       ['Delay', parseSVG('Delay', delayShape)],
       ['Split', parseSVG('Split', splitShape)],
+      ['Clip', parseSVG('Clip', clipShape)],
     ])
   )
 
@@ -36,10 +38,11 @@ export const useModuleShapes = defineStore('module shapes', () => {
     return item
   }
 
-  const getByModule = (module: Module) => {
-    const definition = definitions.get(module.type)
-    return definition ? items.value.get(definition.shape) : undefined
-  }
+  const getByModule = (module: Module) =>
+    computed(() => {
+      const definition = definitions.get(module.type)
+      return definition ? items.value.get(definition.shape) : undefined
+    })
 
   const getConnector = (id: Id, index: number, direction: 'in' | 'out') => {
     const item = get(id)

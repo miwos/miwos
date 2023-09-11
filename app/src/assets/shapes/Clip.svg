@@ -1,0 +1,11 @@
+<svg width="166" height="79" viewBox="0 0 166 79" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Clip">
+<rect width="156" height="69" transform="translate(5 5)" fill="white"/>
+<path id="shape" d="M5 5H161V74H5V5Z" fill="#C4C4C4"/>
+<path id="props" d="M156 39.5L166 39.5" stroke="#00D300"/>
+<path id="props_2" d="M0 39.5L10 39.5" stroke="#00D300"/>
+<path id="out" d="M141 69L141 79" stroke="#0000FF"/>
+<path id="in" d="M25 10V0" stroke="#0000FF"/>
+<path id="in_2" d="M83 10V0" stroke="#0000FF"/>
+</g>
+</svg>
