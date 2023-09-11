@@ -159,7 +159,7 @@ function Patch:updatePropValue(itemId, name, value, notifyApp)
     item.props.__values[name] = value
   else
     ---@cast item Module
-    self:setPropValueWithEvents(item, name, value, true)
+    self:setPropValueWithEvents(item, name, value)
   end
 
   if Utils.option(notifyApp, true) then
