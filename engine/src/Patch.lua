@@ -232,8 +232,8 @@ function Patch:updateModulations(time, notifyApp)
     ---@cast modulator -string, -number, -Item
 
     if item and modulator then
-      local component, options = unpack(item.__definition.props[prop])
-      local definition = Miwos.definitions.props[component.__type]
+      local type, options = unpack(item.__definition.props[prop])
+      local definition = Miwos.definitions.props[type]
 
       local baseValue = item.props.__values[prop]
       local modulationValue = modulator:value(time)

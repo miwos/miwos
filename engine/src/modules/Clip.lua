@@ -6,6 +6,7 @@ local Clip = Miwos.defineModule('Clip', {
     rec = Prop.Button({ toggle = true, value = false }),
     play = Prop.Button({ toggle = true, value = false }),
     loop = Prop.Button({ toggle = true, value = false }),
+    recording = Prop.Value({ value = {} }),
   },
   inputs = { 'midi', 'trigger' },
   outputs = { 'midi' },

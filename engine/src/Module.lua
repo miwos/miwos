@@ -25,8 +25,8 @@ end
 function Module:serializeDefinition()
   local props = {}
   for key, definition in pairs(self.__definition.props or {}) do
-    local Component, options = unpack(definition)
-    props[key] = { Component.__type, options }
+    local type, options = unpack(definition)
+    props[key] = { type, options }
   end
 
   return {

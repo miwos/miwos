@@ -1,6 +1,8 @@
-local PropsView = Miwos.defineComponent('PropsView')
 local Buttons = require('ui.components.Buttons')
 local Leds = require('ui.components.Leds')
+
+---@class PropsView : Component
+local PropsView = Miwos.defineComponent('PropsView')
 
 function PropsView:setup()
   self.pageIndex = 1
@@ -53,7 +55,7 @@ function PropsView:renderPage()
 
     if propDefinition then
       emptySlots[slot] = nil
-      local Component, props = unpack(item.__definition.props[propName])
+      local _, props, Component = unpack(propDefinition)
 
       props.value = propValue
       props.label = Utils.capitalize(propName)

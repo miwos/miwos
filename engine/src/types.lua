@@ -31,5 +31,5 @@
 ---@field constructor Modulator?
 
 ---@class PropDefinition
----@field modulateValue fun(value: number, modulation: number, amount: number, options: table): number
----@field component Component
+---@field modulateValue fun(value: number, modulation: number, amount: number, options: table): number ?
+---@field component Component?
