@@ -3,7 +3,8 @@ local Clip = Miwos.defineModule('Clip', {
   shape = 'Clip',
   showLabel = false,
   props = {
-    recPlayClear = Prop.Button({ value = false }),
+    rec = Prop.Button({ toggle = true, value = false }),
+    play = Prop.Button({ toggle = true, value = false }),
     loop = Prop.Button({ toggle = true, value = false }),
   },
   inputs = { 'midi', 'trigger' },
@@ -36,11 +37,17 @@ function Clip:record(message)
   end
 end
 
+function Clip:clear()
+  self:togglePlay(false)
+  self.props.play = false
+  self.recording = {}
+end
+
 function Clip:toggleRecord(state)
   self.isRecording = state
   if state then
+    self:clear()
     self.recordStartTime = Timer.ticks()
-    self.recording = {}
   end
 end
 
@@ -98,16 +105,9 @@ function Clip:requestNextSchedule()
   end, self.scheduleInterval)
 end
 
-Clip:event('prop[loop]:longClick', function()
-  Log.info('click!')
-end)
-
-Clip:event('prop[recPlayClear]:click', function()
-  Log.info('click!')
-end)
-
-Clip:event('prop[record]:change', Clip.toggleRecord)
+Clip:event('prop[rec]:change', Clip.toggleRecord)
 Clip:event('prop[play]:change', Clip.togglePlay)
+Clip:event('prop[rec]:longClick', Clip.clear)
 Clip:event('input[1]', Clip.record)
 
 return Clip
