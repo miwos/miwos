@@ -1,3 +1,4 @@
+---@class ButtonsComponent : Component
 local ButtonsComponent = Miwos.defineComponent('Buttons')
 
 function ButtonsComponent:mount()
@@ -7,7 +8,7 @@ function ButtonsComponent:mount()
 end
 
 function ButtonsComponent:unmount()
-  Buttons:off('click', self.clickHanddler)
+  Buttons:off('click', self.clickHandler)
 end
 
 return ButtonsComponent
