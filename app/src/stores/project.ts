@@ -57,17 +57,14 @@ export const useProject = defineStore('project', () => {
   })
 
   const save = debounce(() => {
-    // console.log('save disabled')
     if (!device.isConnected) return
     const content = jsonToLua(serialize())
-    console.log(content)
     return bridge.writeFile(file.value, content)
   }, 1000)
 
   const load = async () => {
     if (!device.isConnected) return
     const content = await bridge.readFile(file.value)
-    console.log(content)
     const serialized = luaToJson(content) as ProjectSerialized
     modules.deserialize(serialized.modules)
     connections.deserialize(serialized.connections)
