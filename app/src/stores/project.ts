@@ -39,7 +39,7 @@ export const useProject = defineStore('project', () => {
     load()
   })
 
-  bridge.on('/r/items/prop', ({ args: [id, name, value] }) => {
+  bridge.on('/n/items/prop', ({ args: [id, name, value] }) => {
     // Todo: find a better abstraction, e.g. a weak map or central list
     // Todo of all items.
     const item = modules.items.get(id) ?? modulators.items.get(id)
