@@ -26,6 +26,7 @@ describe('Patch', function()
     local patch = Patch()
     patch:addItem(1, 'modules', 'Input', { device = 5 })
 
+    ---@class __TestNewInput : Class
     local newInput = class(Module)
     newInput.__type = 'Input'
     newInput.__definition = {}

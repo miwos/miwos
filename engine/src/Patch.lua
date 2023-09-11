@@ -83,6 +83,7 @@ function Patch:addMapping(page, slot, id, prop)
   self.mappings[page] = self.mappings[page] or {}
   local item = self.items[id]
   if not item then error(Log.messageItemNotFound(id)) end
+  ---@diagnostic disable-next-line: missing-fields
   self.mappings[page][slot] = { item, prop }
 end
 
