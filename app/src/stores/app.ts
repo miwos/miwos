@@ -3,7 +3,7 @@ import { useDevice } from '@/stores/device'
 import { useLog } from '@/stores/log'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useModuleDefinitions } from './moduleDefinitions'
+import { useItems } from './items'
 
 export const useApp = defineStore('app', () => {
   const showPropFields = ref(false)
@@ -13,7 +13,7 @@ export const useApp = defineStore('app', () => {
   const bridge = useBridge()
   const device = useDevice()
   const log = useLog()
-  const definitions = useModuleDefinitions()
+  const items = useItems()
 
   window.addEventListener('message', async ({ data }) => {
     if (!data.method) return
@@ -31,10 +31,10 @@ export const useApp = defineStore('app', () => {
       const type = isHotReplaced ? 'hmr update' : 'reload'
       log.info(`{success ${type}} {gray ${path}}`)
 
-      const match = path.match(/^modules\/(.*)\.lua$/)
+      const match = path.match(/^items\/(.*)\.lua$/)
       if (match) {
-        const [, moduleName] = match
-        definitions.loadFromDevice(moduleName)
+        const [, name] = match
+        items.updateDefinition(name)
       }
       return
     }

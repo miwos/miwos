@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import { useModulators } from '@/stores/modulators'
+import { useItems } from '@/stores/items'
 import MSelect from '@/ui/MSelect.vue'
 import { computed } from 'vue'
 
-const modulators = useModulators()
+const modulators = useItems().modulators
 
 const options = computed(() =>
-  modulators.list.map(({ id, label }) => ({ id, label }))
+  [...modulators.values()].map(({ id, label }) => ({ id, label })),
 )
 </script>
 

@@ -18,10 +18,10 @@
 <script setup lang="ts">
 import { useDragDrop } from '@/composables/useDragDrop'
 import { useConnections } from '@/stores/connections'
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import type { ConnectionPoint } from '@/types/Connection'
 import { createEmptyImage } from '@/utils'
-import { computed, ref, toRefs } from 'vue'
+import { computed, ref } from 'vue'
 import MIcon from './MIcon.vue'
 
 const props = defineProps<{
@@ -30,12 +30,12 @@ const props = defineProps<{
 
 const el = ref<HTMLElement>()
 const connections = useConnections()
-const modules = useModules()
-const module = modules.get(props.point.moduleId)
+const items = useItems()
+const item = items.instances.get(props.point.itemId)
 const isActive = computed(() =>
   props.point.direction == 'in'
-    ? modules.activeInputIds.has(props.point.id)
-    : modules.activeOutputIds.has(props.point.id)
+    ? items.activeInputIds.has(props.point.id)
+    : items.activeOutputIds.has(props.point.id),
 )
 
 const handleDragStart = (event: DragEvent) => {
@@ -48,7 +48,7 @@ const handleDragStart = (event: DragEvent) => {
     const { direction } = props.point
     connections.tempConnection = {
       [direction === 'out' ? 'from' : 'to']: {
-        moduleId: props.point.moduleId,
+        moduleId: props.point.itemId,
         index: props.point.index,
       },
     }
@@ -67,10 +67,8 @@ const handleDragOver = () => {
   if (!module || !connections.tempConnection) return
   // Snap the temporary connection on the connection point.
   const type = props.point.direction === 'out' ? 'from' : 'to'
-  connections.tempConnection[type] = {
-    moduleId: props.point.moduleId,
-    index: props.point.index,
-  }
+  const { itemId, index } = props.point
+  connections.tempConnection[type] = { itemId, index }
 }
 
 const handleDragEnd = () => {

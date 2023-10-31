@@ -1,7 +1,7 @@
 import type { ConnectionSerialized } from './Connection'
-import type { ModulationSerialized, Modulator } from './Modulation'
-import type { Module } from './Module'
-import type { ModuleDefinitionSerialized } from './ModuleDefinition'
+import type { Item } from './Item'
+import type { ModulationSerialized } from './Modulation'
+import type { Modulator } from './Modulator'
 import type { KeysStartWith } from './utils'
 
 // Each address must be prefixed with either `/r/` if it is a request or `/n/`
@@ -15,54 +15,54 @@ import type { KeysStartWith } from './utils'
 
 // TODO: request should always expect some answer (at least `boolean`) and not just `void`.
 export type OscMessages = {
-  // Parts
-  '/r/parts/select': (index: number) => boolean
+  // Project
+  '/r/project/open': (name: string) => void
+
+  // Items
+  '/r/items/add': (id: number, type: string) => void
+  '/r/items/remove': (id: number) => void
+  '/r/items/prop': (id: number, name: string, value: unknown) => boolean
+  '/r/items/definition': (type: string) => string
+  '/r/items/definitions': () => string
 
   // Connections
   '/r/connections/add': (...args: ConnectionSerialized) => void
   '/r/connections/remove': (...args: ConnectionSerialized) => void
 
-  // Items
-  '/r/items/add': (id: number, category: string, type: string) => void
-  '/r/items/remove': (id: number) => void
-  '/r/items/prop': (id: number, name: string, value: unknown) => boolean
-  '/r/items/definitions': (category: string) => string
-  '/r/items/definition': (category, name: string) => string
+  // Mappings
+  '/r/mappings/add': (
+    page: number,
+    slot: number,
+    id: Item['id'],
+    prop: string,
+  ) => boolean
+  '/r/mappings/remove': (page: number, slot: number) => boolean
 
   // Modulations
   '/r/modulations/add': (...args: ModulationSerialized) => void
   '/r/modulations/remove': (
     modulatorId: Modulator['id'],
-    moduleId: Module['id'],
-    prop: string
+    itemId: Item['id'],
+    prop: string,
   ) => void
   '/r/modulations/amount': (
     modulatorId: Modulator['id'],
-    moduleId: Module['id'],
+    itemId: Item['id'],
     prop: string,
-    amount: number
+    amount: number,
   ) => void
-
-  // Patch
-  '/r/patch/clear': () => boolean
-
-  // Mappings
-  '/r/mappings/add': (
-    page: number,
-    slot: number,
-    id: Module['id'],
-    prop: string
-  ) => boolean
-  '/r/mappings/remove': (page: number, slot: number) => boolean
-
-  // Pages
-  '/n/pages/select': (page: number) => void
 
   // Transport
   '/r/transport/start': () => void
   '/r/transport/stop': () => void
   '/r/transport/tempo': (bpm: number) => void
   '/r/transport/info': () => string
+
+  // Parts
+  '/r/parts/select': (index: number) => boolean
+
+  // Pages
+  '/n/pages/select': (page: number) => void
 }
 
 export type OscRequestMessages = KeysStartWith<OscMessages, '/r/'>

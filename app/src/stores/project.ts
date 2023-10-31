@@ -6,14 +6,15 @@ import { computed, ref } from 'vue'
 import { useConnections } from './connections'
 import { useDevice } from './device'
 import { useMappings } from './mappings'
-import { useModules } from './modules'
-import { useModulators } from './modulators'
 import { useModulations } from './modulations'
+import { useItems } from './items'
 
 export const useProject = defineStore('project', () => {
   const partIndex = ref(0)
   const name = ref('test')
   const isSelecting = ref(false)
+
+  // TODO: remove, now handled by items store
   // `modules` and `modulators` share the same unique id space (there will never
   // be a module and a modulator with the same id), so we can apply a modulation
   // to either a module's or a modulator's prop by just using the id and prop
@@ -22,10 +23,9 @@ export const useProject = defineStore('project', () => {
 
   const bridge = useBridge()
   const device = useDevice()
+  const items = useItems()
   const connections = useConnections()
-  const modules = useModules()
   const mappings = useMappings()
-  const modulators = useModulators()
   const modulations = useModulations()
 
   const folder = computed(() => `lua/projects/${name.value}`)
@@ -39,20 +39,11 @@ export const useProject = defineStore('project', () => {
     load()
   })
 
-  bridge.on('/n/items/prop', ({ args: [id, name, value] }) => {
-    // Todo: find a better abstraction, e.g. a weak map or central list
-    // Todo of all items.
-    const item = modules.items.get(id) ?? modulators.items.get(id)
-    if (!item) return
-    item.props[name] = value
-  })
-
   // Actions
   const serialize = (): ProjectSerialized => ({
     connections: connections.serialize(),
-    modules: modules.serialize(),
+    items: items.serialize(),
     mappings: mappings.serialize(),
-    modulators: modulators.serialize(),
     modulations: modulations.serialize(),
   })
 
@@ -66,41 +57,25 @@ export const useProject = defineStore('project', () => {
     if (!device.isConnected) return
     const content = await bridge.readFile(file.value)
     const serialized = luaToJson(content) as ProjectSerialized
-    modules.deserialize(serialized.modules)
+    items.deserialize(serialized.items)
     connections.deserialize(serialized.connections)
     mappings.deserialize(serialized.mappings)
-    modulators.deserialize(serialized.modulators)
     modulations.deserialize(serialized.modulations)
   }
 
   const clear = (updateDevice = true) => {
     connections.clear()
-    modules.clear()
     mappings.clear()
     modulations.clear()
-    modulators.clear()
+    items.clear()
     nextItemId.value = 1
-    if (updateDevice) device.update('/r/patch/clear')
+    // TODO: use correct message
+    // if (updateDevice) device.update('/r/patch/clear')
   }
 
   const selectPart = (index: number, updateDevice = true) => {
     partIndex.value = index
     if (updateDevice) device.update('/r/parts/select', [index])
-  }
-
-  const updateProp = (
-    id: number,
-    name: string,
-    value: unknown,
-    updateDevice = true
-  ) => {
-    // Todo: find a better abstraction, e.g. a weak map or central list
-    // Todo of all items.
-    const item = modules.items.get(id) ?? modulators.items.get(id)
-    if (!item) return
-
-    item.props[name] = value
-    if (updateDevice) device.update('/r/items/prop', [id, name, value])
   }
 
   return {
@@ -113,7 +88,6 @@ export const useProject = defineStore('project', () => {
     load,
     clear,
     selectPart,
-    updateProp,
   }
 })
 

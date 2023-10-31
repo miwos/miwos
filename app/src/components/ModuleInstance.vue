@@ -19,7 +19,7 @@
         :module="module"
         :shape="shape"
       />
-      <ConnectionPoints :module="module" />
+      <ConnectionPoints :item="module" />
       <ModuleProps :module="module" />
     </template>
   </div>
@@ -28,9 +28,7 @@
 <script setup lang="ts">
 import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
 import { useModulesDrag } from '@/composables/useModulesDrag'
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModuleShapes } from '@/stores/moduleShapes'
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import { useProject } from '@/stores/project'
 import type { Module, Point } from '@/types'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
@@ -51,31 +49,27 @@ const moduleComponents = new Map(
   Object.entries(moduleComponentsImport).map(([path, asyncModule]) => {
     const name = path.match(/\/([\w_-]+).vue$/)![1]
     return [name, defineAsyncComponent(asyncModule as any)]
-  })
+  }),
 )
 
 const props = defineProps<{ position: Point; module: Module }>()
 
-const modules = useModules()
-const definition = useModuleDefinitions().get(props.module.type)
-const shape = useModuleShapes().getByModule(props.module)
 const project = useProject()
+const items = useItems()
+const definition = computed(() =>
+  items.moduleDefinitions.get(props.module.type),
+)
+const shape = computed(() => {
+  if (!definition.value) return
+  const { shape, id } = definition.value
+  return items.shapes.get(shape ?? id)
+})
 
 const el = ref<HTMLElement>()
 const maskId = `module-${props.module.id}-mask`
 const customComponent = moduleComponents.get(props.module.type)
 
-const isSelected = computed(() => modules.selectedIds.has(props.module.id))
-const focus = () => {
-  if (!modules.selectedItems.size) modules.focus(props.module.id)
-}
-
-const select = () => {
-  if (modules.isDragging) return
-  modules.selectedIds.clear()
-  modules.selectedIds.add(props.module.id)
-  modules.focus(props.module.id)
-}
+const isSelected = computed(() => items.selectedIds.has(props.module.id))
 
 onMounted(() => {
   if (!el.value) return
@@ -84,17 +78,15 @@ onMounted(() => {
 })
 
 onMouseUpOutside(el, () => {
-  if (!modules.isDragging && !project.isSelecting) modules.selectedIds.clear()
+  if (!items.isDragging && !project.isSelecting) items.selectedIds.clear()
 })
 
 useModulesDrag(el, props.module)
 
 watch(
   () => props.position,
-  () => project.save()
+  () => project.save(),
 )
-
-// watch(isDragging, (value) => (modules.isDragging = value))
 </script>
 
 <style scoped lang="scss">

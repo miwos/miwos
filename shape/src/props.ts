@@ -1,5 +1,5 @@
-import { Path, Point as PaperPoint } from 'paper/dist/paper-core'
-import { ShapeProps } from './types'
+import { Point as PaperPoint, Path } from 'paper/dist/paper-core'
+import type { ShapeProps } from './types'
 import { offsetPath, toPoint } from './utils'
 
 const propGap = 30 //px

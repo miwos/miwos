@@ -10,15 +10,13 @@
       :style="getPosition(index)"
       :options="prop.options"
       :value="module.props[prop.name]"
-      @update:value="project.updateProp(module.id, prop.name, $event)"
+      @update:value="items.updateProp(module.id, prop.name, $event)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModuleShapes } from '@/stores/moduleShapes'
-import { useProject } from '@/stores/project'
+import { useItems } from '@/stores/items'
 import type { Module } from '@/types'
 import { computed } from 'vue'
 import ItemProp from './ItemProp.vue'
@@ -27,20 +25,20 @@ const props = defineProps<{
   module: Module
 }>()
 
-const project = useProject()
-const definition = computed(
-  () => useModuleDefinitions().get(props.module.type)!
-)
-const shape = useModuleShapes().get(definition.value.shape)!
+const items = useItems()
+const definition = items.moduleDefinitions.get(props.module.type)
+const shape = items.shapes.get(definition?.shape!)
 
 const listedProps = computed(() =>
-  Object.entries(definition.value.props)
+  Object.entries(definition?.props ?? {})
     .map(([name, prop]) => ({ name, ...prop }))
     .filter((v) => v.options.listed ?? true)
-    .sort((a, b) => a.options.index - b.options.index)
+    .sort((a, b) => a.options.index - b.options.index),
 )
 
 const getPosition = (index: number) => {
+  if (!shape) return
+
   const side = index < 3 ? 'right' : 'left'
   const count = Object.values(listedProps.value).length
   const positions = shape.props

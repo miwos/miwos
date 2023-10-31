@@ -1,11 +1,10 @@
 import type { ConnectionSerialized } from './Connection'
+import type { ItemSerialized } from './Item'
 import type { MappingPageSerialized } from './Mapping'
-import type { ModulationSerialized, ModulatorSerialized } from './Modulation'
-import type { ModuleSerialized } from './Module'
+import type { ModulationSerialized } from './Modulation'
 
 export interface ProjectSerialized {
-  modules: ModuleSerialized[]
-  modulators: ModulatorSerialized[]
+  items: ItemSerialized[]
   connections: ConnectionSerialized[]
   mappings: Record<number, MappingPageSerialized>
   modulations: ModulationSerialized[]

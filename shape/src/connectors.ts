@@ -1,5 +1,5 @@
 import { Path } from 'paper/dist/paper-core'
-import { ShapeConnector } from './types'
+import type { ShapeConnector } from './types'
 import { toPoint } from './utils'
 
 export const markerRegExp = new RegExp(/^(in|out|thru)([ _-].*)?$/)

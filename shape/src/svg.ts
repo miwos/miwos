@@ -6,7 +6,7 @@ import {
 import { renderDebugInformation } from './debug'
 import { getLabels, hideLabelMarkers } from './labels'
 import { getProps, hidePropMarkers } from './props'
-import { Shape } from './types'
+import type { Shape } from './types'
 import { exportSVG } from './utils'
 
 export const parseSVG = (

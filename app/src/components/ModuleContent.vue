@@ -9,15 +9,14 @@
 </template>
 
 <script setup lang="ts">
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useProject } from '@/stores/project'
+import { useItems } from '@/stores/items'
 import type { Module } from '@/types'
 import { computed, defineAsyncComponent } from 'vue'
 
 const props = defineProps<{ module: Module; mask: string }>()
-const definition = useModuleDefinitions().get(props.module.type)
+const definition = useItems().moduleDefinitions.get(props.module.type)
 const clipStyle = computed(() =>
-  definition?.clipContent ?? true ? { clipPath: props.mask } : {}
+  definition?.clipContent ?? true ? { clipPath: props.mask } : {},
 )
 
 const moduleContentsImport = import.meta.glob('../modules/content/*.vue')
@@ -25,17 +24,17 @@ const moduleContents = new Map(
   Object.entries(moduleContentsImport).map(([path, asyncModule]) => {
     const name = path.match(/\/([\w_-]+).vue$/)![1]
     return [name, defineAsyncComponent(asyncModule as any)]
-  })
+  }),
 )
 
-const project = useProject()
+const items = useItems()
 const updatePropHandlers = computed(() =>
   Object.fromEntries(
     Object.keys(props.module.props).map((name) => [
       `update:${name}`,
-      (value: any) => project.updateProp(props.module.id, name, value),
-    ])
-  )
+      (value: any) => items.updateProp(props.module.id, name, value),
+    ]),
+  ),
 )
 </script>
 

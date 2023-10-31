@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useModulators } from '@/stores/modulators'
+import { useItems } from '@/stores/items'
 import type { Modulation } from '@/types'
 import { computed } from 'vue'
 
@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: 'update:value', value: number): void
 }>()
 
-const modulators = useModulators()
+const modulators = useItems().modulators
 const modulator = computed(() => modulators.get(props.modulation.modulatorId))
 </script>
 

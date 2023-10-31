@@ -2,35 +2,28 @@ import type {
   Modulation,
   ModulationSerialized,
   Modulator,
-  Module,
   Optional,
 } from '@/types'
 import { defineStore } from 'pinia'
-import { computed } from 'vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useDevice } from './device'
 
 type Id = Modulation['id']
 
-const modulationsAreEqual = (
-  a: Omit<Modulation, 'amount' | 'id'>,
-  b: Omit<Modulation, 'amount' | 'id'>
-) => a.itemId === b.itemId && a.prop === b.prop
-
 export const useModulations = defineStore('modulations', () => {
-  const items = ref(new Map<Id, Modulation>())
+  const map = ref(new Map<Id, Modulation>())
 
   const device = useDevice()
 
   // Getters
   const getByProp = (itemId: number, prop: string) =>
     computed(() =>
-      Array.from(items.value.values()).find(
-        (item) => item.itemId === itemId && item.prop === prop
-      )
+      Array.from(map.value.values()).find(
+        (item) => item.itemId === itemId && item.prop === prop,
+      ),
     )
 
-  const list = computed(() => Array.from(items.value.values()))
+  const list = computed(() => Array.from(map.value.values()))
 
   const getByItemId = (id: number) =>
     computed(() => list.value.filter(({ itemId }) => itemId === id))
@@ -41,26 +34,26 @@ export const useModulations = defineStore('modulations', () => {
 
   // Actions
   const serialize = (): ModulationSerialized[] =>
-    Array.from(items.value.values()).map(
+    Array.from(map.value.values()).map(
       ({ modulatorId, itemId: moduleId, prop, amount }) => [
         modulatorId,
         moduleId,
         prop,
         amount,
-      ]
+      ],
     )
 
   const deserialize = (serialized: ModulationSerialized[]) => {
-    items.value.clear()
+    map.value.clear()
     serialized.forEach(([modulatorId, moduleId, prop, amount]) =>
-      add({ modulatorId, itemId: moduleId, prop, amount })
+      add({ modulatorId, itemId: moduleId, prop, amount }),
     )
   }
 
   const add = (modulation: Optional<Modulation, 'id'>, updateDevice = true) => {
     console.log('update device')
     modulation.id ??= `${modulation.itemId}-${modulation.prop}`
-    items.value.set(modulation.id, modulation as Modulation)
+    map.value.set(modulation.id, modulation as Modulation)
 
     if (updateDevice) {
       device.update('/r/modulations/add', [
@@ -73,10 +66,10 @@ export const useModulations = defineStore('modulations', () => {
   }
 
   const remove = (id: Id, updateDevice = true) => {
-    const modulation = items.value.get(id)
+    const modulation = map.value.get(id)
     if (!modulation) return
 
-    items.value.delete(id)
+    map.value.delete(id)
 
     if (updateDevice) {
       const { modulatorId, itemId: moduleId, prop } = modulation
@@ -87,9 +80,9 @@ export const useModulations = defineStore('modulations', () => {
   const updateAmount = (
     id: Id,
     amount: Modulation['amount'],
-    updateDevice = true
+    updateDevice = true,
   ) => {
-    const modulation = items.value.get(id)
+    const modulation = map.value.get(id)
     if (!modulation) return
 
     modulation.amount = amount
@@ -104,10 +97,10 @@ export const useModulations = defineStore('modulations', () => {
     }
   }
 
-  const clear = () => items.value.clear()
+  const clear = () => map.value.clear()
 
   return {
-    items,
+    map,
     getByProp,
     getByItemId,
     getByModulatorId,

@@ -1,5 +1,5 @@
-import { Path, Point as PaperPoint, PointText } from 'paper/dist/paper-core'
-import { Point, Shape, ShapeConnector, ShapeLabel } from './types'
+import { Point as PaperPoint, Path, PointText } from 'paper/dist/paper-core'
+import type { Point, Shape, ShapeConnector, ShapeLabel } from './types'
 import { perforatePath } from './utils'
 
 const renderConnectorInset = ({ positions }: ShapeConnector) =>

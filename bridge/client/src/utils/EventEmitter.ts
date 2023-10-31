@@ -1,4 +1,5 @@
-import { parsePathPattern, PathParams } from './parsePathPattern'
+import type { PathParams } from './parsePathPattern'
+import { parsePathPattern } from './parsePathPattern'
 
 export type EventEmitterParams = PathParams
 

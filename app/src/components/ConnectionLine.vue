@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { useConnectionPath } from '@/composables/useConnectionPath'
 import { useConnections } from '@/stores/connections'
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import type { Connection } from '@/types/Connection'
 import { watchDebounced } from '@vueuse/core'
 import { computed, ref, toRefs } from 'vue'
@@ -34,14 +34,14 @@ const props = defineProps<{
 
 const hitArea = ref<SVGPathElement>()
 const { from, to } = toRefs(props.connection)
-const modules = useModules()
+const items = useItems()
 const connections = useConnections()
 const debug = false
 
 const isSelected = computed(
   () =>
-    modules.selectedIds.has(from.value.moduleId) ||
-    modules.selectedIds.has(to.value.moduleId)
+    items.selectedIds.has(from.value.itemId) ||
+    items.selectedIds.has(to.value.itemId),
 )
 const isActive = computed(() => connections.activeIds.has(props.connection.id))
 
@@ -61,7 +61,7 @@ watchDebounced(
       'stroke-dashoffset': -padding,
     }
   },
-  { debounce: 100, immediate: true }
+  { debounce: 100, immediate: true },
 )
 </script>
 

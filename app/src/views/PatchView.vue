@@ -5,16 +5,16 @@
   <div class="patch" :class="app.isOverlaying && 'dim'">
     <div class="module-instances">
       <ModuleInstance
-        v-for="[id, item] in modules.items"
+        v-for="[id, item] in items.modules"
         :key="id"
         :module="item"
         v-model:position="item.position"
-        :style="`z-index: ${modules.getSortIndex(id)}`"
+        :style="`z-index: ${items.getSortIndex(id)}`"
       />
     </div>
     <div class="connections">
       <ConnectionLine
-        v-for="[id, connection] in connections.items"
+        v-for="[id, connection] in connections.map"
         :key="id"
         :connection="connection"
         :style="`z-index: ${connections.getSortIndex(id)}`"
@@ -24,7 +24,7 @@
           connections.tempConnection?.from && connections.tempConnection?.to
         "
         :connection="connections.tempConnection"
-        :style="`z-index: ${modules.items.size}`"
+        :style="`z-index: ${items.instances.size}`"
       />
     </div>
   </div>
@@ -44,42 +44,42 @@ import ThePagesButtons from '@/components/ThePagesButtons.vue'
 import { useSelection } from '@/composables/useSelection'
 import { useApp } from '@/stores/app'
 import { useConnections } from '@/stores/connections'
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import { useProject } from '@/stores/project'
 import { containsRect } from '@/utils'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { ref, watch } from 'vue'
 
 const bg = ref<HTMLElement>()
-const modules = useModules()
 const connections = useConnections()
 const project = useProject()
 const app = useApp()
+const items = useItems()
 
 const { style, rect, cancel, isSelecting } = useSelection(bg)
 const keys = useMagicKeys()
 
-const selectModules = () => {
-  modules.selectedIds.clear()
-  for (const [id, { position, size }] of modules.items) {
+const selectItems = () => {
+  items.selectedIds.clear()
+  for (const [id, { position, size }] of items.instances) {
     if (!size) continue
     const { x, y } = position
     const { width, height } = size
     const moduleRect = { x, y, width, height }
-    if (containsRect(rect.value, moduleRect)) modules.selectedIds.add(id)
+    if (containsRect(rect.value, moduleRect)) items.selectedIds.add(id)
   }
 }
 
 watch(isSelecting, (value) => (project.isSelecting = value))
-watch(rect, selectModules)
+watch(rect, selectItems)
 
 whenever(keys['escape'], () => {
-  modules.selectedIds.clear()
+  items.selectedIds.clear()
   cancel()
 })
 
 whenever(keys['delete'], () =>
-  modules.selectedIds.forEach((id) => modules.remove(id))
+  items.selectedIds.forEach((id) => items.remove(id)),
 )
 </script>
 

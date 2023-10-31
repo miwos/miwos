@@ -1,14 +1,14 @@
 import crc from 'crc/calculators/crc16xmodem'
 // @ts-ignore (missing types)
 import Message from 'osc-js'
-import { Transport } from './Transport'
-import { MessageArg } from './types'
+import type { Transport } from './Transport'
+import type { MessageArg } from './types'
+import type { PathParams } from './utils'
 import {
   asArray,
   createRequestId,
   EventEmitter,
   parseDirList,
-  PathParams,
 } from './utils'
 
 export interface BridgeOptions {

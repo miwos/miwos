@@ -1,15 +1,15 @@
-import type { Module, Optional, Point } from '@/types'
+import type { Module, Optional } from '@/types'
 import type {
   Connection,
   ConnectionPoint,
   ConnectionSerialized,
   TemporaryConnection,
 } from '@/types/Connection'
+import { sortPointsByPosition } from '@/utils'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useDevice } from './device'
-import { useModules } from './modules'
-import { sortPointsByPosition } from '@/utils'
+import { useItems } from './items'
 
 type Id = Connection['id']
 
@@ -17,33 +17,32 @@ export const serializeConnection = ({
   from,
   to,
 }: Connection): ConnectionSerialized => [
-  from.moduleId,
+  from.itemId,
   from.index + 1, // use 1-based index
-  to.moduleId,
+  to.itemId,
   to.index + 1, // use 1-based index
 ]
 
 export const deserializeConnection = (
-  serialized: ConnectionSerialized
+  serialized: ConnectionSerialized,
 ): Connection => {
-  const [fromModuleId, fromIndex, toModuleId, toIndex] = serialized
-  const from = { moduleId: fromModuleId, index: fromIndex - 1 } // use 0-based index
-  const to = { moduleId: toModuleId, index: toIndex - 1 } // use 0-based index
-  const id =
-    `${from.moduleId},${from.index}-${to.moduleId},${to.index}` as const
+  const [fromItemId, fromIndex, toItemId, toIndex] = serialized
+  const from = { itemId: fromItemId, index: fromIndex - 1 } // use 0-based index
+  const to = { itemId: toItemId, index: toIndex - 1 } // use 0-based index
+  const id = `${from.itemId},${from.index}-${to.itemId},${to.index}` as const
   return { id, from, to }
 }
 
 export const useConnections = defineStore('connections', () => {
-  const items = ref(new Map<Id, Connection>())
+  const map = ref(new Map<Id, Connection>())
   const tempConnection = ref<TemporaryConnection>()
 
   const device = useDevice()
-  const modules = useModules()
+  const items = useItems()
 
   // Getters
   const get = (id: Id) => {
-    const item = items.value.get(id)
+    const item = map.value.get(id)
     if (!item) {
       console.warn(`connection '${id}' not found`)
       return
@@ -52,17 +51,17 @@ export const useConnections = defineStore('connections', () => {
   }
 
   const getByModuleId = (id: Module['id']) =>
-    Array.from(items.value.values()).filter(
-      (item) => item.from.moduleId === id || item.to.moduleId === id
+    Array.from(map.value.values()).filter(
+      (item) => item.from.itemId === id || item.to.itemId === id,
     )
 
-  const list = computed(() => Array.from(items.value.values()))
+  const list = computed(() => Array.from(map.value.values()))
 
   const activeIds = computed((): Set<Id> => {
     const ids = new Set<Id>()
     for (const { id, from } of list.value) {
-      const outputId = `${from.moduleId}-${from.index}`
-      if (modules.activeOutputIds.has(outputId)) ids.add(id)
+      const outputId = `${from.itemId}-${from.index}`
+      if (items.activeOutputIds.has(outputId)) ids.add(id)
     }
     return ids
   })
@@ -70,32 +69,32 @@ export const useConnections = defineStore('connections', () => {
   const sortIndexes = computed(
     () =>
       new Map(
-        Array.from(items.value.entries()).map(([id, item]) => {
+        Array.from(map.value.entries()).map(([id, item]) => {
           // Make sure the line is always above the modules it is connecting.
           const sort = Math.max(
-            modules.getSortIndex(item.from.moduleId) ?? 0,
-            modules.getSortIndex(item.to.moduleId) ?? 0
+            items.getSortIndex(item.from.itemId) ?? 0,
+            items.getSortIndex(item.to.itemId) ?? 0,
           )
           return [id, sort]
-        })
-      )
+        }),
+      ),
   )
   const getSortIndex = (id: Id) => sortIndexes.value.get(id)
 
   // Actions
   const serialize = (): ConnectionSerialized[] =>
-    Array.from(items.value.values()).map(serializeConnection)
+    Array.from(map.value.values()).map(serializeConnection)
 
   const deserialize = (serialized: ConnectionSerialized[]) => {
-    items.value.clear()
+    map.value.clear()
     serialized.forEach((v) => add(deserializeConnection(v), false))
   }
 
   const add = (connection: Optional<Connection, 'id'>, updateDevice = true) => {
     const { from, to } = connection
     connection.id ??=
-      `${from.moduleId},${from.index}-${to.moduleId},${to.index}` as const
-    items.value.set(connection.id, connection as Connection)
+      `${from.itemId},${from.index}-${to.itemId},${to.index}` as const
+    map.value.set(connection.id, connection as Connection)
     if (updateDevice) {
       const serialized = serializeConnection(connection as Connection)
       device.update('/r/connections/add', serialized)
@@ -104,14 +103,14 @@ export const useConnections = defineStore('connections', () => {
   }
 
   const remove = (id: Id, updateDevice = true) => {
-    const connection = items.value.get(id)
-    items.value.delete(id)
+    const connection = map.value.get(id)
+    map.value.delete(id)
     if (updateDevice && connection)
       device.update('/r/connections/remove', serializeConnection(connection))
     return connection
   }
 
-  const clear = () => items.value.clear()
+  const clear = () => map.value.clear()
 
   let startPoint: ConnectionPoint | undefined
   const connectFrom = (point: ConnectionPoint) => (startPoint = point)
@@ -140,7 +139,7 @@ export const useConnections = defineStore('connections', () => {
   }
 
   return {
-    items,
+    map,
     tempConnection,
     activeIds,
     serialize,
@@ -158,5 +157,5 @@ export const useConnections = defineStore('connections', () => {
 
 if (import.meta.hot)
   import.meta.hot.accept(
-    acceptHMRUpdate(useConnections as any, import.meta.hot)
+    acceptHMRUpdate(useConnections as any, import.meta.hot),
   )

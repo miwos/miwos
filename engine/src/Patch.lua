@@ -207,7 +207,7 @@ function Patch:updateModulations(time, notifyApp)
   --? Right now, we only have a big items list. Maybe it would be more
   --? performant if we maintain a weak table of modulators only for quickly
   --? looping over them.
-  --todo: early return of there are no modulators
+  --todo: early return if there are no modulators
 
   local modulatorValues = {}
   for id, modulator in pairs(self.items) do

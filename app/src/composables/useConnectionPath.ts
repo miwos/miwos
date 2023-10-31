@@ -6,26 +6,24 @@ import Vec from 'tiny-vec'
 
 const weight = (value: number, weight: number) => 1 - weight + weight * value
 
-const toDegrees = (radians: number) => radians * (180 / Math.PI)
-
 const toRadians = (degrees: number) => degrees * (Math.PI / 180)
 
 export const useConnectionPath = (
-  connection: Connection | TemporaryConnection
+  connection: Connection | TemporaryConnection,
 ) =>
   computed(() => {
     const from = isPoint(connection.from)
       ? undefined
       : getConnectionPoint(
-          connection.from.moduleId,
-          connection.from.index,
-          'out'
+          connection.from!.itemId,
+          connection.from!.index,
+          'out',
         )
     const fromPosition = new Vec(from?.position ?? (connection.from as Point))
 
     const to = isPoint(connection.to)
       ? undefined
-      : getConnectionPoint(connection.to.moduleId, connection.to.index, 'in')
+      : getConnectionPoint(connection.to!.itemId, connection.to!.index, 'in')
     const toPosition = new Vec(to?.position ?? (connection.to as Point))
 
     const controls: Point[] = []
@@ -67,15 +65,15 @@ export const useConnectionPath = (
           new Vec(0, -1)
             .multiply(length)
             .rotate(toRadians(from.angle - 90))
-            .add({ x: offset, y: 0 })
-        )
+            .add({ x: offset, y: 0 }),
+        ),
       )
     } else {
       const angle = Math.PI
       controls.push(
         new Vec(fromPosition)
           .add(new Vec(0, -1).multiply(length).rotate(angle))
-          .add({ x: offset, y: 0 })
+          .add({ x: offset, y: 0 }),
       )
     }
 
@@ -85,15 +83,15 @@ export const useConnectionPath = (
           new Vec(0, -1)
             .multiply(length)
             .rotate(toRadians(to.angle - 90))
-            .add({ x: -offset, y: 0 })
-        )
+            .add({ x: -offset, y: 0 }),
+        ),
       )
     } else {
       const angle = 0
       controls.push(
         new Vec(toPosition)
           .add(new Vec(0, -1).multiply(length).rotate(angle))
-          .add({ x: -offset, y: 0 })
+          .add({ x: -offset, y: 0 }),
       )
     }
 

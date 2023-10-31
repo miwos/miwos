@@ -1,38 +1,38 @@
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModules } from '@/stores/modules'
-import { useModuleShapes } from '@/stores/moduleShapes'
-import type { ConnectionPoint, Module, Point } from '@/types'
+import { useItems } from '@/stores/items'
+import type { ConnectionPoint, Module } from '@/types'
 
 export const getConnectionPoint = (
-  moduleId: Module['id'],
+  itemId: Module['id'],
   index: number,
-  direction: 'in' | 'out'
+  direction: 'in' | 'out',
 ): ConnectionPoint | undefined => {
-  const definitions = useModuleDefinitions()
-  const shapes = useModuleShapes()
-  const modules = useModules()
+  const items = useItems()
+  const item = items.instances.get(itemId)
+  if (!item) return
 
-  const module = modules.get(moduleId)
-  if (!module) return
-
-  const definition = definitions.get(module.type)
+  const definition = items.definitions.get(item.type)
   if (!definition) return
 
-  const { signal } =
-    definitions.getConnector(module.type, index, direction) ?? {}
-  if (!signal) return
-
-  const { positions, angle } =
-    shapes.getConnector(definition.shape, index, direction) ?? {}
-  if (!positions || !angle) return
+  const { signal, positions, angle } =
+    items.getConnector(item.type, index, direction) ?? {}
+  if (!signal || !positions || !angle) return
 
   const { inset, outline } = positions
   const offset = signal === 'midi' ? inset : outline ?? inset
   const position = {
-    x: offset.x + module.position.x,
-    y: offset.y + module.position.y,
+    x: offset.x + item.position.x,
+    y: offset.y + item.position.y,
   }
 
-  const id = `${moduleId}-${index}` as const
-  return { id, signal, moduleId, direction, index, offset, angle, position }
+  const id = `${itemId}-${index}` as const
+  return {
+    id,
+    signal,
+    itemId,
+    direction,
+    index,
+    offset,
+    angle,
+    position,
+  }
 }

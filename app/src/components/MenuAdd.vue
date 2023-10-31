@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { useApp } from '@/stores/app'
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import type { ModuleDefinition } from '@/types'
 import {
   onClickOutside,
@@ -24,7 +24,7 @@ import ModuleDefinitionSearch from './ModuleDefinitionSearch.vue'
 
 const mouse = useMouse()
 const app = useApp()
-const modules = useModules()
+const items = useItems()
 
 const el = ref<HTMLElement>()
 const search = ref<InstanceType<typeof ModuleDefinitionSearch>>()
@@ -68,7 +68,7 @@ const close = () => {
 
 const addModule = (type: ModuleDefinition['id']) => {
   const position = { x: mouse.x.value, y: mouse.y.value }
-  modules.add({ type, position })
+  items.add({ type, category: 'modules', position })
   close()
 }
 </script>

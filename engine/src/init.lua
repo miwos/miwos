@@ -9,126 +9,49 @@ require('Midi')
 require('Miwos')
 require('Prop')
 require('Timer')
-
-require('modules.Input')
-require('modules.Output')
-require('modules.Chord')
-require('modules.Delay')
-require('modules.Strings')
-require('modules.ChordSplit')
-require('modules.ControlChange')
-require('modules.Clip')
-
-require('modulators.Lfo')
+require('Items')
+require('Connections')
+require('Mappings')
+require('Modulations')
+require('Project')
 
 local PropsView = require('ui.views.PropsView')
 local MenuView = require('ui.views.MenuView')
 
+-- Project
+Bridge.addMethod('/r/project/open', function(name)
+  Project.open(name, false)
+end)
+
 -- Items
-Bridge.addMethod('/r/items/add', function(...)
-  return Miwos.patch:addItem(...)
-end)
-
-Bridge.addMethod('/r/items/remove', function(...)
-  return Miwos.patch:removeItem(...)
-end)
-
+Bridge.addMethod('/r/items/add', Items.add)
+Bridge.addMethod('/r/items/remove', Items.remove)
 Bridge.addMethod('/r/items/prop', function(itemId, name, value)
-  Miwos.patch:updatePropValue(itemId, name, value, false)
-  Miwos:emit('prop:change', itemId, name, value)
+  Items.updateProp(itemId, name, value, false)
 end)
-
-Bridge.addMethod('/r/items/definition', function(category, type)
-  local cachedItem = _LOADED[category .. '.' .. type]
-  local item = cachedItem or loadfile('lua/' .. category .. '/' .. type)()
-  return Utils.serialize(item:serializeDefinition())
+Bridge.addMethod('/r/items/definition', function(type)
+  Items.updateDefinitions()
+  return Utils.serialize(Items.serializeDefinition(type))
 end)
-
-Bridge.addMethod('/r/items/definitions', function(category)
-  local definitions = {}
-  local files = FileSystem.listFiles('lua/' .. category)
-  for _, baseName in pairs(files) do
-    ---@type Module
-    local cachedItem = _LOADED[category .. '.' .. baseName]
-    local item = cachedItem or loadfile('lua/' .. category .. '/' .. baseName)()
-    definitions[#definitions + 1] = item:serializeDefinition()
-  end
-  return Utils.serialize(definitions)
+Bridge.addMethod('/r/items/definitions', function()
+  Items.updateDefinitions()
+  return Utils.serialize(Items.serializeDefinitions())
 end)
 
 -- Connections
-Bridge.addMethod(
-  '/r/connections/add',
-  function(fromId, outputIndex, toId, inputIndex)
-    local fromModule = Miwos.patch.items[fromId] --[[@as Module]]
-    if not fromModule then error(Log.messageItemNotFound(fromId)) end
-    fromModule:__connect(outputIndex, toId, inputIndex)
-  end
-)
-
-Bridge.addMethod(
-  '/r/connections/remove',
-  function(fromId, outputIndex, toId, inputIndex)
-    local fromModule = Miwos.patch.items[fromId] --[[@as Module]]
-    if not fromModule then error(Log.messageItemNotFound(fromId)) end
-    fromModule:__disconnect(outputIndex, toId, inputIndex)
-  end
-)
-
--- Patch
-Bridge.addMethod('/r/patch/clear', function()
-  Miwos.patch:clear()
-  Miwos:emit('patch:change')
-end)
+Bridge.addMethod('/r/connections/add', Connections.add)
+Bridge.addMethod('/r/connections/remove', Connections.remove)
 
 -- Mappings
-
-Bridge.addMethod('/r/mappings/add', function(page, slot, id, prop)
-  Miwos.patch:addMapping(page, slot, id, prop)
-  Miwos:emit('patch:change')
-end)
-
-Bridge.addMethod('/r/mappings/remove', function(page, slot)
-  Miwos.patch:removeMapping(page, slot)
-  Miwos:emit('patch:change')
-end)
+Bridge.addMethod('/r/mappings/add', Mappings.add)
+Bridge.addMethod('/r/mappings/remove', Mappings.remove)
 
 -- Modulations
-Bridge.addMethod(
-  '/r/modulations/add',
-  function(modulatorId, itemId, prop, amount)
-    Miwos.patch:addModulation(modulatorId, itemId, prop, amount)
-    Miwos:emit('patch:change')
-  end
-)
+Bridge.addMethod('/r/modulations/add', Modulations.add)
+Bridge.addMethod('/r/modulations/remove', Modulations.remove)
+Bridge.addMethod('/r/modulations/amount', Modulations.updateAmount)
 
-Bridge.addMethod('/r/modulations/remove', function(modulatorId, itemId, prop)
-  Miwos.patch:removeModulation(modulatorId, itemId, prop)
-  Miwos:emit('patch:change')
-end)
-
-Bridge.addMethod(
-  '/r/modulations/amount',
-  function(modulatorId, moduleId, prop, amount)
-    for _, modulation in pairs(Miwos.patch.modulations) do
-      if
-        modulation[1] == modulatorId
-        and modulation[2] == moduleId
-        and modulation[3] == prop
-      then
-        modulation[4] = amount
-        return
-      end
-    end
-  end
-)
-
--- Project
-Bridge.addMethod('/r/project/load', function(name)
-  Miwos.loadProject(name, false)
-  Miwos.switchView(PropsView({ patch = Miwos.patch }))
-end)
-
+--TODO: rename channel to `midi`
 -- Transport
 Bridge.addMethod('/r/transport/start', Midi.start)
 Bridge.addMethod('/r/transport/stop', Midi.stop)
@@ -152,26 +75,14 @@ Buttons:on('click', function(index)
   end
 end)
 
-Miwos.loadSettings()
-Miwos.loadProject('test')
-Miwos.switchView(PropsView({ patch = Miwos.patch }))
-
--- Midi.start()
-
--- Log.info(Utils.getUsedMemory())
-
--- require('Test')
--- Test.runFile('lua/tests/Midi-test.lua')
-
--- TODO: Find good GC settings
--- collectgarbage('setpause', 100)
--- collectgarbage('setstepmul', 400)
+-- Init
 collectgarbage('setpause', 50)
 collectgarbage('setstepmul', 500)
+
+Items.init()
 
 local function logUsedMemory()
   Bridge.notify('/n/info/memory', collectgarbage('count'))
   Timer.delay(logUsedMemory, 1000)
 end
-
 logUsedMemory()

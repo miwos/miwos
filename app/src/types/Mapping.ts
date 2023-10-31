@@ -1,9 +1,9 @@
-import type { Module } from './module'
+import type { Item } from './Item'
 
 export interface Mapping {
-  page: number,
+  page: number
   slot: number
-  itemId: number
+  itemId: Item['id']
   prop: string
 }
 

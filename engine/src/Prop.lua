@@ -51,5 +51,8 @@ Miwos.defineProp('Button', {
 })
 
 Miwos.defineProp('Value', {
-  modulateValue = function() end,
+  -- TODO: allow Props that don't implement `modulateValue()`
+  modulateValue = function(value)
+    return value
+  end,
 })

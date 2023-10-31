@@ -28,12 +28,14 @@ Miwos.activeOutputs = {}
 ---@param definition ModuleDefinition
 ---@return Module
 function Miwos.defineModule(name, definition)
-  local module = class(Module) --[=[@as Module]=]
+  definition.category = 'modules'
+
+  local module = class(Module) --[[@as Module]]
   module.__type = name
   module.__events = {}
   module.__definition = definition
-  definition.constructor = module
-  Miwos.definitions.modules[name] = definition
+
+  Items.definitions[name] = definition
   _G.__propIndex = nil
   return module
 end
@@ -42,10 +44,13 @@ end
 ---@param definition ModulatorDefinition
 ---@return Modulator
 function Miwos.defineModulator(name, definition)
-  local modulator = class(Modulator) --[=[@as Modulator]=]
+  definition.category = 'modulators'
+
+  local modulator = class(Modulator) --[[@as Modulator]]
+  modulator.__type = name
   modulator.__definition = definition
-  definition.constructor = modulator
-  Miwos.definitions.modulators[name] = definition
+
+  Items.definitions[name] = definition
   _G.__propIndex = nil
   return modulator
 end

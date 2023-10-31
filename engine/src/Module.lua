@@ -22,25 +22,6 @@ function Module:constructor(props)
   Utils.callIfExists(self.setup, self)
 end
 
-function Module:serializeDefinition()
-  local props = {}
-  for key, definition in pairs(self.__definition.props or {}) do
-    local type, options = unpack(definition)
-    props[key] = { type, options }
-  end
-
-  return {
-    id = self.__type,
-    inputs = self.__definition.inputs,
-    outputs = self.__definition.outputs,
-    shape = self.__definition.shape,
-    label = self.__definition.label,
-    clipContent = self.__definition.clipContent,
-    showLabel = self.__definition.showLabel,
-    props = props,
-  }
-end
-
 function Module:event(name, handler)
   self.__events[name] = handler
 end
