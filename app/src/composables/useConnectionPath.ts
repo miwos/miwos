@@ -19,12 +19,14 @@ export const useConnectionPath = (
           connection.from!.index,
           'out',
         )
-    const fromPosition = new Vec(from?.position ?? (connection.from as Point))
+    const fromPosition = new Vec(
+      from?.absolutePosition ?? (connection.from as Point),
+    )
 
     const to = isPoint(connection.to)
       ? undefined
       : getConnectionPoint(connection.to!.itemId, connection.to!.index, 'in')
-    const toPosition = new Vec(to?.position ?? (connection.to as Point))
+    const toPosition = new Vec(to?.absolutePosition ?? (connection.to as Point))
 
     const controls: Point[] = []
     const distance = toPosition.subtract(fromPosition)

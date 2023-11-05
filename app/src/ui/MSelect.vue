@@ -94,7 +94,7 @@ const onKeyDown = (e: KeyboardEvent) => {
     focus(focusedIndex.value + 1)
   } else if (key === 'Enter') {
     e.preventDefault()
-    emit('update:value', options.value[focusedIndex.value].id)
+    emit('update:value', options.value[focusedIndex.value]?.id)
   } else if (key === 'PageUp' || key === 'Home') {
     e.preventDefault()
     focus(0)

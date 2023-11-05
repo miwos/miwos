@@ -69,8 +69,7 @@ export const useProject = defineStore('project', () => {
     modulations.clear()
     items.clear()
     nextItemId.value = 1
-    // TODO: use correct message
-    // if (updateDevice) device.update('/r/patch/clear')
+    if (updateDevice) device.update('/r/project/clear')
   }
 
   const selectPart = (index: number, updateDevice = true) => {

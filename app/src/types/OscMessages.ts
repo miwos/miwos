@@ -17,6 +17,7 @@ import type { KeysStartWith } from './utils'
 export type OscMessages = {
   // Project
   '/r/project/open': (name: string) => void
+  '/r/project/clear': () => void
 
   // Items
   '/r/items/add': (id: number, type: string) => void
@@ -52,11 +53,11 @@ export type OscMessages = {
     amount: number,
   ) => void
 
-  // Transport
-  '/r/transport/start': () => void
-  '/r/transport/stop': () => void
-  '/r/transport/tempo': (bpm: number) => void
-  '/r/transport/info': () => string
+  // Midi
+  '/r/midi/start': () => void
+  '/r/midi/stop': () => void
+  '/r/midi/tempo': (bpm: number) => void
+  '/r/midi/info': () => string
 
   // Parts
   '/r/parts/select': (index: number) => boolean

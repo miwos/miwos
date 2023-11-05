@@ -8,6 +8,7 @@ import { ref } from 'vue'
 import { useItems } from './items'
 import { useLog } from './log'
 import { useProject } from './project'
+import { useMidi } from './midi'
 
 export const useDevice = defineStore('device', () => {
   const isConnected = ref(false)
@@ -23,6 +24,7 @@ export const useDevice = defineStore('device', () => {
   const project = useProject()
   const items = useItems()
   const log = useLog()
+  const midi = useMidi()
   const deviceMemoryBus = useEventBus<number>('device-memory')
 
   bridge.on('/close', () => (isConnected.value = false))
@@ -50,17 +52,18 @@ export const useDevice = defineStore('device', () => {
     isConnected.value = true
 
     await items.updateDefinitions()
+    await midi.updateInfo()
 
-    // await moduleDefinitions.loadAllFromDevice()
-    // await transport.loadFromDevice()
+    project.load()
     window.postMessage({ method: 'deviceConnected' })
-    // project.load()
   }
 
   const close = async () => {
     await bridge.close()
     isConnected.value = false
   }
+
+  const restart = () => bridge.request('/lua/restart', [])
 
   const update = <A extends keyof OscRequestMessages>(
     address: A,
@@ -97,7 +100,16 @@ export const useDevice = defineStore('device', () => {
     return bridge.notify(address, args ?? [])
   }
 
-  return { midiDevices, isConnected, open, close, update, request, notify }
+  return {
+    midiDevices,
+    isConnected,
+    open,
+    close,
+    restart,
+    update,
+    request,
+    notify,
+  }
 })
 
 if (import.meta.hot)

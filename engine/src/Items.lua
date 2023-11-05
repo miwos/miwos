@@ -2,6 +2,9 @@ Items = {
   ---@type table<string, ItemDefinition>
   definitions = {},
 
+  ---@type table<number, boolean>
+  activeOutputs = {},
+
   ---@type table<number, Item>
   instances = {},
 }
@@ -83,8 +86,15 @@ end
 function Items.remove(id)
   local item = Items.instances[id]
   Utils.callIfExists(item.__destroy, item)
-  Items.items[id] = nil
+  Items.instances[id] = nil
   -- TODO: unrequire the items Constructur if no other items are using it.
+end
+
+function Items.clear()
+  for id in pairs(Items.instances) do
+    Items.remove(id)
+  end
+  Miwos:emit('patch:change')
 end
 
 ---Hot replace any existing items of a certain type.
@@ -116,16 +126,12 @@ function Items.updateProp(itemId, name, value, updateApp)
   local valueHasChanged = item.props.__values[name] ~= value
   if not valueHasChanged then return end
 
-  local itemIsModulator = item.__category == 'modulators'
+  -- Items will receive events for their modulated props whenever the modulator
+  -- updates, so we can set the value directly and skip the events.
   local propIsModulated = Modulations.getByItem(item, name)
-
-  -- Modulators don't handle events and modules will receive events for their
-  -- modulated props whenever the modulator updates. So in either case
-  -- we can set the value directly and skip the events.
-  if itemIsModulator or propIsModulated then
+  if propIsModulated then
     item.props.__values[name] = value
   else
-    ---@cast item Module
     item:callEvent('prop:beforeChange', name, value)
     item:callEvent('prop[' .. name .. ']:beforeChange', value)
     item.props.__values[name] = value
@@ -147,18 +153,28 @@ function Items.updateModulatedProp(item, name, value)
   local valueHasChanged = item.props.__modulatedValues[name] ~= value
   if not valueHasChanged then return end
 
-  if item.__category == 'modules' then
-    ---@cast item Module
-    item:callEvent('prop:beforeChange', name, value)
-    item:callEvent('prop[' .. name .. ']:beforeChange', value)
-    item.props.__modulatedValues[name] = value
-    item:callEvent('prop:change', name, value)
-    item:callEvent('prop[' .. name .. ']:change', value)
-  else
-    item.props.__modulatedValues[name] = value
-  end
+  item:callEvent('prop:beforeChange', name, value)
+  item:callEvent('prop[' .. name .. ']:beforeChange', value)
+  item.props.__modulatedValues[name] = value
+  item:callEvent('prop:change', name, value)
+  item:callEvent('prop[' .. name .. ']:change', value)
 
   -- Compared to `Items.updateProp()` we don't have to notify the app, because
-  -- we send all modulates prop together in one compact notification whenever
+  -- we send all modulated props together in one compact notification whenever
   -- the modulators are updated.
 end
+
+Items.sendActiveOutputs = Utils.throttle(function()
+  local list = {}
+  for activeOutput, isSustained in pairs(Items.activeOutputs) do
+    -- `activeOutput` is packed with 2 bytes (itemId and outputIndex). Since
+    -- we also have to send wether or not the output is sustained, we use the
+    -- MSB of the index as a flag. The drawback is that the index can now only
+    -- be in ther range of 1-127, which should be more than enough.
+    list[#list + 1] = Utils.setBit(activeOutput, 16, isSustained)
+
+    -- Reset non-sustained ouputs as soon es they are send.
+    if not isSustained then Items.activeOutputs[activeOutput] = nil end
+  end
+  Bridge.notify('/n/items/active-outputs', unpack(list))
+end, 50)

@@ -39,10 +39,10 @@ function MidiMessage:fromBytes(bytes)
   return MidiMessage(type, data1, data2, channel)
 end
 
-function MidiMessage:is(messageFactory)
-  local name = Midi.TypeName[self.type]
-  local factory = Midi[name]
-  return factory == messageFactory
+---@param type MidiType
+---@return boolean
+function MidiMessage:is(type)
+  return self.type == type
 end
 
 ---@class MidiNoteOn : MidiMessage

@@ -31,7 +31,7 @@ end
 function Clip:record(message)
   if not self.isRecording then return end
 
-  if message:is(Midi.NoteOn) or message:is(Midi.NoteOff) then
+  if message:is(Midi.Type.NoteOn) or message:is(Midi.Type.NoteOff) then
     local time = Timer.ticks() - self.recordStartTime
     local bytes = message:toBytes()
     self.recording[#self.recording + 1] = { time, bytes }

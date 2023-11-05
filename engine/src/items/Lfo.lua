@@ -23,3 +23,5 @@ function Lfo:value(time)
   local angularFrequency = 2 * math.pi * self.props.rate
   return math.sin(timeSeconds * angularFrequency)
 end
+
+return Lfo

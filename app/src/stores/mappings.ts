@@ -10,7 +10,7 @@ import { useBridge } from '@/bridge'
 
 const mappingsEqual = (
   a: Pick<Mapping, 'itemId' | 'prop'>,
-  b: Pick<Mapping, 'itemId' | 'prop'>
+  b: Pick<Mapping, 'itemId' | 'prop'>,
 ) => a.itemId === b.itemId && a.prop === b.prop
 
 export const useMappings = defineStore('mappings', () => {
@@ -24,7 +24,7 @@ export const useMappings = defineStore('mappings', () => {
 
   const currentPage = computed(() => pages.value.get(pageIndex.value))
   const currentPageList = computed(
-    () => currentPage.value && Array.from(currentPage.value?.values())
+    () => currentPage.value && Array.from(currentPage.value?.values()),
   )
 
   // ? use `currentPage` instead?
@@ -56,7 +56,7 @@ export const useMappings = defineStore('mappings', () => {
   const getOnCurrentPageByItemId = (id: number) =>
     computed(
       () =>
-        currentPageList.value?.filter((mapping) => mapping.itemId === id) ?? []
+        currentPageList.value?.filter((mapping) => mapping.itemId === id) ?? [],
     )
 
   // Actions
@@ -65,9 +65,9 @@ export const useMappings = defineStore('mappings', () => {
     for (const [index, page] of pages.value.entries()) {
       const luaIndex = index + 1 // use one-based index
       serialized[luaIndex] = {}
-      for (const [slot, { itemId: moduleId, prop }] of page.entries()) {
+      for (const [slot, { itemId, prop }] of page.entries()) {
         const luaSlot = slot + 1 // use one-based index
-        serialized[luaIndex][luaSlot] = [moduleId, prop]
+        serialized[luaIndex][luaSlot] = [itemId, prop]
       }
     }
     return serialized
@@ -79,7 +79,7 @@ export const useMappings = defineStore('mappings', () => {
       const pageIndex = (+luaPage - 1) as number // use zero-based index
       const page = new Map() as MappingPage
       for (const [luaSlot, mappingSerialized] of Object.entries(
-        pageSerialized
+        pageSerialized,
       )) {
         const slotIndex = +luaSlot - 1 // use zero-based index
         const [itemId, prop] = mappingSerialized

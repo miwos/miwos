@@ -44,11 +44,11 @@ const handleDragStart = (event: DragEvent) => {
   event.dataTransfer.dropEffect = 'link'
   connections.connectFrom(props.point)
 
-  if (module) {
+  if (item) {
     const { direction } = props.point
     connections.tempConnection = {
       [direction === 'out' ? 'from' : 'to']: {
-        moduleId: props.point.itemId,
+        itemId: props.point.itemId,
         index: props.point.index,
       },
     }
@@ -64,7 +64,7 @@ const handleDrag = ({ clientX, clientY }: DragEvent) => {
 }
 
 const handleDragOver = () => {
-  if (!module || !connections.tempConnection) return
+  if (!item || !connections.tempConnection) return
   // Snap the temporary connection on the connection point.
   const type = props.point.direction === 'out' ? 'from' : 'to'
   const { itemId, index } = props.point
@@ -93,8 +93,8 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
 .connection-point {
   position: absolute;
   transform: translate(-50%, -50%);
-  top: v-bind('point.offset.y + `px`');
-  left: v-bind('point.offset.x + `px`');
+  top: v-bind('point.position.y + `px`');
+  left: v-bind('point.position.x + `px`');
   fill: var(--color-connection);
   transition: fill var(--transition-duration-connection);
   &.active {

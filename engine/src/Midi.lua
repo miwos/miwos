@@ -21,9 +21,9 @@ Midi.Type = {
 }
 
 Midi.TypeName = {
-  [Midi.Type.NoteOn] = 'NoteOn',
-  [Midi.Type.NoteOff] = 'NoteOff',
-  [Midi.Type.ControlChange] = 'ControlChange',
+  [Midi.Type.NoteOn] = 'noteOn',
+  [Midi.Type.NoteOff] = 'noteOff',
+  [Midi.Type.ControlChange] = 'controlChange',
 }
 
 -- `MidiMessage` depends on `Midi.Type`, so we have to require it after it
@@ -32,7 +32,7 @@ Midi.Message = require('MidiMessage')
 
 -- Shorthand MidiMessage factories
 for _, type in pairs(Midi.Type) do
-  Midi[Midi.TypeName[type]] = function(...)
+  Midi[Utils.capitalize(Midi.TypeName[type])] = function(...)
     return Midi.Message(type, ...)
   end
 end

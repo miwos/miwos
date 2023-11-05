@@ -22,6 +22,9 @@ local MenuView = require('ui.views.MenuView')
 Bridge.addMethod('/r/project/open', function(name)
   Project.open(name, false)
 end)
+Bridge.addMethod('/r/project/clear', function()
+  Project.clear()
+end)
 
 -- Items
 Bridge.addMethod('/r/items/add', Items.add)
@@ -51,12 +54,11 @@ Bridge.addMethod('/r/modulations/add', Modulations.add)
 Bridge.addMethod('/r/modulations/remove', Modulations.remove)
 Bridge.addMethod('/r/modulations/amount', Modulations.updateAmount)
 
---TODO: rename channel to `midi`
--- Transport
-Bridge.addMethod('/r/transport/start', Midi.start)
-Bridge.addMethod('/r/transport/stop', Midi.stop)
-Bridge.addMethod('/r/transport/tempo', Midi.setTempo)
-Bridge.addMethod('/r/transport/info', function()
+-- Midi
+Bridge.addMethod('/r/midi/start', Midi.start)
+Bridge.addMethod('/r/midi/stop', Midi.stop)
+Bridge.addMethod('/r/midi/tempo', Midi.setTempo)
+Bridge.addMethod('/r/midi/info', function()
   return Utils.serialize({
     tempo = Midi.getTempo(),
     isPlaying = Midi.getIsPlaying(),
@@ -70,7 +72,7 @@ Buttons:on('click', function(index)
     if menuOpened then
       Miwos.switchView(MenuView())
     else
-      Miwos.switchView(PropsView({ patch = Miwos.patch }))
+      Miwos.switchView(PropsView())
     end
   end
 end)
@@ -80,9 +82,15 @@ collectgarbage('setpause', 50)
 collectgarbage('setstepmul', 500)
 
 Items.init()
+Project.open('test')
 
 local function logUsedMemory()
   Bridge.notify('/n/info/memory', collectgarbage('count'))
   Timer.delay(logUsedMemory, 1000)
 end
 logUsedMemory()
+
+Miwos.switchView(PropsView())
+
+-- require('Test')
+-- Test.runFile('/lua/tests/Utils-test.lua')

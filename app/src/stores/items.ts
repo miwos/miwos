@@ -1,6 +1,6 @@
 import { useBridge } from '@/bridge'
 import {
-  type Module as Item,
+  type Item,
   type Modulator,
   type ModulatorDefinition,
   type Module,
@@ -12,7 +12,7 @@ import type {
   ItemDefinitionSerialized,
   ItemSerialized,
 } from '@/types/Item'
-import { luaToJson } from '@/utils'
+import { luaToJson, unpackBytes } from '@/utils'
 import { parseSVG, type Shape } from '@miwos/shape'
 import Fuse from 'fuse.js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
@@ -55,10 +55,41 @@ export const useItems = defineStore('items', () => {
 
   // Init
   indexSearch(Array.from(definitions.value.keys()))
+
   bridge.on('/n/items/prop', ({ args: [id, name, value] }) => {
     const item = instances.value.get(id)
     if (!item) throw new Error(`Item with id '${id}' not found`)
     item.props[name] = value
+  })
+
+  const activeOutputDuration = 100 // ms
+  const outputResetTimers: Record<string, number> = {}
+  let sustainedIds = new Set<string>()
+  bridge.on('/n/items/active-outputs', ({ args }) => {
+    const newSustainedIds = new Set<string>()
+    for (const packed of args) {
+      const [moduleId, indexAndSustained] = unpackBytes(packed)
+      const index = indexAndSustained & 0x7f
+      const isSustained = indexAndSustained >> 7
+      const id = `${moduleId}-${index - 1}` // use zero-based index
+
+      activeOutputIds.value.add(id)
+      if (isSustained) {
+        newSustainedIds.add(id)
+      } else {
+        window.clearTimeout(outputResetTimers[id])
+        outputResetTimers[id] = window.setTimeout(
+          () => activeOutputIds.value.delete(id),
+          activeOutputDuration,
+        )
+      }
+    }
+
+    for (const id of sustainedIds) {
+      if (!newSustainedIds.has(id)) activeOutputIds.value.delete(id)
+    }
+
+    sustainedIds = newSustainedIds
   })
 
   // Helpers
@@ -74,6 +105,7 @@ export const useItems = defineStore('items', () => {
     ...serialized,
     label: serialized.label ?? getDefaultLabel(serialized.type),
     props: serialized.props ?? {},
+    modulatedProps: {},
     position: {
       x: serialized.position?.[0] ?? 0,
       y: serialized.position?.[1] ?? 0,
@@ -81,7 +113,6 @@ export const useItems = defineStore('items', () => {
   })
 
   const deserializeDefinition = (serialized: ItemDefinitionSerialized) => {
-    console.log(serialized)
     const { id, label, inputs, outputs, props = {} } = serialized
     const definition = {
       // Add any additional properties that are specific only to certain
@@ -139,41 +170,6 @@ export const useItems = defineStore('items', () => {
     }
     return items
   })
-
-  const getConnector = (
-    type: Item['type'],
-    index: number,
-    direction: 'in' | 'out',
-  ) => {
-    const definition = definitions.value.get(type)
-    if (!definition) return
-
-    const itemConnector =
-      direction === 'in' ? definition.inputs[index] : definition.outputs[index]
-
-    if (!itemConnector) {
-      const name = `${direction === 'in' ? 'input' : 'output'} #${index}`
-      console.warn(`${name} not found in item definition '${type}'`)
-      return
-    }
-
-    // TODO add `shape` to `Item` or find another solution
-    const shape = shapes.value.get((definition as any).shape ?? type)
-    if (!shape) return
-
-    const shapeConnector =
-      direction === 'in' ? shape.inputs[index] : shape.outputs[index]
-    if (!shapeConnector) {
-      const name = `${direction === 'in' ? 'input' : 'output'}#${index}`
-      console.warn(`${name} not found in shape '${shape.id}'`)
-      return
-    }
-
-    return { ...itemConnector, ...shapeConnector }
-  }
-
-  // TODO: implement
-  const getModulatorDefinition = () => {}
 
   const sortIndexes = computed(
     () => new Map(sortedIds.value.map((v, i) => [v, i])),
@@ -233,7 +229,7 @@ export const useItems = defineStore('items', () => {
     instances.value.set(item.id, item as Item)
     sortedIds.value.push(item.id)
 
-    // if (updateDevice) device.update('/r/items/add', [item.id, item.type])
+    if (updateDevice) device.update('/r/items/add', [item.id, item.type])
 
     return item
   }
@@ -246,12 +242,14 @@ export const useItems = defineStore('items', () => {
     if (!definition) throw new Error(`definition '${item.type}' not found`)
 
     // Cleanup everything that was related to the deleted item.
-    connections.getByModuleId(id).forEach(({ id }) => connections.remove(id))
+    connections.getByItemId(id).forEach(({ id }) => connections.remove(id))
 
     mappings
       .getByItemId(id)
       .value.forEach(({ page, slot }) => mappings.remove(page, slot))
 
+    // The deleted item can be modulated or be a modulator itself.
+    modulations.getByModulatorId(id).forEach(({ id }) => modulations.remove(id))
     modulations
       .getByItemId(id)
       .value.forEach(({ id }) => modulations.remove(id))
@@ -324,7 +322,6 @@ export const useItems = defineStore('items', () => {
     updateDefinitions,
     updateProp,
     getSortIndex,
-    getConnector,
   }
 })
 

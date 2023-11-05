@@ -27,7 +27,7 @@ const props = defineProps<{
 
 const items = useItems()
 const definition = items.moduleDefinitions.get(props.module.type)
-const shape = items.shapes.get(definition?.shape!)
+const shape = items.shapes.get(definition?.shape ?? props.module.type)
 
 const listedProps = computed(() =>
   Object.entries(definition?.props ?? {})

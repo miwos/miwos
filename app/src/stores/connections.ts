@@ -1,4 +1,4 @@
-import type { Module, Optional } from '@/types'
+import type { Item, Module, Optional } from '@/types'
 import type {
   Connection,
   ConnectionPoint,
@@ -50,7 +50,7 @@ export const useConnections = defineStore('connections', () => {
     return item
   }
 
-  const getByModuleId = (id: Module['id']) =>
+  const getByItemId = (id: Item['id']) =>
     Array.from(map.value.values()).filter(
       (item) => item.from.itemId === id || item.to.itemId === id,
     )
@@ -145,7 +145,7 @@ export const useConnections = defineStore('connections', () => {
     serialize,
     deserialize,
     get,
-    getByModuleId,
+    getByItemId,
     getSortIndex,
     add,
     remove,

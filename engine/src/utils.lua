@@ -106,6 +106,11 @@ function Utils.callIfExists(fn, ...)
   if fn then return fn(...) end
 end
 
+function Utils.isCallable(obj)
+  return type(obj) == 'function'
+    or (type(obj) == 'table' and getmetatable(obj) and getmetatable(obj).__call)
+end
+
 function Utils.mapValue(value, inMin, inMax, outMin, outMax)
   return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 end
@@ -137,6 +142,10 @@ function Utils.copyTable(t)
   return copy
 end
 
+function Utils.tableIsEmpty(t)
+  return next(t) == nil
+end
+
 function Utils.asTable(value)
   return type(value) == 'table' and value or { value }
 end
@@ -151,6 +160,7 @@ end
 
 function Utils.throttle(fn, interval)
   local lastTime = 0
+  local timer
 
   return function(...)
     local args = { ... }
@@ -162,8 +172,8 @@ function Utils.throttle(fn, interval)
     end
 
     if lastTime and now < lastTime + interval then
-      Timer.cancel(next)
-      Timer.schedule(next, now + interval)
+      if timer then Timer.cancel(timer) end
+      timer = Timer.schedule(next, now + interval)
     else
       lastTime = now
       next()

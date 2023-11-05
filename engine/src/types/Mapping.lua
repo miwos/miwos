@@ -5,7 +5,7 @@
 
 ---@alias MappingPage table<number, Mapping>
 
---- { moduleId, prop }
+--- { itemId, prop }
 ---@alias MappingSerialized { [1]: number, [2]: string }
 
 ---@alias MappingPageSerialized table<number, MappingSerialized>

@@ -1,8 +1,9 @@
 import { useItems } from '@/stores/items'
-import type { ConnectionPoint, Module } from '@/types'
+import type { ConnectionPoint, Item, Optional } from '@/types'
+import Vec from 'tiny-vec'
 
 export const getConnectionPoint = (
-  itemId: Module['id'],
+  itemId: Item['id'],
   index: number,
   direction: 'in' | 'out',
 ): ConnectionPoint | undefined => {
@@ -13,26 +14,37 @@ export const getConnectionPoint = (
   const definition = items.definitions.get(item.type)
   if (!definition) return
 
-  const { signal, positions, angle } =
-    items.getConnector(item.type, index, direction) ?? {}
-  if (!signal || !positions || !angle) return
+  const shape = items.shapes.get(definition.shape ?? definition.id)
 
-  const { inset, outline } = positions
-  const offset = signal === 'midi' ? inset : outline ?? inset
-  const position = {
-    x: offset.x + item.position.x,
-    y: offset.y + item.position.y,
-  }
-
+  const directionCategory = direction === 'in' ? 'inputs' : 'outputs'
   const id = `${itemId}-${index}` as const
-  return {
+
+  const connectionPoint: Optional<ConnectionPoint, 'absolutePosition'> = {
     id,
-    signal,
     itemId,
-    direction,
     index,
-    offset,
-    angle,
-    position,
+    direction,
+
+    angle: 90,
+    position: { x: 0, y: 0 },
+
+    ...shape?.[directionCategory]?.[index],
+    ...definition[directionCategory]?.[index],
+    ...item[directionCategory]?.[index],
   }
+
+  if (connectionPoint.signal === 'midi') {
+    const vec = new Vec(1, 0)
+      .rotate(connectionPoint.angle * (Math.PI / 180))
+      .multiply(14)
+    const { x, y } = new Vec(connectionPoint.position).add(vec)
+    connectionPoint.position = { x, y }
+  }
+
+  connectionPoint.absolutePosition = {
+    x: connectionPoint.position.x + item.position.x,
+    y: connectionPoint.position.y + item.position.y,
+  }
+
+  return connectionPoint as ConnectionPoint
 }

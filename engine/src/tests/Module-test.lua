@@ -1,5 +1,0 @@
-describe('Module', function()
-  it('does stuff', function()
-    expect(true):toBe(true)
-  end)
-end)

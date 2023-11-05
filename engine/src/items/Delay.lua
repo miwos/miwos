@@ -58,7 +58,7 @@ end)
 function Delay:sendWithGain(message, gain)
   if gain == 0 then return end
 
-  if message:is(Midi.NoteOn) then
+  if message:is(Midi.Type.NoteOn) then
     local velocity = math.floor(message.velocity * gain)
     if velocity == 0 then return end
     message = Midi.NoteOn(message.note, velocity, message.channel)

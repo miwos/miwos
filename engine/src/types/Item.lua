@@ -2,17 +2,6 @@
 
 ---@alias ItemCategory 'modules' | 'modulators'
 
----@class Item : Class
----@field __type string
----@field __id number
----@field __category ItemCategory
----@field __definition ItemDefinition
----@field __serialize fun(): ItemSerialzied
----@field __saveState fun()
----@field __applyState fun(self: Item, state: table<string, any>)
----@field __destroy fun() | nil
----@field props table<string, any>
-
 ---@class ItemSerialzied
 ---@field id number
 ---@field type string

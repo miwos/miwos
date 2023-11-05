@@ -89,12 +89,12 @@ const amountIsVisible = ref(false)
 const mapping = mappings.getMapping(props.itemId, props.name)
 const modulation = modulations.getByProp(props.itemId, props.name)
 const isMappedOnCurrentPage = computed(
-  () => mapping.value?.pageIndex === mappings.pageIndex
+  () => mapping.value?.pageIndex === mappings.pageIndex,
 )
 
 const label = ref<HTMLElement>()
 const nameIsVisible = computed(
-  () => app.showPropFields || !fieldIsVisible.value
+  () => app.showPropFields || !fieldIsVisible.value,
 )
 
 const handleStatus = computed(() =>
@@ -106,7 +106,7 @@ const handleStatus = computed(() =>
     ? 'modulated'
     : mapping.value
     ? 'mapped-other-page'
-    : 'none'
+    : 'none',
 )
 
 const showField = async () => {

@@ -1,5 +1,7 @@
 ---@meta
 
+---@class Module : Item
+
 ---@class ModuleDefinition : ItemDefinition
 ---@field shape string?
 ---@field label string?

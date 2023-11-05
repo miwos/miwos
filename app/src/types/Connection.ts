@@ -28,6 +28,6 @@ export interface ConnectionPoint {
   angle: number
   thru?: boolean
   signal: Signal
-  offset: Point
   position: Point
+  absolutePosition: Point
 }

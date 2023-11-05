@@ -14,13 +14,11 @@ export interface Module extends Item {
 export interface ModuleSerialized extends ItemSerialized {}
 
 export interface ModuleDefinition extends ItemDefinition {
-  shape: Shape['id']
   clipContent: boolean
   showLabel: boolean
 }
 
 export interface ModuleDefinitionSerialized extends ItemDefinitionSerialized {
-  shape: Shape['id']
   clipContent: boolean
   showLabel: boolean
 }

@@ -7,6 +7,7 @@
       ></MButtonCircle>
       <button @click="toggleDeviceConnection">{{ statusText }}</button>
       <button @click="clear">Clear</button>
+      <button @click="restart">Restart</button>
     </MNavBar>
     <TransportMenu />
     <MemoryMonitor />
@@ -29,16 +30,16 @@ const toggleDeviceConnection = () => {
   device.isConnected ? device.close() : device.open()
 }
 
-const clear = () => {
-  project.clear()
-}
+const clear = () => project.clear()
+
+const restart = () => device.restart()
 
 const statusColor = computed(() =>
-  device.isConnected ? '--color-active' : '--color-disabled'
+  device.isConnected ? '--color-active' : '--color-disabled',
 )
 
 const statusText = computed(() =>
-  device.isConnected ? 'Disconnect' : 'Connect'
+  device.isConnected ? 'Disconnect' : 'Connect',
 )
 </script>
 

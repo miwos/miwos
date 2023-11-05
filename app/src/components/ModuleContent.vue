@@ -2,7 +2,7 @@
   <div class="module-content" :style="clipStyle">
     <component
       :is="moduleContents.get(props.module.type)"
-      v-bind="module.props"
+      v-bind="resolvedProps"
       v-on="updatePropHandlers"
     />
   </div>
@@ -36,6 +36,11 @@ const updatePropHandlers = computed(() =>
     ]),
   ),
 )
+
+const resolvedProps = computed(() => ({
+  ...props.module.props,
+  ...props.module.modulatedProps,
+}))
 </script>
 
 <style lang="scss">

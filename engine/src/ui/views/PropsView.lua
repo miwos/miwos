@@ -6,7 +6,7 @@ local PropsView = Miwos.defineComponent('PropsView')
 
 function PropsView:setup()
   self.pageIndex = 1
-  self.page = self.props.patch.mappings[self.pageIndex] or {}
+  self.page = Mappings.pages[self.pageIndex] or {}
 end
 
 function PropsView:mount()
@@ -22,13 +22,13 @@ function PropsView:mount()
 
   self.patchChangeHandler = Miwos:on('patch:change', function()
     -- Refresh mappings page.
-    self.page = self.props.patch.mappings[self.pageIndex] or {}
+    self.page = Mappings.pages[self.pageIndex] or {}
     self:renderPage()
   end)
 
   self.selectPageHandler = Bridge:on('/n/pages/select', function(index)
     self.pageIndex = index
-    self.page = self.props.patch.mappings[self.pageIndex] or {}
+    self.page = Mappings.pages[self.pageIndex] or {}
     self:renderPage()
   end)
 end
@@ -81,7 +81,7 @@ end
 PropsView:event('buttons:click', function(self, index)
   if index < 4 or index > 6 then return end
   self.pageIndex = index - 3 -- buttons 4,5,6 select page 1,2,3
-  self.page = self.props.patch.mappings[self.pageIndex] or {}
+  self.page = Mappings.pages[self.pageIndex] or {}
   Bridge.notify('/n/pages/select', self.pageIndex - 1)
   self:renderPage()
 end)
@@ -106,8 +106,10 @@ function PropsView:handleSlotEvent(slot, event, arg)
   end
 
   local item, propName = unpack(self.page[slot])
+  -- https://github.com/LuaLS/lua-language-server/issues/1353
+  ---@cast item -string
   if event == 'updateValue' then
-    self.props.patch:updatePropValue(item.__id, propName, arg)
+    Items.updateProp(item.__id, propName, arg)
   else
     -- forward any other events
     item:callEvent('prop:' .. event, propName, arg)
