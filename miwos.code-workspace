@@ -1,9 +1,32 @@
 {
   "folders": [
-    { "path": "app" },
-    { "path": "firmware" },
-    { "path": "engine" },
-    { "path": "bridge" },
-    { "path": "shape" }
+    {
+      "name": "App",
+      "path": "app"
+    },
+    {
+      "name": "Firmware",
+      "path": "firmware"
+    },
+    {
+      "name": "Engine",
+      "path": "engine"
+    },
+    {
+      "name": "Bridge (client)",
+      "path": "bridge-client"
+    },
+    {
+      "name": "Bridge (firmware)",
+      "path": "bridge-firmware"
+    },    
+    {
+      "name": "osc",
+      "path": "osc"
+    },
+    {
+      "name": "shape",
+      "path": "shape"
+    }
   ]
 }

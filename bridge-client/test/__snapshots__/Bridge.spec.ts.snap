@@ -1,0 +1,60 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Bridge > handles many consecutive file writes 1`] = `
+[
+  {
+    "name": "file-0.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-1.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-2.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-3.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-4.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-5.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-6.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-7.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-8.txt",
+    "type": "file",
+  },
+  {
+    "name": "file-9.txt",
+    "type": "file",
+  },
+]
+`;
+
+exports[`Bridge > lists a directory 1`] = `
+[
+  {
+    "children": [],
+    "name": "deeply",
+    "type": "directory",
+  },
+  {
+    "name": "test.txt",
+    "type": "file",
+  },
+]
+`;

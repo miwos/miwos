@@ -1,0 +1,32 @@
+{
+  "name": "@miwos/bridge",
+  "version": "0.1.4",
+  "description": "",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev:node": "tsup dev/index.ts --watch --onSuccess \"node dist/index.js\"",
+    "dev:browser": "vite",
+    "test": "vitest --no-threads"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "@types/w3c-web-serial": "^1.0.6",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.4",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@miwos/osc": "workspace:*",
+    "@serialport/parser-slip-encoder": "^10.5.0",
+    "crc": "^4.3.2",
+    "serialport": "^10.5.0"
+  }
+}
