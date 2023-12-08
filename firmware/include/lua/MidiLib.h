@@ -231,7 +231,7 @@ namespace MidiLib {
       {"__getNoteId", lib::getNoteId},
       {"parseNoteId", lib::parseNoteId},
       {"start", lib::start},
-      {"stop", lib::stop},
+      {"__stop", lib::stop},
       {"getIsPlaying", lib::getIsPlaying},
       {"setTempo", lib::setTempo},
       {"getTempo", lib::getTempo},
