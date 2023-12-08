@@ -70,7 +70,8 @@ namespace MidiLib {
     &midiDevice10,
     &midiDevice11,
     &midiDevice12,
-    &midiDevice13};
+    &midiDevice13
+  };
 
   int handleInputRef = -1;
   int handleClockRef = -1;
@@ -134,7 +135,7 @@ namespace MidiLib {
 
     // TODO: check if connected to app
     if (currentTick % ppq == 0) {
-      OSCMessage message("/n/transport/quarter");
+      OSCMessage message("/n/midi/quarter");
       message.add(metronomeSideIsLeft);
       Bridge::sendOscMessage(message);
       metronomeSideIsLeft = !metronomeSideIsLeft;
@@ -234,7 +235,8 @@ namespace MidiLib {
       {"getIsPlaying", lib::getIsPlaying},
       {"setTempo", lib::setTempo},
       {"getTempo", lib::getTempo},
-      {NULL, NULL}};
+      {NULL, NULL}
+    };
 
     luaL_register(Lua::L, "Midi", lib);
   }
