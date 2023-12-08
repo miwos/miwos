@@ -10,7 +10,8 @@
   "scripts": {
     "dev:node": "tsup dev/index.ts --watch --onSuccess \"node dist/index.js\"",
     "dev:browser": "vite",
-    "test": "vitest --no-threads"
+    "upload-firmware": "pio run --target upload --project-dir ../firmware",
+    "test": "pnpm upload-firmware && vitest --no-threads"
   },
   "keywords": [],
   "author": "",

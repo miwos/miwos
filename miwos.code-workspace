@@ -13,19 +13,15 @@
       "path": "engine"
     },
     {
-      "name": "Bridge (client)",
-      "path": "bridge-client"
-    },
+      "name": "Bridge",
+      "path": "bridge"
+    },   
     {
-      "name": "Bridge (firmware)",
-      "path": "bridge-firmware"
-    },    
-    {
-      "name": "osc",
+      "name": "OSC",
       "path": "osc"
     },
     {
-      "name": "shape",
+      "name": "Shape",
       "path": "shape"
     }
   ]

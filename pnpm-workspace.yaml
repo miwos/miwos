@@ -3,4 +3,4 @@ packages:
   - shape
   - engine
   - osc
-  - bridge-client
+  - bridge/client
