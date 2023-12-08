@@ -45,6 +45,15 @@ function MidiMessage:is(type)
   return self.type == type
 end
 
+---comment
+---@param time number
+---@param useTicks boolean
+---@return MidiMessage
+function MidiMessage:schedule(time, useTicks)
+  self.__scheduleAt = { time, useTicks }
+  return self
+end
+
 ---@class MidiNoteOn : MidiMessage
 ---@field note number
 ---@field velocity number

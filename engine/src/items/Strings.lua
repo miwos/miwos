@@ -13,8 +13,8 @@ Strings.__hmrKeep = { 'chord', 'chords', 'currentStep' }
 function Strings:setup()
   self.lastNoteInTime = 0
   self.maxNoteInterval = 100 -- ms
-  self.tuning = { 40, 45, 50, 55, 59, 64 } -- EADGBE
-  -- self.tuning = { 38, 45, 50, 55, 57, 62 } --DADGAD
+  -- self.tuning = { 40, 45, 50, 55, 59, 64 } -- EADGBE
+  self.tuning = { 38, 45, 50, 55, 57, 62 } --DADGAD
 
   self.noteInputTimer = nil
   self.scheduleTimer = nil
@@ -47,13 +47,12 @@ function Strings:schedule()
       for _, string in ipairs(strings) do
         local fret = (self.chord and self.chord[string]) or 0
         local pitch = self.tuning[string] + fret
-        Timer.scheduleMidi(
-          Midi.NoteOn(pitch, 127, 1),
-          2,
-          1,
-          self.nextNoteTime,
-          true
-        )
+
+        local noteOn = Midi.NoteOn(pitch, 127, 1)
+        self:output(1, noteOn:schedule(self.nextNoteTime, true))
+
+        local noteOff = Midi.NoteOff(pitch, 0, 1)
+        self:output(1, noteOff:schedule(self.nextNoteTime + 50, true))
       end
 
       self.nextNoteTime = self.nextNoteTime + self.props.note
