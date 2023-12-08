@@ -139,7 +139,12 @@ export const useItems = defineStore('items', () => {
       modulators: new Map<Item['id'], Modulator>(),
     }
     for (const [id, item] of instances.value.entries()) {
-      categorized[item.category].set(id, item)
+      const category = definitions.value.get(item.type)?.category
+      if (!category || !categorized[category]) {
+        console.warn(`Category '${item.category}' of item '${item.type}' not found.`)
+        continue
+      }
+      categorized[category].set(id, item)
     }
     return categorized
   })
