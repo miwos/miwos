@@ -1,7 +1,7 @@
 ---@class Midi : EventEmitter
 ---@field private __send fun(index: number, type: number, data1: number, data2: number, channel: number, cable: number)
 ---@field start fun()
----@field stop fun()
+---@field __stop fun()
 ---@field getIsPlaying fun(): boolean
 ---@field setTempo fun(bpm: number)
 ---@field getTempo fun(): number
@@ -49,26 +49,34 @@ function Midi.handleInput(index, type, data1, data2, channel, cable)
 end
 
 function Midi.handleClock(tick)
-  -- Midi:send(1, Midi.NoteOn(62, 127, 1), 1)
+  -- Midi.send(1, Midi.NoteOn(62, 127, 1), 1)
 end
 
 ---@param index number
 ---@param message MidiMessage
 ---@param cable number
-function Midi:send(index, message, cable)
+function Midi.send(index, message, cable)
   local data1, data2 = message:data()
-  self.__send(index, message.type, data1, data2, message.channel, cable)
+  Midi.__send(index, message.type, data1, data2, message.channel, cable)
+end
+
+function Midi.stop()
+  for _, item in pairs(Items.instances) do
+    item:__finishNotes()
+  end
+
+  Midi.__stop()
 end
 
 ---@param note MidiNoteOn | MidiNoteOff
 ---@return number
-function Midi:getNoteId(note)
+function Midi.getNoteId(note)
   return Utils.packBytes(note.note, note.channel)
 end
 
 ---@param id number
 ---@return number, number
-function Midi:parseNoteId(id)
+function Midi.parseNoteId(id)
   local note, channel = Utils.unpackBytes(id)
   return note, channel
 end

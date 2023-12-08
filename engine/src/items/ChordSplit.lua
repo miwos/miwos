@@ -24,7 +24,7 @@ ChordSplit:event('input[1]:noteOn', function(self, note)
   local time = Timer.millis()
   if time - self.lastNoteTime > self.maxNoteInterval then self.notes = {} end
 
-  local noteId = Midi:getNoteId(note)
+  local noteId = Midi.getNoteId(note)
   self.notes[noteId] = note
   self.lastNoteTime = time
 
@@ -38,7 +38,7 @@ ChordSplit:event('input[1]:noteOff', function(self, note)
   ---@cast self ChordSplit
   ---@cast note MidiNoteOn
 
-  local noteId = Midi:getNoteId(note)
+  local noteId = Midi.getNoteId(note)
   local outputIndex = self.noteOutputs[noteId]
   self.noteOutputs[noteId] = nil
 

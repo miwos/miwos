@@ -17,14 +17,14 @@ Chord:event('input[1]:noteOn', function(self, note)
   ---@cast self ModuleChord
   ---@cast note MidiNoteOn
   self:output(1, note)
-  local id = Midi:getNoteId(note)
+  local id = Midi.getNoteId(note)
   local chord = {}
   self.chords[id] = chord
   for i = 1, 3 do
     local pitch = self.props['pitch' .. i]
     local message = Midi.NoteOn(note.note + pitch, note.velocity, note.channel)
     self:output(1, message)
-    id = Midi:getNoteId(message)
+    id = Midi.getNoteId(message)
     chord[#chord + 1] = id
   end
 end)
@@ -33,7 +33,7 @@ Chord:event('input[1]:noteOff', function(self, note)
   ---@cast self ModuleChord
 
   self:output(1, note)
-  local id = Midi:getNoteId(note)
+  local id = Midi.getNoteId(note)
   local chord = self.chords[id]
   if not chord then
     self:__finishNotes(1)
@@ -42,7 +42,7 @@ Chord:event('input[1]:noteOff', function(self, note)
   end
 
   for _, id in ipairs(chord) do
-    local note, channel = Midi:parseNoteId(id)
+    local note, channel = Midi.parseNoteId(id)
     self:output(1, Midi.NoteOff(note, 0, channel))
   end
 end)

@@ -39,7 +39,7 @@ Delay:event('input[1]', function(self, message)
         Timer.cancel(timer)
         if isNoteOn then
           ---@cast message MidiNoteOn
-          self.timers[Midi:getNoteId(message)] = nil
+          self.timers[Midi.getNoteId(message)] = nil
         end
       else
         delay()
@@ -48,7 +48,7 @@ Delay:event('input[1]', function(self, message)
 
     if isNoteOn then
       ---@cast message MidiNoteOn
-      self.timers[Midi:getNoteId(message)] = timer
+      self.timers[Midi.getNoteId(message)] = timer
     end
   end
 
@@ -68,7 +68,7 @@ function Delay:sendWithGain(message, gain)
 end
 
 function Delay:cleanUpNote(note)
-  local noteId = Midi:getNoteId(note)
+  local noteId = Midi.getNoteId(note)
   local timer = self.timers[noteId]
   if timer then
     Timer.cancel(timer)

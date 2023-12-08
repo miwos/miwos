@@ -39,7 +39,7 @@ function Output:__output(_, message)
     local time, useTicks = unpack(scheduleAt)
     Timer.scheduleMidi(message, self.props.device, 1, time, useTicks)
   else
-    Midi:send(self.props.device, message, 1)
+    Midi.send(self.props.device, message, 1)
   end
 end
 
