@@ -114,7 +114,7 @@ function Modulations.update(time, updateApp)
     end
   end
 
-  if Utils.option(updateApp, true) then
+  if Utils.option(updateApp, true) and #updateSerialized > 0 then
     Bridge.notify('/n/modulations/update', unpack(updateSerialized))
   end
 end
