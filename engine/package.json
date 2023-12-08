@@ -2,10 +2,12 @@
   "type": "module",
   "name": "@miwos/engine",
   "scripts": {
-    "dev": "node scripts/sync.js"
+    "dev": "tsx scripts/sync.ts"
   },
   "devDependencies": {
+    "@types/ws": "^8.5.10",
     "chokidar": "^3.5.3",
+    "tsx": "^4.6.2",
     "ws": "^8.14.2"
   },
   "dependencies": {
