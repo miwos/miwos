@@ -54,7 +54,11 @@ wss.on('connection', (socket) => {
     const method = update ? 'updateFile' : 'writeFile'
     const id = requestId++
     socket.send(JSON.stringify({ id, method, params: { path, content } }))
-    return waitForResponse(id)
+    try {
+      await waitForResponse(id)
+    } catch (e) {
+      console.warn(e)
+    }
   }
 
   const watcher = watch('**/*', { cwd: resolve(process.cwd(), 'src') })
