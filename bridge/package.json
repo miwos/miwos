@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "upload": "cd ./device && pio run --target upload",
-    "test:client": "pnpm test --dir client",
-    "test": "pnpm upload && pnpm test:client"
-  },
-  "license": "MIT"
-}

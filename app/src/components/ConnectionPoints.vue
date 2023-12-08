@@ -3,28 +3,29 @@
 </template>
 
 <script setup lang="ts">
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import type { ConnectionPoint as TConnectionPoint, Module } from '@/types'
+import { useItems } from '@/stores/items'
+import type { ConnectionPoint as TConnectionPoint } from '@/types'
+import type { Item } from '@/types/Item'
 import { getConnectionPoint } from '@/utils'
 import { computed } from 'vue'
 import ConnectionPoint from './ConnectionPoint.vue'
 
-const props = defineProps<{ module: Module }>()
-const definitions = useModuleDefinitions()
+const props = defineProps<{ item: Item }>()
+const items = useItems()
 
 const points = computed((): TConnectionPoint[] => {
-  const definition = definitions.get(props.module.type)
+  const definition = items.definitions.get(props.item.type)
   if (!definition) return []
 
   const points: TConnectionPoint[] = []
 
   for (let i = 0; i < definition.inputs.length; i++) {
-    const point = getConnectionPoint(props.module.id, i, 'in')
+    const point = getConnectionPoint(props.item.id, i, 'in')
     if (point) points.push(point)
   }
 
   for (let i = 0; i < definition.outputs.length; i++) {
-    const point = getConnectionPoint(props.module.id, i, 'out')
+    const point = getConnectionPoint(props.item.id, i, 'out')
     // A `thru` is a visually combined input and output. We only render the
     // corresponding input but omit the output.
     if (point && !point.thru) points.push(point)

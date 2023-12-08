@@ -1,8 +1,8 @@
-export type MessageArg = string | number | boolean | Uint8Array
+import { MessageArgValue } from "@miwos/osc/src/types"
 
 export interface Message {
   address: string
-  args: MessageArg[]
+  args: MessageArgValue[]
 }
 
 export interface DirItem {

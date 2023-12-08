@@ -1,5 +1,5 @@
 return {
-  modules = {
+  items = {
     {
       id = 1,
       type = 'Clip',

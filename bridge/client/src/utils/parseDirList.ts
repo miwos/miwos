@@ -1,4 +1,4 @@
-import { Dir, DirItem } from '../types'
+import type { Dir, DirItem } from '../types'
 
 const getDepth = (name: string) => {
   let count = 0

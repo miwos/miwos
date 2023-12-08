@@ -1,14 +1,16 @@
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import type { Module, Point, Rect } from '@/types'
 import { getCombinedRect } from '@/utils'
 import { useEventListener } from '@vueuse/core'
 import type { Ref } from 'vue'
 
+// TODO refactor this to something like `useItemDrag()`
+
 export const useModulesDrag = (
   el: Ref<HTMLElement | undefined>,
-  module: Module
+  module: Module,
 ) => {
-  const modules = useModules()
+  const items = useItems()
   const dragThreshold = 5 // px
   let positionMouseDown = { x: 0, y: 0 }
   let groupRect: Rect | undefined
@@ -27,7 +29,7 @@ export const useModulesDrag = (
       Array.from(group.values()).map(({ position, size }) => ({
         ...position,
         ...size!,
-      }))
+      })),
     )
     groupDelta = { x: point.x - groupRect.x, y: point.y - groupRect.y }
 
@@ -71,22 +73,13 @@ export const useModulesDrag = (
     }
   }
 
-  const cancelDrag = () => {
-    group = []
-    const modules = useModules()
-    for (const [id, { x, y }] of prevModulePositions) {
-      const module = modules.get(id)
-      if (module) module.position = { x, y }
-    }
-  }
-
   const endDrag = () => (group = [])
 
   const handleMouseMove = (event: MouseEvent) => {
     event.preventDefault()
     const { clientX, clientY } = event
 
-    if (modules.isDragging) {
+    if (items.isDragging) {
       drag({ x: clientX, y: clientY })
     } else {
       const { x, y } = positionMouseDown
@@ -95,12 +88,12 @@ export const useModulesDrag = (
       if (distance > dragThreshold) {
         // Even if the drag is started on the module, we want to move the whole
         // group of selected modules if there are some.
-        const group = modules.selectedItems.size
-          ? Array.from(modules.selectedItems.values())
+        const group = items.selectedItems.size
+          ? Array.from(items.selectedItems.values())
           : [module]
 
         startDrag(group, positionMouseDown)
-        modules.isDragging = true
+        items.isDragging = true
       }
     }
   }
@@ -109,7 +102,7 @@ export const useModulesDrag = (
     window.removeEventListener('mousemove', handleMouseMove)
     window.removeEventListener('mouseup', handleMouseUp)
     endDrag()
-    modules.isDragging = false
+    items.isDragging = false
   }
 
   useEventListener<MouseEvent>(el, 'mousedown', (event) => {

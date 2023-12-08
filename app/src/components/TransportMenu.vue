@@ -16,11 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { useTransport } from '@/stores/transport'
+import { useMidi } from '@/stores/midi'
 import MNavBar from '@/ui/MNavBar.vue'
 import { ref } from 'vue'
 
-const { metronomeSide, start, stop, setTempo, isPlaying } = useTransport()
+const { metronomeSide, start, stop, setTempo, isPlaying } = useMidi()
 const tempoInput = ref<HTMLInputElement>()
 
 const handleChangeTempo = (bpm: string) => {
@@ -62,3 +62,4 @@ input {
   }
 }
 </style>
+@/stores/midi

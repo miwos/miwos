@@ -20,19 +20,19 @@
 
 <script setup lang="ts">
 import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
-import { useModulators } from '@/stores/modulators'
+import { useItems } from '@/stores/items'
+import { useMappings } from '@/stores/mappings'
+import { useModulations } from '@/stores/modulations'
 import type { Modulator } from '@/types'
 import { useEventBus } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import ItemPropHandle from './ItemPropHandle.vue'
 import ModulatorProps from './ModulatorProps.vue'
 import ScrollingPlot from './ScrollingPlot.vue'
-import { useModulations } from '@/stores/modulations'
-import { useMappings } from '@/stores/mappings'
 
 const props = defineProps<{ modulator: Modulator }>()
 
-const modulators = useModulators()
+const items = useItems()
 const modulatorValueBus = useEventBus('modulator-value')
 const modulations = useModulations()
 const mappings = useMappings()
@@ -67,7 +67,7 @@ const showPropsMenu = () => (propsMenuIsVisible.value = true)
 
 const hidePropsMenu = () => (propsMenuIsVisible.value = false)
 
-const remove = () => modulators.remove(props.modulator.id)
+const remove = () => items.remove(props.modulator.id)
 
 onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
   // The item prop's context menu is teleported to the body so this is a quick

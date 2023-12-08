@@ -12,21 +12,13 @@
 
 <script setup lang="ts">
 import { useApp } from '@/stores/app'
+import { useItems } from '@/stores/items'
 import { useMappings } from '@/stores/mappings'
-import { useModulatorDefinitions } from '@/stores/modulatorDefinitions'
-import { useModulators } from '@/stores/modulators'
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModules } from '@/stores/modules'
-import { useProject } from '@/stores/project'
 import MEncoder from '@/ui/MEncoder.vue'
 import { computed } from 'vue'
 
 const app = useApp()
-const project = useProject()
-const modules = useModules()
-const modulators = useModulators()
-const moduleDefinitions = useModuleDefinitions()
-const modulatorDefinitions = useModulatorDefinitions()
+const items = useItems()
 const mappings = useMappings()
 
 interface Encoder {
@@ -36,32 +28,23 @@ interface Encoder {
   step?: number
 }
 
-const getTargetAndDefinition = (id: number) => {
-  let target, definition
-  if (modules.isModule(id)) {
-    target = modules.get(id)
-    definition = moduleDefinitions.get(target?.type)
-  } else if (modulators.isModulator(id)) {
-    target = modulators.get(id)
-    definition = modulatorDefinitions.get(target?.type)
-  }
-  return { target, definition }
-}
-
 const encoders = computed(() => {
   const page = mappings.getCurrentPage()
   if (!page) return new Map()
 
   const encoders = new Map<number, Encoder>()
   for (const { itemId, prop, slot } of page.values()) {
-    const { target, definition } = getTargetAndDefinition(itemId)
-    if (!target || !definition) continue
+    const item = items.instances.get(itemId)
+    if (!item) continue
+
+    const definition = items.definitions.get(item.type)
+    if (!definition) continue
 
     const propOptions = definition.props[prop]?.options
     if (!propOptions) continue
 
     const { min, max, step, value: defaultValue } = propOptions
-    const value = target.props[prop]
+    const value = item.props[prop]
 
     encoders.set(slot, { min, max, step, value: value ?? defaultValue })
   }
@@ -76,7 +59,7 @@ const updateValue = (slot: number, value: number) => {
   if (!mapping) return
 
   const { itemId, prop } = mapping
-  project.updateProp(itemId, prop, value)
+  items.updateProp(itemId, prop, value)
 }
 </script>
 

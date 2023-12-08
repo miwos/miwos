@@ -5,14 +5,14 @@ local Display = require('ui.components.Display')
 
 ---@class NumberProps
 ---@field value number
----@field label string
 ---@field min number
 ---@field max number
 ---@field step number
----@field showScale boolean
----@field scaleUnit number
----@field scaleCount number
----@field zoom number | false
+---@field label string ?
+---@field showScale boolean?
+---@field scaleUnit number?
+---@field scaleCount number?
+---@field zoom number | false | nil
 ---@field before string?
 ---@field after string?
 

@@ -1,38 +1,50 @@
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
-import { useModules } from '@/stores/modules'
-import { useModuleShapes } from '@/stores/moduleShapes'
-import type { ConnectionPoint, Module, Point } from '@/types'
+import { useItems } from '@/stores/items'
+import type { ConnectionPoint, Item, Optional } from '@/types'
+import Vec from 'tiny-vec'
 
 export const getConnectionPoint = (
-  moduleId: Module['id'],
+  itemId: Item['id'],
   index: number,
-  direction: 'in' | 'out'
+  direction: 'in' | 'out',
 ): ConnectionPoint | undefined => {
-  const definitions = useModuleDefinitions()
-  const shapes = useModuleShapes()
-  const modules = useModules()
+  const items = useItems()
+  const item = items.instances.get(itemId)
+  if (!item) return
 
-  const module = modules.get(moduleId)
-  if (!module) return
-
-  const definition = definitions.get(module.type)
+  const definition = items.definitions.get(item.type)
   if (!definition) return
 
-  const { signal } =
-    definitions.getConnector(module.type, index, direction) ?? {}
-  if (!signal) return
+  const shape = items.shapes.get(definition.shape ?? definition.id)
 
-  const { positions, angle } =
-    shapes.getConnector(definition.shape, index, direction) ?? {}
-  if (!positions || !angle) return
+  const directionCategory = direction === 'in' ? 'inputs' : 'outputs'
+  const id = `${itemId}-${index}` as const
 
-  const { inset, outline } = positions
-  const offset = signal === 'midi' ? inset : outline ?? inset
-  const position = {
-    x: offset.x + module.position.x,
-    y: offset.y + module.position.y,
+  const connectionPoint: Optional<ConnectionPoint, 'absolutePosition'> = {
+    id,
+    itemId,
+    index,
+    direction,
+
+    angle: 90,
+    position: { x: 0, y: 0 },
+
+    ...shape?.[directionCategory]?.[index],
+    ...definition[directionCategory]?.[index],
+    ...item[directionCategory]?.[index],
   }
 
-  const id = `${moduleId}-${index}` as const
-  return { id, signal, moduleId, direction, index, offset, angle, position }
+  if (connectionPoint.signal === 'midi') {
+    const vec = new Vec(1, 0)
+      .rotate(connectionPoint.angle * (Math.PI / 180))
+      .multiply(14)
+    const { x, y } = new Vec(connectionPoint.position).add(vec)
+    connectionPoint.position = { x, y }
+  }
+
+  connectionPoint.absolutePosition = {
+    x: connectionPoint.position.x + item.position.x,
+    y: connectionPoint.position.y + item.position.y,
+  }
+
+  return connectionPoint as ConnectionPoint
 }

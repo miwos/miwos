@@ -1,13 +1,13 @@
-import { useModules } from '@/stores/modules'
+import { useItems } from '@/stores/items'
 import type { ConnectionPoint } from '@/types'
 
 export const sortPointsByPosition = (
   a: ConnectionPoint,
-  b: ConnectionPoint
+  b: ConnectionPoint,
 ) => {
-  const modules = useModules()
-  const positionA = modules.items.get(a.moduleId)?.position
-  const positionB = modules.items.get(b.moduleId)?.position
+  const items = useItems()
+  const positionA = items.instances.get(a.itemId)?.position
+  const positionB = items.instances.get(b.itemId)?.position
   if (!positionA || !positionB) return [a, b]
   return positionA.y < positionB.y ? [a, b] : [b, a]
 }

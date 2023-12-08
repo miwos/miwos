@@ -2,6 +2,7 @@ local class = require('class')
 
 ---@class Component : Class
 ---@field __events { [string]: function }
+---@field __type string
 ---@field name string
 ---@field parent Component | nil
 ---@field setup function | nil

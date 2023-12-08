@@ -6,7 +6,7 @@
       :class="{ 'multi-column': multiColumnEnabled }"
     >
       <ModulatorInstance
-        v-for="[id, item] in modulators.items"
+        v-for="[id, item] in items.modulators"
         :key="id"
         :modulator="item"
       />
@@ -21,19 +21,18 @@
 </template>
 
 <script setup lang="ts">
-import { useModulators } from '@/stores/modulators'
+import { useItems } from '@/stores/items'
 import ModulatorInstance from './ModulatorInstance.vue'
 import { computed } from 'vue'
 
-const modulators = useModulators()
-
-const isEmpty = computed(() => !modulators.list.length)
-
-const multiColumnEnabled = computed(() => modulators.list.length > 3)
+const items = useItems()
+const isEmpty = computed(() => !items.modulators.size)
+const multiColumnEnabled = computed(() => items.modulators.size > 3)
 
 const addModulator = () => {
-  modulators.add({
+  items.add({
     type: 'Lfo',
+    category: 'modulators',
     label: 'fuuu',
     position: { x: 0, y: 0 },
   })

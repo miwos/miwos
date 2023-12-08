@@ -1,14 +1,18 @@
 local Number = require('ui.components.Number')
 local Button = require('ui.components.Button')
+local Component = require('Component')
+
+---@class ValueProps
+---@field value any
 
 ---@class Prop
 ---@field Number fun(props: NumberProps)
 ---@field Button fun(props: ButtonProps)
+---@field Value fun(props: ValueProps)
 Prop = {}
 
 setmetatable(Prop, {
   __index = function(_, name)
-    local component = Miwos.definitions.props[name].component
     return function(options, ...)
       -- Lua objects don't have an order (which we need to diplay the props in
       -- the app). We could use an array instead, but it would be more verbose.
@@ -19,7 +23,12 @@ setmetatable(Prop, {
       options.index = _G.__propIndex
       _G.__propIndex = _G.__propIndex + 1
 
-      return component:define(options, ...)
+      -- The `Value` Prop is an invisble prop just for persistently storing
+      -- stuff, so it should never be listed.
+      if name == 'Value' then options.listed = false end
+
+      local component = Miwos.definitions.props[name].component
+      return { name, options, component }
     end
   end,
 })
@@ -37,6 +46,13 @@ Miwos.defineProp('Button', {
   component = Button,
   modulateValue = function(value, modulation, amount, options)
     -- TODO: implement
+    return value
+  end,
+})
+
+Miwos.defineProp('Value', {
+  -- TODO: allow Props that don't implement `modulateValue()`
+  modulateValue = function(value)
     return value
   end,
 })

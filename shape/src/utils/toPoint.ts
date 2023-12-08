@@ -1,3 +1,3 @@
-import { Point } from '../types'
+import type { Point } from '../types'
 
 export const toPoint = ({ x, y }: paper.Point): Point => ({ x, y })

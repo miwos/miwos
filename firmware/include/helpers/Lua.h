@@ -241,6 +241,13 @@ namespace Lua {
       int isHotReplaced = updateFile(fileName);
       Bridge::respond(id, isHotReplaced);
     });
+
+    Bridge::addMethod("/lua/restart", [](Data &data) {
+      RequestId id = data.getInt(0);
+      reset();
+      runFile("lua/init.lua");
+      Bridge::respond(id);
+    });
   }
 } // namespace Lua
 

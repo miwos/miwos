@@ -5,10 +5,10 @@ import { luaToJson } from '@/utils'
 import { useEventBus } from '@vueuse/core'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useItems } from './items'
 import { useLog } from './log'
-import { useModuleDefinitions } from './moduleDefinitions'
 import { useProject } from './project'
-import { useTransport } from './transport'
+import { useMidi } from './midi'
 
 export const useDevice = defineStore('device', () => {
   const isConnected = ref(false)
@@ -22,9 +22,9 @@ export const useDevice = defineStore('device', () => {
 
   const bridge = useBridge()
   const project = useProject()
-  const moduleDefinitions = useModuleDefinitions()
-  const transport = useTransport()
+  const items = useItems()
   const log = useLog()
+  const midi = useMidi()
   const deviceMemoryBus = useEventBus<number>('device-memory')
 
   bridge.on('/close', () => (isConnected.value = false))
@@ -44,16 +44,18 @@ export const useDevice = defineStore('device', () => {
   })
 
   bridge.on('/n/info/memory', ({ args: [memory] }) =>
-    deviceMemoryBus.emit(memory)
+    deviceMemoryBus.emit(memory),
   )
 
   const open = async () => {
     await bridge.open({ baudRate: 9600 })
     isConnected.value = true
-    await moduleDefinitions.loadAllFromDevice()
-    await transport.loadFromDevice()
-    window.postMessage({ method: 'deviceConnected' })
+
+    await items.updateDefinitions()
+    await midi.updateInfo()
+
     project.load()
+    window.postMessage({ method: 'deviceConnected' })
   }
 
   const close = async () => {
@@ -61,9 +63,11 @@ export const useDevice = defineStore('device', () => {
     isConnected.value = false
   }
 
+  const restart = () => bridge.request('/lua/restart', [])
+
   const update = <A extends keyof OscRequestMessages>(
     address: A,
-    args?: Parameters<OscRequestMessages[A]>
+    args?: Parameters<OscRequestMessages[A]>,
   ) => {
     if (!isConnected.value) return
     // The device's storage is our source of truth for the project. Therefore
@@ -78,7 +82,7 @@ export const useDevice = defineStore('device', () => {
 
   const request = <A extends keyof OscRequestMessages>(
     address: A,
-    args?: Parameters<OscRequestMessages[A]>
+    args?: Parameters<OscRequestMessages[A]>,
   ) => {
     if (!isConnected.value) return
     // TODO: remove `any`, use `MessageArg` as soon as bridge exports it, or
@@ -90,13 +94,22 @@ export const useDevice = defineStore('device', () => {
 
   const notify = <A extends keyof OscNotifyMessages>(
     address: A,
-    args?: Parameters<OscNotifyMessages[A]>
+    args?: Parameters<OscNotifyMessages[A]>,
   ) => {
     if (!isConnected.value) return
     return bridge.notify(address, args ?? [])
   }
 
-  return { midiDevices, isConnected, open, close, update, request, notify }
+  return {
+    midiDevices,
+    isConnected,
+    open,
+    close,
+    restart,
+    update,
+    request,
+    notify,
+  }
 })
 
 if (import.meta.hot)

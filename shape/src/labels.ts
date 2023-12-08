@@ -1,4 +1,4 @@
-import { ShapeLabel } from './types'
+import type { ShapeLabel } from './types'
 import { toPoint } from './utils'
 
 export const markerRegExp = new RegExp(/^label([ _-].*)?$/)

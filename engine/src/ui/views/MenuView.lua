@@ -8,7 +8,7 @@ function MenuView:render()
 end
 
 MenuView:event('projects:select', function(self, value)
-  Miwos.loadProject(value)
+  Project.open(value)
 end)
 
 return MenuView

@@ -1,11 +1,12 @@
-import { Path, Point as PaperPoint, PointText } from 'paper/dist/paper-core'
-import { Point, Shape, ShapeConnector, ShapeLabel } from './types'
+import { Point as PaperPoint, Path, PointText } from 'paper/dist/paper-core'
+import type { Point, Shape, ShapeConnector, ShapeLabel } from './types'
 import { perforatePath } from './utils'
 
-const renderConnectorInset = ({ positions }: ShapeConnector) =>
-  new Path.Circle({ radius: 6, fillColor: 'black', center: positions.inset })
+const renderConnectorInset = ({ position, angle }: ShapeConnector) =>
+// TODO: inset
+  new Path.Circle({ radius: 6, fillColor: 'black', center: new PaperPoint(position).add(new PaperPoint(0, 1).rotate(angle).multiply(14)).round() })
 
-const renderConnectorOutline = ({ positions, angle, thru }: ShapeConnector) => {
+const renderConnectorOutline = ({ position, angle, thru }: ShapeConnector) => {
   if (thru) return
 
   const triangle = new Path.RegularPolygon({
@@ -15,7 +16,7 @@ const renderConnectorOutline = ({ positions, angle, thru }: ShapeConnector) => {
   })
   triangle.bounds.width = 12
   triangle.bounds.height = 12
-  triangle.bounds.bottomCenter = new PaperPoint(positions.outline!)
+  triangle.bounds.bottomCenter = new PaperPoint(position)
   triangle.rotate(angle - 90, triangle.bounds.bottomCenter)
 }
 
@@ -51,10 +52,6 @@ export const renderDebugInformation = (
   props.right?.three.forEach((prop, index) => renderProp(prop, index))
 
   const inputsOutputs = [...inputs, ...outputs]
-  const holes = inputsOutputs.map((v) => v.offset)
-  const { dashArray, dashOffset } = perforatePath(outline.length, holes)
-  outline.dashArray = dashArray
-  outline.dashOffset = dashOffset
 
   inputsOutputs.forEach((v) => {
     renderConnectorInset(v)

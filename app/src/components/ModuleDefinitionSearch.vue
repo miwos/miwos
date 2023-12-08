@@ -28,24 +28,26 @@
 </template>
 
 <script setup lang="ts">
-import { useModuleDefinitions } from '@/stores/moduleDefinitions'
+import { useItems } from '@/stores/items'
 import type { ModuleDefinition } from '@/types'
+import type { ItemDefinition } from '@/types/Item'
 import { ref, watchEffect } from 'vue'
 import MSelect from '../ui/MSelect.vue'
+
+defineProps<{ alignResults: 'top' | 'bottom' }>()
 
 const emit = defineEmits<{
   (e: 'select', type: ModuleDefinition['id']): void
   (e: 'blur'): void
 }>()
-defineProps<{
-  alignResults: 'top' | 'bottom'
-}>()
+
+const items = useItems()
 
 const input = ref<HTMLInputElement>()
-const results = ref<ModuleDefinition[]>([])
+const results = ref<ItemDefinition[]>([])
 const query = ref('')
 
-watchEffect(() => (results.value = useModuleDefinitions().search(query.value)))
+watchEffect(() => (results.value = items.searchDefinitions(query.value)))
 
 const focus = () => input.value?.focus()
 const clear = () => (query.value = '')

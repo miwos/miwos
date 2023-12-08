@@ -26,13 +26,13 @@ function Timer.update(now)
   end
 
   if (now - lastModulationUpdate) > modulationUpdateInterval then
-    if Miwos.patch then Miwos.patch:updateModulations(now) end
+    Modulations.update(now)
     lastModulationUpdate = now
   end
 end
 
 function Timer.schedule(callbackOrMessage, ...)
-  if type(callbackOrMessage) == 'function' then
+  if Utils.isCallable(callbackOrMessage) then
     return Timer.scheduleCallback(callbackOrMessage, ...)
   else
     return Timer.scheduleMidi(callbackOrMessage, ...)

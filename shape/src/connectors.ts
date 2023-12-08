@@ -1,5 +1,5 @@
 import { Path } from 'paper/dist/paper-core'
-import { ShapeConnector } from './types'
+import type { ShapeConnector } from './types'
 import { toPoint } from './utils'
 
 export const markerRegExp = new RegExp(/^(in|out|thru)([ _-].*)?$/)
@@ -39,10 +39,7 @@ const getMarkers = (project: paper.Project) =>
     recursive: true,
   }) as paper.Path[]
 
-const getInsetPosition = (vector: paper.Point, intersection: paper.Point) =>
-  intersection.add(vector.multiply(14)).round()
-
-const getOutlinePosition = (
+const getPosition = (
   vector: paper.Point,
   intersection: paper.Point,
   shape: paper.Path
@@ -95,33 +92,22 @@ export const getConnectors = (
       // we add an input and and output.
       const a = markerIntersections[0].point
       const b = markerIntersections[length - 1].point
-      const positions = { inset: toPoint(a.add(b.subtract(a).multiply(0.5))) }
+      const position = toPoint(a.add(b.subtract(a).multiply(0.5)))
 
-      let offset = shape.getOffsetOf(b)
       let angle = markerAngle + 180
-      const input = { positions, angle, offset, isInOut: true }
+      inputs.push({ position, angle, thru: true })
 
-      offset = shape.getOffsetOf(a)
       angle = markerAngle
-      const output = { positions, angle, offset, isInOut: true }
+      outputs.push({ position, angle, thru: true })
 
-      inputs.push(input)
-      outputs.push(output)
     } else {
       const { point } = markerIntersections[0]
-      const offset = shape.getOffsetOf(point)
-      const positions = {
-        inset: toPoint(getInsetPosition(vector, point)),
-        outline: toPoint(getOutlinePosition(vector, point, shape)),
-      }
+      const position = toPoint(getPosition(vector, point, shape))
       const angle = markerAngle
 
-      const connector = { angle, offset, positions }
-      if (direction === 'in') {
-        inputs.push(connector)
-      } else {
-        outputs.push(connector)
-      }
+      const connector = { angle, position }
+      if (direction === 'in') inputs.push(connector)
+      else outputs.push(connector)
     }
   }
 

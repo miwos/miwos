@@ -3,9 +3,9 @@ local Encoder = require('ui.components.Encoder')
 local Display = require('ui.components.Display')
 
 ---@class ButtonProps
----@field value boolean
----@field label string
----@field toggle boolean
+---@field value boolean?
+---@field label string?
+---@field toggle boolean?
 
 ---@class Button : Component
 ---@field props ButtonProps

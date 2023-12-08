@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["@types/w3c-web-serial", "jest"],
+    "types": ["@types/w3c-web-serial"],
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",

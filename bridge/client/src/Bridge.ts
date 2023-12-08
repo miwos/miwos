@@ -1,15 +1,14 @@
 import crc from 'crc/calculators/crc16xmodem'
-// @ts-ignore (missing types)
-import Message from 'osc-js'
-import { Transport } from './Transport'
-import { MessageArg } from './types'
+import { Message } from '@miwos/osc'
+import type { Transport } from './Transport'
+import type { PathParams } from './utils'
 import {
   asArray,
   createRequestId,
   EventEmitter,
   parseDirList,
-  PathParams,
 } from './utils'
+import { MessageArgValue } from '@miwos/osc/src/types'
 
 export interface BridgeOptions {
   responseTimeout?: number
@@ -59,11 +58,11 @@ export class Bridge extends EventEmitter {
     return this.transport.close()
   }
 
-  notify(name: string, args: MessageArg | MessageArg[]) {
+  notify(name: string, args: MessageArgValue | MessageArgValue[]) {
     this.sendMessage(name, args)
   }
 
-  request(name: string, args: MessageArg | MessageArg[]) {
+  request(name: string, args: MessageArgValue | MessageArgValue[]) {
     const id = createRequestId()
     this.sendMessage(name, [id, ...asArray(args)])
     return this.waitForResponse(id)
@@ -111,13 +110,13 @@ export class Bridge extends EventEmitter {
     return parseDirList(content.slice('Dir:'.length))
   }
 
-  private sendMessage(name: string, args: MessageArg | MessageArg[]) {
+  private sendMessage(name: string, args: MessageArgValue | MessageArgValue[]) {
     const message = new Message(name, ...asArray(args))
     const data = message.pack()
     return this.transport.write(data)
   }
 
-  private waitForResponse(id: number): Promise<MessageArg> {
+  private waitForResponse(id: number): Promise<MessageArgValue> {
     return new Promise((resolve, reject) => {
       const timeout = this.startResponseTimeout(reject)
 
@@ -139,10 +138,10 @@ export class Bridge extends EventEmitter {
           if (params.type === 'success') {
             resolve(response)
           } else {
-            const message = isRaw
+            const message = (isRaw && response instanceof Uint8Array)
               ? new TextDecoder().decode(response)
               : response
-            reject(new Error(message))
+            reject(new Error(message as any))
           }
         }
       }
@@ -153,7 +152,7 @@ export class Bridge extends EventEmitter {
   }
 
   private waitForRawData() {
-    return new Promise((resolve, reject) => {
+    return new Promise<Uint8Array>((resolve, reject) => {
       const timeout = this.startResponseTimeout(reject)
       this.once('/data/raw', (payload: Uint8Array) => {
         clearTimeout(timeout)

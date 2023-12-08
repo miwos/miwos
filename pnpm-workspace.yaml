@@ -2,5 +2,5 @@ packages:
   - app
   - shape
   - engine
+  - osc
   - bridge/client
-  - bridge/osc-js
