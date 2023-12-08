@@ -9,6 +9,8 @@ const pathToPosix = (path) => path.replace(/\\/g, "/");
 const wss = new WebSocketServer({ port: 8080 });
 let initialFilesSynced = false
 
+let requestId = 0
+
 const delay = async (duration) => new Promise(resolve => setTimeout(resolve, duration)) 
 
 let prevSocket
@@ -17,15 +19,25 @@ wss.on('connection', (socket) => {
   prevSocket?.close()
   prevSocket = socket
 
+  const waitForResponse = (id) => new Promise((resolve, reject) => {
+    const handler = (buffer) => {
+      const data = JSON.parse(new TextDecoder().decode(buffer))
+      if (id === data.id) {
+        socket.off('message', handler)
+        resolve()
+      }
+    }
+    socket.on('message', handler)
+    setTimeout(() => reject('response timeout'), 3000)
+  })
+
   socket.on('message', async (buffer) => {
     const data = JSON.parse(new TextDecoder().decode(buffer))
 
     if (data.method === 'deviceConnected' && !initialFilesSynced) {
       for (let path of filesToSync) {
-        syncFile(path, false)
+        await syncFile(path, false)
         console.log('sync', path)
-        // Todo: make `syncFile` async and get rid of `delay()` workaround.
-        await delay(200)
       }
       initialFilesSynced = true
       return
@@ -41,7 +53,9 @@ wss.on('connection', (socket) => {
     path = pathToPosix(path);
     const content = await fs.readFile(resolve('src', path), "utf8")
     const method = update ? 'updateFile' : 'writeFile'
-    socket.send(JSON.stringify({ method, params: { path, content } }))
+    const id = requestId++
+    socket.send(JSON.stringify({ id, method, params: { path, content } }))
+    return waitForResponse(id)
   }
 
   const watcher = chokidar.watch("**/*", { cwd: resolve(process.cwd(), 'src')});

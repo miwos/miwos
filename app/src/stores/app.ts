@@ -36,12 +36,15 @@ export const useApp = defineStore('app', () => {
         const [, name] = match
         items.updateDefinition(name)
       }
+
+      window.postMessage({ id: data.id, state: 'success' })
       return
     }
 
     if (data.method === 'writeFile') {
       const { path, content } = data.params
       await bridge.writeFile(`lua/${path}`, content)
+      window.postMessage({ id: data.id, state: 'success' })
       return
     }
   })
