@@ -1,5 +1,3 @@
-export const asArray = (v: any) => (Array.isArray(v) ? v : [v])
-
 export const indent = (depth: number) => '  '.repeat(depth)
 
 export const center = (str: string, width: number) => {

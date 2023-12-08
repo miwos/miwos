@@ -33,14 +33,9 @@ end
 
 function Log.dump(...)
   local args = { ... }
-  local dump = ''
-
   for i = 1, #args do
-    local value = args[i]
-    dump = dump .. (i > 1 and ', ' or '') .. Utils.serialize(value)
+    Log._log(LogType.Dump, Utils.serialize(args[i]))
   end
-
-  Log._log(LogType.Dump, dump)
 end
 
 local timers = {}

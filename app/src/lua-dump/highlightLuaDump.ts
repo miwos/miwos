@@ -1,6 +1,6 @@
 import { tokenizeKey, tokenizeValue } from './tokenize'
 import type { Formatter } from './types'
-import { asArray, indent } from './utils'
+import { indent } from './utils'
 
 const highlightTable = (
   obj: Record<any, any>,
@@ -9,6 +9,8 @@ const highlightTable = (
 ): string => {
   const keys = Object.keys(obj)
   if (!keys.length) return '{}'
+
+  const isArray = Array.isArray(obj)
 
   let str = '{\n'
   let index = 0
@@ -20,7 +22,10 @@ const highlightTable = (
         ? highlightTable(value, depth + 1, format)
         : highlightValue(value, format)
 
-    str += indent(depth + 1) + `${highlightedKey} = ${highlightedValue}`
+    str += indent(depth + 1)
+    str += isArray
+      ? highlightedValue
+      : `${highlightedKey} = ${highlightedValue}`
     str += index < keys.length ? ',\n' : '\n'
     index++
   }
@@ -34,10 +39,6 @@ const highlightValue = (value: string, format: Formatter) =>
  * Highlight and format the dump object from lua for printing it to the console.
  */
 export const highlightLuaDump = (dump: any, format: Formatter) =>
-  asArray(dump)
-    .map((v) =>
-      typeof v === 'object'
-        ? highlightTable(v, 0, format)
-        : highlightValue(v, format)
-    )
-    .join('\n')
+  typeof dump === 'object'
+    ? highlightTable(dump, 0, format)
+    : highlightValue(dump, format)

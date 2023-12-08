@@ -10,7 +10,7 @@ const createColorize = (colors: Colors = {}) => {
   let MARKS = Object.keys(colors).toString().replace(/,/g, '|')
   let RE_BLOCK = new RegExp(
     `\\{((?:${MARKS})(?:\\.(?:${MARKS}))*?)\\s|(\\})|(.[^{}]*)`,
-    'gi'
+    'gi',
   )
 
   return (strings: TemplateStringsArray, ...args: any) => {
@@ -52,7 +52,7 @@ const createMark = (name: string, input: string) =>
   `<span class="mark-${name}">${input}</span>`
 
 const colors = Object.fromEntries(
-  marks.map((name) => [name, (input: string) => createMark(name, input)])
+  marks.map((name) => [name, (input: string) => createMark(name, input)]),
 )
 
 colors['italic'] = (input: string) => `<i>${input}</i>`
@@ -69,12 +69,12 @@ export const useLog = defineStore('logs', () => {
   const log = (type: LogType, text: string) => {
     text = restoreCurlyBraces(colorize`${text}`)
 
-    // const lastEntry = entries.value[entries.value.length - 1]
-    // if (lastEntry && lastEntry.type === type && lastEntry.text === text) {
-    //   lastEntry.count += 1
-    // } else {
-    entries.value.push({ type, text, count: 1 })
-    // }
+    const lastEntry = entries.value[entries.value.length - 1]
+    if (lastEntry && lastEntry.type === type && lastEntry.text === text) {
+      lastEntry.count += 1
+    } else {
+      entries.value.push({ type, text, count: 1 })
+    }
   }
 
   const info = (text: string) => log('info', text)
@@ -86,11 +86,17 @@ export const useLog = defineStore('logs', () => {
   const clear = () => (entries.value = [])
 
   const dump = (dump: any) => {
-    const highlighted = highlightLuaDump(
+    const text = highlightLuaDump(
       dump,
-      (value, type) => colors[type]?.(value) ?? ''
+      (value, type) => colors[type]?.(value) ?? '',
     )
-    entries.value.push({ type: 'dump', text: highlighted, count: 1 })
+
+    const lastEntry = entries.value[entries.value.length - 1]
+    if (lastEntry && lastEntry.type === 'dump' && lastEntry.text === text) {
+      lastEntry.count += 1
+    } else {
+      entries.value.push({ type: 'dump', text, count: 1 })
+    }
   }
 
   return { entries, log, info, warn, error, dump, clear }
