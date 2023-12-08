@@ -51,8 +51,11 @@ function Strings:schedule()
         local noteOn = Midi.NoteOn(pitch, 127, 1)
         self:output(1, noteOn:schedule(self.nextNoteTime, true))
 
-        local noteOff = Midi.NoteOff(pitch, 0, 1)
-        self:output(1, noteOff:schedule(self.nextNoteTime + 50, true))
+        --? Maybe find a more accurate timing method for the note off.
+        Timer.delay(function()
+          local noteOff = Midi.NoteOff(pitch, 0, 1)
+          self:output(1, noteOff)
+        end, 200)
       end
 
       self.nextNoteTime = self.nextNoteTime + self.props.note
