@@ -27,6 +27,10 @@
     {
       "name": "shape",
       "path": "shape"
+    },
+    {
+      "name": "extension",
+      "path": "extension"
     }
   ]
 }
