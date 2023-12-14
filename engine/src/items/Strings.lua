@@ -4,17 +4,20 @@ local Strings = Miwos.defineModule('Strings', {
   inputs = { 'midi' },
   outputs = { 'midi' },
   props = {
-    note = Prop.Number({ value = 24, min = 1, max = 96, step = 1 }),
+    note = Prop.Number({ value = 6, min = 1, max = 96, step = 1 }),
+    tuning = Prop.Value({ value = { 38, 45, 50, 55, 57, 62 } }), --DADGAD
+    chord = Prop.Value({ value = { [2] = 3 } }),
+    -- pattern = Prop.Value({ value = { { 1, 3 }, { 2, 4 }, { 3, 5 }, { 4, 6 } } }),
+    pattern = Prop.Value({ value = { 1, 2, 3, 4, 5, 6 } }),
+    step = Prop.Value({ value = 0 }),
   },
 })
-
-Strings.__hmrKeep = { 'chord', 'chords', 'currentStep' }
 
 function Strings:setup()
   self.lastNoteInTime = 0
   self.maxNoteInterval = 100 -- ms
-  -- self.tuning = { 40, 45, 50, 55, 59, 64 } -- EADGBE
-  self.tuning = { 38, 45, 50, 55, 57, 62 } --DADGAD
+  -- self.props.tuning = { 40, 45, 50, 55, 59, 64 } -- EADGBE
+  -- self.props.tuning = { 38, 45, 50, 55, 57, 62 } --DADGAD
 
   self.noteInputTimer = nil
   self.scheduleTimer = nil
@@ -24,17 +27,7 @@ function Strings:setup()
 
   self.notes = {}
   self.chords = {}
-  self.chord = nil
 
-  self.pattern = {
-    { 1, 6 },
-    4,
-    2,
-    5,
-    3,
-    6,
-  }
-  self.currentStep = 1
   self:schedule()
 end
 
@@ -42,11 +35,14 @@ function Strings:schedule()
   self.scheduleTimer = Timer.delay(function()
     local ticks = Timer.ticks()
     while self.nextNoteTime < ticks + self.scheduleAheadTime do
-      local strings = Utils.asTable(self.pattern[self.currentStep])
+      self.props.step = self.props.step + 1
+      if self.props.step > #self.props.pattern then self.props.step = 1 end
+
+      local strings = Utils.asTable(self.props.pattern[self.props.step])
 
       for _, string in ipairs(strings) do
-        local fret = (self.chord and self.chord[string]) or 0
-        local pitch = self.tuning[string] + fret
+        local fret = (self.props.chord and self.props.chord[string]) or 0
+        local pitch = self.props.tuning[string] + fret
 
         local noteOn = Midi.NoteOn(pitch, 127, 1)
         self:output(1, noteOn:schedule(self.nextNoteTime, true))
@@ -59,8 +55,6 @@ function Strings:schedule()
       end
 
       self.nextNoteTime = self.nextNoteTime + self.props.note
-      self.currentStep = self.currentStep + 1
-      if self.currentStep > #self.pattern then self.currentStep = 1 end
     end
 
     self:schedule()
@@ -85,8 +79,7 @@ Strings:event('input[1]:noteOn', function(self, note)
   Timer.cancel(self.noteInputTimer)
   self.noteInputTimer = Timer.delay(function()
     self.chords = self:findFrettedChords(self.notes)
-    self.chord = self.chords[1]
-    Log.dump(self.chord)
+    self.props.chord = self.chords[1]
   end, self.maxNoteInterval)
 end)
 
@@ -99,7 +92,7 @@ function Strings:findFrettedChords(notes)
   for _, notePitch in ipairs(notes) do
     local positions = {}
     local hasPosition = false
-    for string, stringPitch in ipairs(self.tuning) do
+    for string, stringPitch in ipairs(self.props.tuning) do
       local fret = notePitch - stringPitch
       if fret >= 0 and fret <= 12 then
         positions[string] = fret

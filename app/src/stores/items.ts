@@ -56,7 +56,8 @@ export const useItems = defineStore('items', () => {
   // Init
   indexSearch(Array.from(definitions.value.keys()))
 
-  bridge.on('/n/items/prop', ({ args: [id, name, value] }) => {
+  bridge.on('/n/items/prop', ({ args: [id, name, valueSerialized] }) => {
+    const value = luaToJson(valueSerialized)
     const item = instances.value.get(id)
     if (!item) throw new Error(`Item with id '${id}' not found`)
     item.props[name] = value
@@ -141,7 +142,9 @@ export const useItems = defineStore('items', () => {
     for (const [id, item] of instances.value.entries()) {
       const category = definitions.value.get(item.type)?.category
       if (!category || !categorized[category]) {
-        console.warn(`Category '${item.category}' of item '${item.type}' not found.`)
+        console.warn(
+          `Category '${item.category}' of item '${item.type}' not found.`,
+        )
         continue
       }
       categorized[category].set(id, item)

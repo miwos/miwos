@@ -13,6 +13,14 @@ function Items.init()
   Items.updateDefinitions()
 end
 
+Miwos:on('prop:change', function(itemId, name, value)
+  local item = Items.instances[itemId]
+  if not item then error(Log.messageItemNotFound(itemId)) end
+
+  -- Todo solve prop events (what is fired when?)
+  Bridge.notify('/n/items/prop', item.__id, name, Utils.serialize(value))
+end)
+
 ---@param serialized ItemSerialzied[]
 function Items.deserialize(serialized)
   for _, serializedItem in ipairs(serialized) do

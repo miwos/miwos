@@ -1,10 +1,10 @@
 <template>
   <div class="module" ref="el" :class="{ isSelected }">
-    <component
-      class="module-custom-component"
-      v-if="customComponent"
-      :is="customComponent"
-    />
+    <template v-if="customComponent">
+      <ModuleCustom :component="customComponent" :module="module" />
+      <ConnectionPoints :item="module" />
+    </template>
+
     <template v-else>
       <ModuleMask v-if="shape" :shape="shape" :id="maskId" />
       <ModuleOutline
@@ -13,7 +13,12 @@
         :shape="shape"
       />
       <ModuleShape v-if="shape" :shape="shape" />
-      <ModuleContent :module="module" :mask="`url(#${maskId})`" />
+      <ModuleContent
+        v-if="contentComponent"
+        :component="contentComponent"
+        :module="module"
+        :mask="`url(#${maskId})`"
+      />
       <ModuleLabel
         v-if="definition?.showLabel"
         :module="module"
@@ -34,11 +39,24 @@ import type { Module, Point } from '@/types'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import ConnectionPoints from './ConnectionPoints.vue'
 import ModuleContent from './ModuleContent.vue'
+import ModuleCustom from './ModuleCustom.vue'
 import ModuleLabel from './ModuleLabel.vue'
 import ModuleMask from './ModuleMask.vue'
 import ModuleOutline from './ModuleOutline.vue'
 import ModuleProps from './ModuleProps.vue'
 import ModuleShape from './ModuleShape.vue'
+
+const props = defineProps<{ position: Point; module: Module }>()
+
+const moduleContentsImport = import.meta.glob('../modules/content/*.vue')
+const moduleContents = new Map(
+  Object.entries(moduleContentsImport).map(([path, asyncModule]) => {
+    const name = path.match(/\/([\w_-]+).vue$/)![1]
+    return [name, defineAsyncComponent(asyncModule as any)]
+  }),
+)
+
+const contentComponent = moduleContents.get(props.module.type)
 
 const moduleComponentsImport = import.meta.glob([
   '../modules/*.vue',
@@ -52,7 +70,7 @@ const moduleComponents = new Map(
   }),
 )
 
-const props = defineProps<{ position: Point; module: Module }>()
+const customComponent = moduleComponents.get(props.module.type)
 
 const project = useProject()
 const items = useItems()
@@ -67,15 +85,8 @@ const shape = computed(() => {
 
 const el = ref<HTMLElement>()
 const maskId = `module-${props.module.id}-mask`
-const customComponent = moduleComponents.get(props.module.type)
 
 const isSelected = computed(() => items.selectedIds.has(props.module.id))
-
-onMounted(() => {
-  if (!el.value) return
-  const { width, height } = el.value.getBoundingClientRect()
-  props.module.size = { width, height }
-})
 
 onMouseUpOutside(el, () => {
   if (!items.isDragging && !project.isSelecting) items.selectedIds.clear()
