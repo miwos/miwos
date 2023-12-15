@@ -1,6 +1,6 @@
 {
-  "type": "module",
   "name": "@miwos/engine",
+  "type": "module",
   "scripts": {
     "dev": "tsx scripts/sync.ts"
   },

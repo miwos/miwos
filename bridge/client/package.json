@@ -1,12 +1,10 @@
 {
   "name": "@miwos/bridge",
+  "type": "module",
   "version": "0.1.4",
   "description": "",
   "main": "src/index.ts",
-  "files": [
-    "src"
-  ],
-  "type": "module",
+  "files": ["src"],
   "scripts": {
     "dev:node": "tsup dev/index.ts --watch --onSuccess \"node dist/index.js\"",
     "dev:browser": "vite",
