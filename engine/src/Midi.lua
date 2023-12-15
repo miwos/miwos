@@ -1,6 +1,6 @@
 ---@class Midi : EventEmitter
 ---@field private __send fun(index: number, type: number, data1: number, data2: number, channel: number, cable: number)
----@field start fun()
+---@field __start fun()
 ---@field __stop fun()
 ---@field getIsPlaying fun(): boolean
 ---@field setTempo fun(bpm: number)
@@ -60,12 +60,20 @@ function Midi.send(index, message, cable)
   Midi.__send(index, message.type, data1, data2, message.channel, cable)
 end
 
-function Midi.stop()
+function Midi.start()
+  Midi.__start()
   for _, item in pairs(Items.instances) do
+    item:callEvent('clock:start')
+  end
+end
+
+function Midi.stop()
+  Timer.clearScheduledMidi()
+  Midi.__stop()
+  for _, item in pairs(Items.instances) do
+    item:callEvent('clock:stop')
     item:__finishNotes()
   end
-
-  Midi.__stop()
 end
 
 ---@param note MidiNoteOn | MidiNoteOff

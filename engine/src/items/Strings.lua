@@ -27,8 +27,6 @@ function Strings:setup()
 
   self.notes = {}
   self.chords = {}
-
-  self:schedule()
 end
 
 function Strings:schedule()
@@ -65,6 +63,16 @@ function Strings:destroy()
   Timer.cancel(self.noteInputTimer)
   Timer.cancel(self.scheduleTimer)
 end
+
+Strings:event('clock:start', function(self)
+  ---@cast self ModuleStrings
+  self:schedule()
+end)
+
+Strings:event('clock:stop', function(self)
+  ---@cast self ModuleStrings
+  Timer.cancel(self.scheduleTimer)
+end)
 
 Strings:event('input[1]:noteOn', function(self, note)
   ---@cast self ModuleStrings

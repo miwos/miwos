@@ -1,5 +1,6 @@
 ---@class Timer
 ---@field _scheduleMidi fun(time: number, useTicks: boolean, type: number, data1: number, data2: number, channel: number, deviceIndex: number, cable: number): boolean
+---@field clearScheduledMidi fun()
 ---@field millis fun(): number
 ---@field micros fun(): number
 ---@field ticks fun(): number

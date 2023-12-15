@@ -31,6 +31,9 @@ namespace TimerLib {
 
   void updateEvents(uint32_t time, bool useTicks) {
     for (byte i = 0; i < MAX_EVENTS; i++) {
+      // Ignore free/empty events.
+      if (events[i].data == 0) continue;
+
       bool eventUsesTicks = events[i].data & (1 << 31);
       // Restore the MSB, see `LuaTimer::scheduleMidi()`.
       uint32_t data = events[i].data | (1 << 31);
@@ -130,6 +133,13 @@ namespace TimerLib {
       lua_pushboolean(L, true);
       return 1;
     }
+
+    int clearScheduledMidi(lua_State *L) {
+      for (byte i = 0; i < MAX_EVENTS; i++) {
+        events[i].data = 0;
+      }
+      return 0;
+    }
   } // namespace lib
 
   void install() {
@@ -140,7 +150,9 @@ namespace TimerLib {
       {"micros", lib::micros},
       {"ticks", lib::ticks},
       {"_scheduleMidi", lib::scheduleMidi},
-      {NULL, NULL}};
+      {"clearScheduledMidi", lib::clearScheduledMidi},
+      {NULL, NULL}
+    };
 
     luaL_register(Lua::L, "Timer", lib);
   }
