@@ -1,4 +1,4 @@
----@class ChordSplit : Module
+---@class ModuleChordSplit : Module
 local ChordSplit = Miwos.defineModule('ChordSplit', {
   label = 'Chord\\nSplit',
   shape = 'Split',
@@ -18,7 +18,7 @@ function ChordSplit:setup()
 end
 
 ChordSplit:event('input[1]:noteOn', function(self, note)
-  ---@cast self ChordSplit
+  ---@cast self ModuleChordSplit
   ---@cast note MidiNoteOn
 
   local time = Timer.millis()
@@ -35,7 +35,7 @@ ChordSplit:event('input[1]:noteOn', function(self, note)
 end)
 
 ChordSplit:event('input[1]:noteOff', function(self, note)
-  ---@cast self ChordSplit
+  ---@cast self ModuleChordSplit
   ---@cast note MidiNoteOn
 
   local noteId = Midi.getNoteId(note)
