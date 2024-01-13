@@ -1,43 +1,59 @@
 <template>
-  <div class="strings" ref="el">
-    <svg
-      class="strings-container"
-      :viewBox="`0 0 ${strings} 1`"
-      preserveAspectRatio="none"
-    >
-      <line
-        v-for="string in strings"
-        class="string"
-        :data-is-plucked="stringIsPlucked(string)"
-        :x1="string - 0.5"
-        :y1="0"
-        :x2="string - 0.5"
-        :y2="1"
-      ></line>
-    </svg>
-
-    <div class="fret-board">
-      <div
-        v-for="fret in frets"
-        class="fret"
-        ref="fretElements"
-        :data-has-mark="fretIntervalMarks.includes(fret)"
-      >
+  <div
+    class="container"
+    ref="el"
+    :style="`
+      --strings: ${strings};
+      --frets: ${frets};
+      --visible-frets: ${visibleFrets};
+      --fret-width: ${fretWidth}px;
+      --fret-height: ${fretHeight}px;
+    `"
+  >
+    <div class="midi-in"></div>
+    <div class="nut">{{ topmostFret }}</div>
+    <div class="neck" ref="neck">
+      <div class="board"></div>
+      <div class="frets">
         <div
-          v-for="string in chordByFret[fret]"
-          class="fret-pressed"
-          :data-is-plucked="stringIsPlucked(string)"
-          :style="`--string: ${string}`"
-        ></div>
+          v-for="fret in frets"
+          class="fret"
+          ref="fretElements"
+          :data-has-mark="fretIntervalMarks.includes(fret)"
+        >
+          <div
+            v-for="string in chordByFret[fret]"
+            class="fret-pressed"
+            :data-is-plucked="stringIsPlucked(string)"
+            :style="`--string: ${string}`"
+          ></div>
+        </div>
       </div>
+      <svg
+        class="strings"
+        :viewBox="`0 0 ${strings - 1} 1`"
+        preserveAspectRatio="none"
+      >
+        <line
+          v-for="(string, index) in strings"
+          class="string"
+          :data-is-plucked="stringIsPlucked(string)"
+          :x1="index"
+          :y1="0"
+          :x2="index"
+          :y2="1"
+        ></line>
+      </svg>
     </div>
+    <div class="midi-out"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Module, Size } from '@/types'
-import { asHashTable, asArray } from '@/utils'
-import { computed, onMounted, ref, effect } from 'vue'
+import { asArray, asHashTable } from '@/utils'
+import { useScroll } from '@vueuse/core'
+import { computed, effect, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   module: Module
@@ -55,8 +71,13 @@ const fretElements = ref<HTMLElement[] | undefined>()
 
 const strings = computed(() => props.tuning.length)
 const frets = 12
+const neck = ref<HTMLElement | undefined>()
 const visibleFrets = 7
+const fretWidth = 18 // px
+const fretHeight = 24 // px
 const fretIntervalMarks = [3, 5, 7, 9, 12]
+const { y: scrollTop } = useScroll(neck)
+const topmostFret = computed(() => Math.floor(scrollTop.value / fretHeight) + 1)
 
 const chordByFret = computed(() => {
   const chordTable = asHashTable(props.chord)
@@ -81,66 +102,160 @@ onMounted(() => {
 })
 
 effect(() => {
+  const { height = 0 } = el.value?.getBoundingClientRect() ?? {}
+  props.module.inputs = [{ position: { x: fretWidth * 1.5, y: 0 } }]
+  props.module.outputs = [
+    { position: { x: (fretWidth * strings.value) / 2, y: height } },
+  ]
+})
+
+const getFretRange = (chord: Record<number, number | number[]>) => {
   let lowestFret: number | undefined
   let highestFret: number | undefined
 
-  const chordTable = asHashTable(props.chord)
+  const chordTable = asHashTable(chord)
   for (const string in chordTable) {
-    const frets = asArray(chordTable[string])
+    // Ignore open strings, since they are not pressed to play the chord.
+    const frets = asArray(chordTable[string]).filter((fret) => fret > 0)
+    if (!frets.length) continue
     const min = Math.min(...frets)
     const max = Math.max(...frets)
     if (lowestFret === undefined || min < lowestFret) lowestFret = min
     if (highestFret === undefined || max > highestFret) highestFret = min
   }
 
-  if (!el.value) return
+  return [lowestFret, highestFret]
+}
 
-  if (highestFret === undefined || lowestFret === undefined) {
-    el.value.scrollTop = 0
-    return
-  }
+watch(
+  () => props.chord,
+  (chord = []) => {
+    if (!neck.value) return
 
-  if (highestFret <= visibleFrets) {
-    el.value.scrollTop = 0
-    return
-  }
+    const [lowestFret, highestFret] = getFretRange(chord)
+    if (lowestFret === undefined || highestFret === undefined) return
 
-  const fret = fretElements.value?.[lowestFret]
-  if (fret) el.value.scrollTop = fret.getBoundingClientRect().top
-})
+    const fretSpan = highestFret - lowestFret
+    const lowestVisibleFret = topmostFret.value
+    const highestVisibleFret = lowestVisibleFret + visibleFrets - 1
+
+    // We want to avoid unnecessary scrolling, so if the new chord is fully
+    // visible we don't have to do anything.
+    if (lowestFret >= lowestVisibleFret && highestFret <= highestVisibleFret) {
+      return
+    }
+
+    // Always scroll to the top, if possible.
+    if (highestFret <= visibleFrets) {
+      neck.value.scrollTop = 0
+      return
+    }
+
+    // Chord fret span is too big, just show the start.
+    if (fretSpan > visibleFrets) {
+      neck.value.scrollTop = (lowestFret - 1) * fretHeight
+      return
+    }
+
+    // Prefer the interval marks for easier navigation.
+    for (const fret of fretIntervalMarks) {
+      if (lowestFret >= fret && highestFret <= fret + visibleFrets) {
+        neck.value.scrollTop = (fret - 1) * fretHeight
+        return
+      }
+    }
+
+    neck.value.scrollTop = (lowestFret - 1) * fretHeight
+  },
+)
 </script>
 
 <style scoped>
-.strings {
-  --fret-height: 1.5rem;
+.container {
   --fret-width: 1rem;
-  --visible-frets: 7;
-  --strings: v-bind(strings);
-  --frets: v-bind(frets);
+  --fret-width-half: calc(var(--fret-width) / 2);
+  --board-width: calc((var(--strings) - 1) * var(--fret-width));
+  --string-width: 1px;
   --transition-active-in: 50ms;
   --transition-active-out: 400ms;
   --scrollbar-width: 4px;
 
-  height: calc(var(--fret-height) * var(--visible-frets));
-  overflow-y: scroll;
+  display: grid;
+  grid-template-columns:
+    [content-start]
+    calc(var(--strings) * var(--fret-width))
+    [content-end]
+    var(--scrollbar-width);
   pointer-events: all;
-
-  scroll-snap-type: block mandatory;
-  scroll-behavior: smooth;
-  padding-right: var(--scrollbar-width);
 }
 
-.strings-container {
-  position: absolute;
-  width: calc(var(--fret-width) * (var(--strings)));
-  height: 100%;
+.midi-in {
+  background-color: var(--color-module-bg);
+  height: 1.5rem;
+  width: 1.5rem;
+  border-top-left-radius: 100%;
+  border-top-right-radius: 100%;
+  margin-left: calc(var(--fret-width) * 1.5);
+  translate: -50%;
+}
+
+.midi-out {
+  grid-column: content;
+  justify-self: center;
+  background-color: var(--color-module-bg);
+  height: 1.5rem;
+  width: 1.5rem;
+  border-bottom-left-radius: 100%;
+  border-bottom-right-radius: 100%;
+}
+
+.neck {
+  position: relative;
+  display: grid;
+  grid-template-rows: calc(var(--frets) * var(--fret-height));
+  grid-template-columns:
+    var(--fret-width-half)
+    [board-start]
+    var(--board-width)
+    [board-end]
+    var(--fret-width-half);
+  grid-column: 1/-1;
+
+  height: calc(var(--visible-frets) * var(--fret-height));
+
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scroll-snap-type: block mandatory;
+}
+
+.nut {
+  grid-column: content;
+  width: var(--board-width);
+  justify-self: center;
+  background-color: black;
+  border-inline: var(--string-width) solid black;
+  text-align: center;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.board {
+  grid-column: board;
+  grid-row: 1/-1;
+  background-color: var(--color-module-bg);
+}
+
+.strings {
   display: block;
+  grid-column: board;
+  grid-row: 1/-1;
+  height: 100%;
+  width: 100%;
   overflow: visible;
-  pointer-events: none;
 }
 .string {
   stroke: black;
-  stroke-width: 1;
+  stroke-width: var(--string-width);
   vector-effect: non-scaling-stroke;
   transition: stroke var(--transition-active-out) ease-out;
 
@@ -150,8 +265,9 @@ effect(() => {
   }
 }
 
-.fret-board {
-  background-color: var(--color-module-bg);
+.frets {
+  grid-column: 1/-1;
+  grid-row: 1/-1;
 }
 
 .fret {
@@ -161,7 +277,6 @@ effect(() => {
   align-items: center;
   justify-items: center;
   height: var(--fret-height);
-
   border-bottom: 1px solid #626262;
   scroll-snap-align: center;
 
@@ -180,8 +295,8 @@ effect(() => {
   grid-column: var(--string);
   grid-row: 1;
   background-color: black;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0.875rem;
+  height: 0.875rem;
   border-radius: 9999px;
   transition: background-color var(--transition-active-out) ease-out;
 
@@ -197,7 +312,7 @@ effect(() => {
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
+  border-radius: var(--scrollbar-width);
   background: var(--color-glass-solid);
 }
 </style>
