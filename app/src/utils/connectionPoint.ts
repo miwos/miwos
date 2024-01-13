@@ -33,7 +33,7 @@ export const getConnectionPoint = (
     ...item[directionCategory]?.[index],
   }
 
-  if (connectionPoint.signal === 'midi') {
+  if (connectionPoint.signal === 'midi' && !connectionPoint.thru) {
     const vec = new Vec(1, 0)
       .rotate(connectionPoint.angle * (Math.PI / 180))
       .multiply(14)
