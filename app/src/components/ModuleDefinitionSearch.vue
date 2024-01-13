@@ -60,7 +60,7 @@ defineExpose({ focus, clear })
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  height: 100%;
+  // height: 100%;
 
   // The lightbox and the search being the only element on the page should
   // provide enough focus.

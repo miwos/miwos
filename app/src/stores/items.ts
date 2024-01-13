@@ -213,7 +213,7 @@ export const useItems = defineStore('items', () => {
     fuse?.search(query).map(({ item: id }) => definitions.value.get(id)!) ?? []
 
   const add = (
-    item: Optional<Item, 'id' | 'props' | 'label'>,
+    item: Optional<Item, 'id' | 'props' | 'modulatedProps' | 'label'>,
     updateDevice = true,
   ) => {
     const definition = definitions.value.get(item.type)
