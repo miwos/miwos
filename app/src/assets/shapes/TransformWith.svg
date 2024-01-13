@@ -3,7 +3,7 @@
 <path id="shape" d="M79.8609 5.84628L88.0352 28.4102L49.5 53.154H25.65L5.14996 29.5001L25.65 5.84628H79.8609Z" fill="#C4C4C4"/>
 <path id="props" d="M0 29.5L10 29.5" stroke="#00D300"/>
 <path id="props_2" d="M92.9018 28.4109L82.9018 28.4109" stroke="#00D300"/>
+<path id="thru" d="M37.5 0.845001V58.155" stroke="#0000FF"/>
 <path id="in" d="M79.2464 18.8386L88.6434 15.4184" stroke="#0000FF"/>
-<path id="inout" d="M37.5 0.845001V58.155" stroke="#0000FF"/>
 </g>
 </svg>
