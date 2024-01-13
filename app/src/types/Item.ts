@@ -11,8 +11,8 @@ export interface Item {
   props: Record<string, unknown>
   modulatedProps: Record<string, unknown>
   position: Point
-  inputs?: { signal: Signal; position?: Point; angle?: number }[]
-  outputs?: { signal: Signal; position?: Point; angle?: number }[]
+  inputs?: { signal?: Signal; position?: Point; angle?: number }[]
+  outputs?: { signal?: Signal; position?: Point; angle?: number }[]
 }
 
 export interface ItemSerialized {
