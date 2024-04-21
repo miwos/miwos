@@ -1,23 +1,3 @@
-<template>
-  <div class="modulator" @keydown.delete="remove" tabindex="0">
-    <ScrollingPlot
-      ref="plot"
-      class="modulator-plot glass-dark"
-      color="orange"
-    />
-    <ItemPropHandle
-      class="modulator-props-menu-handle"
-      :status="status"
-      @click="showPropsMenu"
-    />
-    <ModulatorProps
-      v-if="propsMenuIsVisible"
-      ref="propsMenu"
-      :modulator="modulator"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
 import { useItems } from '@/stores/items'
@@ -78,6 +58,22 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
 })
 </script>
 
+<template>
+  <div class="modulator" @keydown.delete="remove" tabindex="0">
+    <ScrollingPlot ref="plot" class="plot glass-dark" color="orange" />
+    <ItemPropHandle
+      class="menu-handle"
+      :status="status"
+      @click="showPropsMenu"
+    />
+    <ModulatorProps
+      v-if="propsMenuIsVisible"
+      ref="propsMenu"
+      :modulator="modulator"
+    />
+  </div>
+</template>
+
 <style scoped>
 .modulator {
   position: relative;
@@ -90,7 +86,7 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
   }
 }
 
-.modulator-plot {
+.plot {
   height: 50px;
   width: 120px;
   box-sizing: border-box;
@@ -98,7 +94,7 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
   border-radius: var(--radius-s);
 }
 
-.modulator-props-menu-handle {
+.menu-handle {
   margin-left: 12px; /* Same as module props, see `shape` package. */
 }
 </style>

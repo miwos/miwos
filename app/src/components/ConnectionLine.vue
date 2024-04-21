@@ -1,13 +1,8 @@
 <template>
   <svg class="connection-line" :class="{ active: isActive }">
-    <path class="line-selected" v-if="isSelected" :d="path?.data" />
-    <path class="line-display" :d="path?.data" />
-    <path
-      class="line-hit-area"
-      ref="hitArea"
-      :d="path?.data"
-      :style="hitAreaDash"
-    />
+    <path class="selected" v-if="isSelected" :d="path?.data" />
+    <path class="display" :d="path?.data" />
+    <path class="hit-area" ref="hitArea" :d="path?.data" :style="hitAreaDash" />
     <g v-if="debug">
       <circle
         v-for="{ x, y } in path?.controls"
@@ -76,16 +71,13 @@ watchDebounced(
   outline: none;
 }
 
-.line-hit-area {
-  pointer-events: stroke;
-  stroke-width: 20px;
+.selected {
+  stroke: rgb(0 0 0 / 16%);
+  stroke-width: 8px;
   fill: none;
-  &:focus {
-    outline: none;
-  }
 }
 
-.line-display {
+.display {
   stroke-width: 1px;
   stroke: var(--color-connection);
   transition: stroke var(--transition-duration-connection);
@@ -95,12 +87,16 @@ watchDebounced(
   }
 }
 
-.line-selected {
-  stroke: rgb(0 0 0 / 16%);
-  stroke-width: 8px;
+.hit-area {
+  pointer-events: stroke;
+  stroke-width: 20px;
   fill: none;
+  &:focus {
+    outline: none;
+  }
 }
 
+/* For visual debugging */
 .control-point {
   fill: blue;
 }

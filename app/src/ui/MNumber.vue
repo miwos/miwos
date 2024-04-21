@@ -1,19 +1,3 @@
-<template>
-  <div class="m-input">
-    <span class="m-input-before">{{ before }}</span>
-    <input
-      ref="input"
-      :value="value"
-      type="number"
-      v-bind="{ min, max, step }"
-      @change="emit('update:value', parseInt(($event.target as any).value))"
-      @blur="emit('blur')"
-      @focus="emit('focus')"
-    />
-    <span class="m-input-after">{{ unit }}</span>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 
@@ -39,15 +23,25 @@ const focus = () => window.setTimeout(() => input.value?.focus())
 defineExpose({ focus })
 </script>
 
-<style scoped>
-.m-input-before,
-.m-input-after {
-  display: flex;
-  align-items: center;
-  color: hsl(0deg 0% 85%);
-}
+<template>
+  <div>
+    <span class="before">{{ before }}</span>
+    <input
+      class="input"
+      ref="input"
+      :value="value"
+      type="number"
+      v-bind="{ min, max, step }"
+      @change="emit('update:value', parseInt(($event.target as any).value))"
+      @blur="emit('blur')"
+      @focus="emit('focus')"
+    />
+    <span class="after">{{ unit }}</span>
+  </div>
+</template>
 
-input {
+<style scoped>
+.input {
   flex: 1;
   min-width: 1em;
   cursor: ew-resize;
@@ -57,5 +51,12 @@ input {
     -webkit-appearance: none;
     margin: 0;
   }
+}
+
+.before,
+.after {
+  display: flex;
+  align-items: center;
+  color: hsl(0deg 0% 85%);
 }
 </style>

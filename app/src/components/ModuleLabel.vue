@@ -1,24 +1,3 @@
-<template>
-  <div class="module-label">
-    <template v-if="positionedLabels?.length">
-      <div
-        v-for="label of positionedLabels"
-        class="module-label-positioned"
-        :style="{
-          width: `${label.length}px`,
-          'text-align': label.align,
-          '--x': `${label.position.x}px`,
-          '--y': `${label.position.y}px`,
-          '--angle': `${label.angle}deg`,
-        }"
-      >
-        {{ label.text }}
-      </div>
-    </template>
-    <div class="module-label-default" v-else>{{ module.label }}</div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { Module } from '@/types'
 import { computed } from 'vue'
@@ -43,8 +22,30 @@ const positionedLabels = computed(() => {
 })
 </script>
 
+<template>
+  <div class="container">
+    <template v-if="positionedLabels?.length">
+      <div
+        v-for="label of positionedLabels"
+        class="label"
+        :data-positioned="true"
+        :style="{
+          width: `${label.length}px`,
+          'text-align': label.align,
+          '--x': `${label.position.x}px`,
+          '--y': `${label.position.y}px`,
+          '--angle': `${label.angle}deg`,
+        }"
+      >
+        {{ label.text }}
+      </div>
+    </template>
+    <div v-else class="label" :data-positioned="false">{{ module.label }}</div>
+  </div>
+</template>
+
 <style scoped>
-.module-label {
+.container {
   position: absolute;
   top: 0;
   left: 0;
@@ -60,16 +61,18 @@ const positionedLabels = computed(() => {
   font-family: Vevey Positive;
 }
 
-.module-label-default {
-  text-align: center;
-}
+.label {
+  &[data-positioned='true'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+    transform: translate(var(--x), var(--y)) rotate(var(--angle))
+      translateY(-100%);
+  }
 
-.module-label-positioned {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top left;
-  transform: translate(var(--x), var(--y)) rotate(var(--angle))
-    translateY(-100%);
+  &[data-positioned='false'] {
+    text-align: center;
+  }
 }
 </style>

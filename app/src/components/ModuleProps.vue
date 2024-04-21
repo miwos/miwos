@@ -1,20 +1,3 @@
-<template>
-  <div class="module-props">
-    <ItemProp
-      v-for="(prop, index) in listedProps"
-      class="module-prop"
-      :name="prop.name"
-      :type="prop.type"
-      :itemId="module.id"
-      :data-side="index < 3 ? 'right' : 'left'"
-      :style="getPosition(index)"
-      :options="prop.options"
-      :value="module.props[prop.name]"
-      @update:value="items.updateProp(module.id, prop.name, $event)"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { Module } from '@/types'
@@ -63,12 +46,29 @@ const getPosition = (index: number) => {
 }
 </script>
 
+<template>
+  <div class="module-props">
+    <ItemProp
+      v-for="(prop, index) in listedProps"
+      class="prop"
+      :name="prop.name"
+      :type="prop.type"
+      :itemId="module.id"
+      :data-side="index < 3 ? 'right' : 'left'"
+      :style="getPosition(index)"
+      :options="prop.options"
+      :value="module.props[prop.name]"
+      @update:value="items.updateProp(module.id, prop.name, $event)"
+    />
+  </div>
+</template>
+
 <style scoped>
 .module-props {
-  pointer-events: all;
+  pointer-events: auto;
 }
 
-.module-prop {
+.prop {
   position: absolute;
   transform: translateY(-50%);
 

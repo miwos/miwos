@@ -1,35 +1,3 @@
-<template>
-  <div class="memory-monitor glass" :data-usage="usage">
-    <div class="label">
-      Memory:
-      <span class="label-value">{{ Math.floor(values.at(-1) ?? 0) }}</span
-      >kb
-    </div>
-    <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="none">
-      <polyline :points="area" class="area" />
-      <polyline :points="points" class="line" />
-
-      <line
-        v-for="n in horizontalGuides - 1"
-        x1="0"
-        :y1="n * horizontalGuideDistance"
-        :x2="width"
-        :y2="n * horizontalGuideDistance"
-        class="guide"
-      />
-
-      <line
-        v-for="n in (steps - 1) / 4 + 1"
-        :x1="n * verticalGuidesDistance - verticalGuideOffsetSteps"
-        y1="0"
-        :x2="n * verticalGuidesDistance - verticalGuideOffsetSteps"
-        :y2="height"
-        class="guide"
-      />
-    </svg>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useEventBus } from '@vueuse/core'
@@ -79,6 +47,38 @@ deviceMemoryBus.on((value) => {
   values.value.push(value)
 })
 </script>
+
+<template>
+  <div class="memory-monitor glass" :data-usage="usage">
+    <div class="label">
+      Memory:
+      <span class="value">{{ Math.floor(values.at(-1) ?? 0) }}</span
+      >kb
+    </div>
+    <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="none">
+      <polyline :points="area" class="area" />
+      <polyline :points="points" class="line" />
+
+      <line
+        v-for="n in horizontalGuides - 1"
+        x1="0"
+        :y1="n * horizontalGuideDistance"
+        :x2="width"
+        :y2="n * horizontalGuideDistance"
+        class="guide"
+      />
+
+      <line
+        v-for="n in (steps - 1) / 4 + 1"
+        :x1="n * verticalGuidesDistance - verticalGuideOffsetSteps"
+        y1="0"
+        :x2="n * verticalGuidesDistance - verticalGuideOffsetSteps"
+        :y2="height"
+        class="guide"
+      />
+    </svg>
+  </div>
+</template>
 
 <style scoped>
 .memory-monitor {
@@ -139,7 +139,7 @@ deviceMemoryBus.on((value) => {
     text-shadow: 1px 1px var(--color-glass-dark-solid);
   }
 
-  .label-value {
+  .value {
     /* Make sure value won't flicker (as we don't use a monospace) */
     display: inline-block;
     min-width: 2.1em;

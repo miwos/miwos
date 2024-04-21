@@ -1,51 +1,3 @@
-<template>
-  <div class="item-prop" ref="el">
-    <ItemPropHandle :status="handleStatus" @click="showContext" />
-    <div class="item-prop-content" ref="content">
-      <button
-        v-if="nameIsVisible"
-        ref="label"
-        class="item-prop-name"
-        @click="showField"
-        @focus="showField"
-      >
-        {{ props.name }}
-      </button>
-      <component
-        v-if="fieldIsVisible"
-        :is="components[type] ?? Number"
-        v-bind="options"
-        :name="name"
-        :value="value"
-        ref="field"
-        class="item-prop-field glass"
-        @update:value="emit('update:value', $event)"
-        @blur="hideField"
-      />
-    </div>
-    <Teleport to="body">
-      <div v-if="contextIsVisible" ref="context" class="item-prop-context">
-        <MappingSelect
-          class="item-prop-mapping"
-          :value="mapping?.slot"
-          @update:value="setMapping"
-        />
-        <ModulateAmount
-          v-if="amountIsVisible && modulation"
-          :value="modulation?.amount"
-          :modulation="modulation"
-          @update:value="updateModulationAmount"
-        />
-        <ModulateSelect
-          v-else
-          :value="modulation?.modulatorId"
-          @update:value="setModulation"
-        />
-      </div>
-    </Teleport>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { onMouseDownOutside } from '@/composables/onMouseDownOutside'
 import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
@@ -173,6 +125,54 @@ onMouseUpOutside(el, hideField)
 onMouseDownOutside(context, hideContext)
 </script>
 
+<template>
+  <div ref="el" class="item-prop">
+    <ItemPropHandle :status="handleStatus" @click="showContext" />
+    <div ref="content" class="content">
+      <button
+        v-if="nameIsVisible"
+        ref="label"
+        class="label"
+        @click="showField"
+        @focus="showField"
+      >
+        {{ props.name }}
+      </button>
+      <component
+        v-if="fieldIsVisible"
+        :is="components[type] ?? Number"
+        ref="field"
+        v-bind="options"
+        :name="name"
+        :value="value"
+        class="item-prop-field glass"
+        @update:value="emit('update:value', $event)"
+        @blur="hideField"
+      />
+    </div>
+    <Teleport to="body">
+      <div v-if="contextIsVisible" ref="context" class="context">
+        <MappingSelect
+          class="mapping"
+          :value="mapping?.slot"
+          @update:value="setMapping"
+        />
+        <ModulateAmount
+          v-if="amountIsVisible && modulation"
+          :value="modulation?.amount"
+          :modulation="modulation"
+          @update:value="updateModulationAmount"
+        />
+        <ModulateSelect
+          v-else
+          :value="modulation?.modulatorId"
+          @update:value="setModulation"
+        />
+      </div>
+    </Teleport>
+  </div>
+</template>
+
 <style scoped>
 .item-prop {
   gap: 0.5em;
@@ -181,11 +181,11 @@ onMouseDownOutside(context, hideContext)
   align-items: center;
 }
 
-.item-prop-content {
+.content {
   position: relative;
 }
 
-.item-prop-name {
+.label {
   font-family: 'Vevey Positive';
   font-size: 16px;
   text-transform: capitalize;
@@ -193,18 +193,7 @@ onMouseDownOutside(context, hideContext)
   cursor: pointer;
 }
 
-/* ? How to style fields?
-&-field {
-  display: flex;
-  border-radius: var(--radius-xs);
-  width: 6em;
-  height: 1.5em;
-  padding: 0 0.3em;
-  box-sizing: border-box;
-  font-weight: 300;
-} */
-
-.item-prop-context {
+.context {
   position: absolute;
   display: flex;
   flex-direction: column;

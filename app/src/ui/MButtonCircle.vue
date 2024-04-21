@@ -1,13 +1,13 @@
-<template>
-  <button class="m-button-circle" @click="emit('click', $event)"></button>
-</template>
-
 <script setup lang="ts">
 const emit = defineEmits(['click'])
 </script>
 
+<template>
+  <button class="button" @click="emit('click', $event)"></button>
+</template>
+
 <style scoped>
-.m-button-circle {
+.button {
   width: 2.5rem;
   min-width: 2.5rem;
   height: 2.5rem;

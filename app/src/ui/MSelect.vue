@@ -1,41 +1,3 @@
-<template>
-  <ul
-    ref="el"
-    class="m-select"
-    :class="{ 'show-unset': showUnset }"
-    :data-theme="theme ?? 'default'"
-    :data-single-option="options.length === 1"
-    role="listbox"
-    :aria-label="label"
-    tabindex="0"
-  >
-    <li
-      v-for="(option, index) in props.options"
-      :key="option.id"
-      class="m-select-option"
-      :class="{ focused: index === focusedIndex }"
-      role="option"
-      :aria-selected="props.value === option.id"
-      @click.stop="emit('update:value', option.id)"
-      @mouseenter="focus(index)"
-    >
-      <slot name="option" v-bind="option" :isFocused="index === focusedIndex">
-        {{ option.label }}
-      </slot>
-      <button
-        v-if="showUnset && option.id === value"
-        class="m-select-unset"
-        @click.stop="emit('update:value', undefined)"
-      >
-        <svg viewBox="0 0 10 10" class="icon">
-          <line x1="0" y1="0" x2="10" y2="10" />
-          <line x1="10" y1="0" x2="0" y2="10" />
-        </svg>
-      </button>
-    </li>
-  </ul>
-</template>
-
 <script setup lang="ts">
 import { useElementBounding } from '@vueuse/core'
 import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
@@ -64,7 +26,7 @@ onMounted(() => {
   }
 })
 
-watch(options, async () => (focusedIndex.value = 0))
+watch(options, () => (focusedIndex.value = 0))
 
 const focus = (index: number) => {
   const { length } = options.value
@@ -108,8 +70,46 @@ onMounted(() => window.addEventListener('keydown', onKeyDown))
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 </script>
 
-<style>
-.m-select {
+<template>
+  <ul
+    ref="el"
+    class="select"
+    :data-show-unset="showUnset"
+    :data-theme="theme ?? 'default'"
+    :data-single-option="options.length === 1"
+    role="listbox"
+    :aria-label="label"
+    tabindex="0"
+  >
+    <li
+      v-for="(option, index) in props.options"
+      :key="option.id"
+      class="option"
+      :class="{ focused: index === focusedIndex }"
+      role="option"
+      :aria-selected="props.value === option.id"
+      @click.stop="emit('update:value', option.id)"
+      @mouseenter="focus(index)"
+    >
+      <slot name="option" v-bind="option" :isFocused="index === focusedIndex">
+        {{ option.label }}
+      </slot>
+      <button
+        v-if="showUnset && option.id === value"
+        class="unset"
+        @click.stop="emit('update:value', undefined)"
+      >
+        <svg viewBox="0 0 10 10" class="icon">
+          <line x1="0" y1="0" x2="10" y2="10" />
+          <line x1="10" y1="0" x2="0" y2="10" />
+        </svg>
+      </button>
+    </li>
+  </ul>
+</template>
+
+<style scoped>
+.select {
   position: relative;
   list-style: none;
   padding-left: 0;
@@ -130,17 +130,17 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
   }
 }
 
-.m-select-option {
+.option {
   cursor: pointer;
 }
 
-.m-select[data-theme='default'] {
+.select[data-theme='default'] {
   --radius: var(--radius-s);
   border-radius: var(--radius);
   white-space: nowrap;
   background-color: var(--m-select-color-bg);
 
-  .m-select-option {
+  .option {
     height: 23px;
     display: flex;
     align-items: center;
@@ -167,16 +167,16 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
     }
   }
 
-  &[data-single-option='true'] .m-select-option {
+  &[data-single-option='true'] .option {
     border-radius: var(--radius);
   }
 
-  &.show-unset .m-select-option[aria-selected='true'] {
+  &[data-show-unset='true'] .option[aria-selected='true'] {
     /* Add a little space for the unset button. */
     padding-right: calc(var(--radius) + 0.1rem);
   }
 
-  .m-select-unset {
+  .unset {
     --bg: #d9d9d9;
     --color: black;
 

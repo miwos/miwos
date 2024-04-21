@@ -1,10 +1,3 @@
-<template>
-  <TheTopBar />
-  <RouterView />
-  <TheLog />
-  <div id="dialog-layer"></div>
-</template>
-
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import TheLog from './components/TheLog.vue'
@@ -16,3 +9,10 @@ import TheTopBar from './components/TheTopBar.vue'
 // watch(keys['Ctrl+Z'], (v) => v && undo())
 // watch(keys['Ctrl+Y'], (v) => v && redo())
 </script>
+
+<template>
+  <TheTopBar />
+  <RouterView />
+  <TheLog />
+  <div id="dialog-layer"></div>
+</template>

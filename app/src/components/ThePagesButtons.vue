@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useMappings } from '@/stores/mappings'
+import MButtonCircle from '@/ui/MButtonCircle.vue'
+
+const mappings = useMappings()
+</script>
+
 <template>
   <div class="pages-buttons glass">
     <MButtonCircle
@@ -8,13 +15,6 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-import { useMappings } from '@/stores/mappings'
-import MButtonCircle from '@/ui/MButtonCircle.vue'
-
-const mappings = useMappings()
-</script>
 
 <style scoped>
 .pages-buttons {

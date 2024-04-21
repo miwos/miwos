@@ -1,7 +1,3 @@
-<template>
-  <div class="module-mask" v-html="clipPath"></div>
-</template>
-
 <script setup lang="ts">
 import type { Shape } from '@miwos/shape'
 import { computed } from 'vue'
@@ -27,6 +23,10 @@ const clipPath = computed(() => {
   return svg.outerHTML
 })
 </script>
+
+<template>
+  <div class="module-mask" v-html="clipPath"></div>
+</template>
 
 <style>
 .module-mask {

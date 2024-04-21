@@ -1,12 +1,3 @@
-<template>
-  <MSelect
-    class="modulate-select"
-    :options="options"
-    :autoFocus="true"
-    :showUnset="true"
-  />
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import MSelect from '@/ui/MSelect.vue'
@@ -18,6 +9,15 @@ const options = computed(() =>
   [...modulators.values()].map(({ id, label }) => ({ id, label })),
 )
 </script>
+
+<template>
+  <MSelect
+    class="modulate-select"
+    :options="options"
+    :autoFocus="true"
+    :showUnset="true"
+  />
+</template>
 
 <style scoped>
 .modulate-select {

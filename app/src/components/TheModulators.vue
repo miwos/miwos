@@ -1,25 +1,3 @@
-<template>
-  <div class="modulators" :class="{ empty: isEmpty }">
-    <div
-      v-if="!isEmpty"
-      class="modulators-items"
-      :class="{ 'multi-column': multiColumnEnabled }"
-    >
-      <ModulatorInstance
-        v-for="[id, item] in items.modulators"
-        :key="id"
-        :modulator="item"
-      />
-    </div>
-    <button class="modulators-add" @click="addModulator">
-      <svg viewBox="0 0 10 10">
-        <line x1="0" y1="5" x2="10" y2="5" />
-        <line x1="5" y1="0" x2="5" y2="10" />
-      </svg>
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import ModulatorInstance from './ModulatorInstance.vue'
@@ -39,6 +17,24 @@ const addModulator = () => {
 }
 </script>
 
+<template>
+  <div class="modulators" :data-empty="isEmpty">
+    <div v-if="!isEmpty" class="items" :data-multi-column="multiColumnEnabled">
+      <ModulatorInstance
+        v-for="[id, item] in items.modulators"
+        :key="id"
+        :modulator="item"
+      />
+    </div>
+    <button class="add" @click="addModulator">
+      <svg viewBox="0 0 10 10">
+        <line x1="0" y1="5" x2="10" y2="5" />
+        <line x1="5" y1="0" x2="5" y2="10" />
+      </svg>
+    </button>
+  </div>
+</template>
+
 <style scoped>
 .modulators {
   position: absolute;
@@ -51,18 +47,18 @@ const addModulator = () => {
   gap: 1rem;
 }
 
-.modulators-items {
+.items {
   display: grid;
   column-gap: 1.75rem;
   row-gap: 0.5rem;
 
-  &.multi-column {
+  &[data-multi-column='true'] {
     grid-auto-flow: column;
     grid-template-rows: repeat(3, auto);
   }
 }
 
-.modulators-add {
+.add {
   --color: white;
   --bg: var(--color-glass-dark-solid);
 
@@ -89,7 +85,7 @@ const addModulator = () => {
 
   /* Reverse the color-scheme to draw more attention on an empty modulators
     list. */
-  .empty & {
+  .modulators[data-empty='true'] & {
     --bg: var(--color-modulation);
     --color: black;
 

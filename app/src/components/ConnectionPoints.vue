@@ -1,7 +1,3 @@
-<template>
-  <ConnectionPoint v-for="point in points" :point="point" />
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { ConnectionPoint as TConnectionPoint } from '@/types'
@@ -34,3 +30,7 @@ const points = computed((): TConnectionPoint[] => {
   return points
 })
 </script>
+
+<template>
+  <ConnectionPoint v-for="point in points" :point="point" />
+</template>

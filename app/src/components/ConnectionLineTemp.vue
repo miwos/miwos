@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { useConnectionPath } from '@/composables/useConnectionPath'
+import type { TemporaryConnection } from '@/types'
+
+const props = defineProps<{
+  connection: TemporaryConnection
+}>()
+
+const debug = true
+const path = useConnectionPath(props.connection)
+</script>
+
 <template>
   <svg class="connection-line-temp">
     <path :d="path?.data" />
@@ -12,19 +24,6 @@
     </g>
   </svg>
 </template>
-
-<script setup lang="ts">
-import { useConnectionPath } from '@/composables/useConnectionPath'
-import type { TemporaryConnection } from '@/types'
-
-const props = defineProps<{
-  connection: TemporaryConnection
-}>()
-
-const debug = true
-
-const path = useConnectionPath(props.connection)
-</script>
 
 <style scoped>
 .connection-line-temp {
@@ -41,6 +40,7 @@ const path = useConnectionPath(props.connection)
   fill: none;
 }
 
+/* For visual debugging */
 .control-point {
   fill: blue;
   stroke: none;

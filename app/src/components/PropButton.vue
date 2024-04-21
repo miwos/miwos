@@ -1,12 +1,12 @@
-<template>
-  <button class="prop-button">{{ name }}</button>
-</template>
-
 <script setup lang="ts">
 defineProps<{
   name: string
 }>()
 </script>
+
+<template>
+  <button class="prop-button">{{ name }}</button>
+</template>
 
 <style scoped>
 .prop-button {

@@ -1,36 +1,3 @@
-<template>
-  <div class="m-dropdown" :data-theme="theme ?? 'default'">
-    <button
-      class="m-dropdown-current-option"
-      ref="currentOptionSlot"
-      aria-haspopup="listbox"
-      :aria-expanded="isExpanded ? 'true' : 'false'"
-      :aria-label="label"
-      @click="expand"
-    >
-      <slot name="currentOption" v-if="currentOption" v-bind="currentOption">{{
-        currentOption
-      }}</slot>
-    </button>
-    <MSelect
-      v-if="isExpanded"
-      ref="select"
-      class="m-dropdown-list"
-      :style="{ top: `${selectTop}px` }"
-      :options="options"
-      :value="value"
-      :theme="theme"
-      :autoFocus="true"
-      @update:value="selectValue"
-      @blur="collapse"
-    >
-      <template #option="option">
-        <slot name="option" v-bind="option"></slot>
-      </template>
-    </MSelect>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
 import MSelect from './MSelect.vue'
@@ -83,24 +50,57 @@ const selectValue = (value: any) => {
 }
 </script>
 
+<template>
+  <div class="dropdown" :data-theme="theme ?? 'default'">
+    <button
+      class="current-option"
+      ref="currentOptionSlot"
+      aria-haspopup="listbox"
+      :aria-expanded="isExpanded ? 'true' : 'false'"
+      :aria-label="label"
+      @click="expand"
+    >
+      <slot name="currentOption" v-if="currentOption" v-bind="currentOption">{{
+        currentOption
+      }}</slot>
+    </button>
+    <MSelect
+      v-if="isExpanded"
+      ref="select"
+      class="list"
+      :style="{ top: `${selectTop}px` }"
+      :options="options"
+      :value="value"
+      :theme="theme"
+      :autoFocus="true"
+      @update:value="selectValue"
+      @blur="collapse"
+    >
+      <template #option="option">
+        <slot name="option" v-bind="option"></slot>
+      </template>
+    </MSelect>
+  </div>
+</template>
+
 <style scoped>
-.m-dropdown {
+.dropdown {
   position: relative;
   white-space: nowrap;
 }
 
-.m-dropdown-list {
+.list {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.m-dropdown-current-option {
+.current-option {
   display: block;
   cursor: pointer;
 }
 
-.m-dropdown[data-theme='default'] {
+.dropdown[data-theme='default'] {
   --m-select-color-bg: var(--color-glass-solid);
   --m-select-color-focus: var(--color-glass-dark-solid);
 }

@@ -1,11 +1,3 @@
-<template>
-  <button class="m-encoder" ref="el" :class="{ disabled: !enabled }">
-    <svg class="m-encoder-icon" viewBox="0 0 10 10">
-      <line class="m-encoder-dial" x1="5" y1="0" x2="5" y2="2.5" />
-    </svg>
-  </button>
-</template>
-
 <script setup lang="ts">
 import { useRotation } from '@/composables/useRotation'
 import { map } from '@/utils'
@@ -46,8 +38,16 @@ const angleToValue = (angle: number) => {
 }
 </script>
 
+<template>
+  <button class="encoder" ref="el" :class="{ disabled: !enabled }">
+    <svg class="icon" viewBox="0 0 10 10">
+      <line class="dial" x1="5" y1="0" x2="5" y2="2.5" />
+    </svg>
+  </button>
+</template>
+
 <style scoped>
-.m-encoder {
+.encoder {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -58,14 +58,14 @@ const angleToValue = (angle: number) => {
   }
 }
 
-.m-encoder-icon {
+.icon {
   overflow: visible;
   width: 100%;
   height: 100%;
   transform: rotate(v-bind('angle + `deg`'));
 }
 
-.m-encoder-dial {
+.dial {
   stroke: var(--m-encoder-dial-color);
   stroke-width: 3;
   stroke-linecap: round;

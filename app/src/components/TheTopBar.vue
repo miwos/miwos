@@ -1,19 +1,3 @@
-<template>
-  <div class="top-bar">
-    <MNavBar class="nav-bar">
-      <MButtonCircle
-        :style="`background-color: var(${statusColor})`"
-        @click="toggleDeviceConnection"
-      ></MButtonCircle>
-      <button @click="toggleDeviceConnection">{{ statusText }}</button>
-      <button @click="clear">Clear</button>
-      <button @click="restart">Restart</button>
-    </MNavBar>
-    <TransportMenu />
-    <MemoryMonitor />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useDevice } from '@/stores/device'
 import { useProject } from '@/stores/project'
@@ -43,13 +27,29 @@ const statusText = computed(() =>
 )
 </script>
 
+<template>
+  <div class="top-bar">
+    <MNavBar class="nav-bar">
+      <MButtonCircle
+        :style="`background-color: var(${statusColor})`"
+        @click="toggleDeviceConnection"
+      ></MButtonCircle>
+      <button @click="toggleDeviceConnection">{{ statusText }}</button>
+      <button @click="clear">Clear</button>
+      <button @click="restart">Restart</button>
+    </MNavBar>
+    <TransportMenu />
+    <MemoryMonitor />
+  </div>
+</template>
+
 <style scoped>
 .top-bar {
   display: flex;
   gap: 1rem;
-
   padding: 1rem;
 }
+
 .nav-bar {
   padding-left: 0 !important;
 }

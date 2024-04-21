@@ -1,35 +1,3 @@
-<template>
-  <div class="module" ref="el" :class="{ isSelected }">
-    <template v-if="customComponent">
-      <ModuleCustom :component="customComponent" :module="module" />
-      <ConnectionPoints :item="module" />
-    </template>
-
-    <template v-else>
-      <ModuleMask v-if="shape" :shape="shape" :id="maskId" />
-      <ModuleOutline
-        v-if="shape && isSelected"
-        :module="module"
-        :shape="shape"
-      />
-      <ModuleShape v-if="shape" :shape="shape" />
-      <ModuleContent
-        v-if="contentComponent"
-        :component="contentComponent"
-        :module="module"
-        :mask="`url(#${maskId})`"
-      />
-      <ModuleLabel
-        v-if="definition?.showLabel"
-        :module="module"
-        :shape="shape"
-      />
-      <ConnectionPoints :item="module" />
-      <ModuleProps :module="module" />
-    </template>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
 import { useModulesDrag } from '@/composables/useModulesDrag'
@@ -100,15 +68,43 @@ watch(
 )
 </script>
 
+<template>
+  <div ref="el" class="module">
+    <template v-if="customComponent">
+      <ModuleCustom :component="customComponent" :module="module" />
+      <ConnectionPoints :item="module" />
+    </template>
+
+    <template v-else>
+      <ModuleMask v-if="shape" :shape="shape" :id="maskId" />
+      <ModuleOutline
+        v-if="shape && isSelected"
+        :module="module"
+        :shape="shape"
+      />
+      <ModuleShape v-if="shape" :shape="shape" />
+      <ModuleContent
+        v-if="contentComponent"
+        :component="contentComponent"
+        :module="module"
+        :mask="`url(#${maskId})`"
+      />
+      <ModuleLabel
+        v-if="definition?.showLabel"
+        :module="module"
+        :shape="shape"
+      />
+      <ConnectionPoints :item="module" />
+      <ModuleProps :module="module" />
+    </template>
+  </div>
+</template>
+
 <style scoped>
 .module {
   position: absolute;
   top: v-bind('props.position.y + `px`');
   left: v-bind('props.position.x + `px`');
   pointer-events: none;
-}
-
-.module-custom-component {
-  pointer-events: all;
 }
 </style>

@@ -1,38 +1,3 @@
-<template>
-  <div class="background" ref="bg"></div>
-  <div class="selection" v-if="isSelecting" :style="style"></div>
-  <TheModulators />
-  <div class="patch" :class="app.isOverlaying && 'dim'">
-    <div class="module-instances">
-      <ModuleInstance
-        v-for="[id, item] in items.modules"
-        :key="id"
-        :module="item"
-        v-model:position="item.position"
-        :style="`z-index: ${items.getSortIndex(id)}`"
-      />
-    </div>
-    <div class="connections">
-      <ConnectionLine
-        v-for="[id, connection] in connections.map"
-        :key="id"
-        :connection="connection"
-        :style="`z-index: ${connections.getSortIndex(id)}`"
-      />
-      <ConnectionLineTemp
-        v-if="
-          connections.tempConnection?.from && connections.tempConnection?.to
-        "
-        :connection="connections.tempConnection"
-        :style="`z-index: ${items.instances.size}`"
-      />
-    </div>
-  </div>
-  <TheEncoders />
-  <ThePagesButtons />
-  <MenuAdd />
-</template>
-
 <script setup lang="ts">
 import ConnectionLine from '@/components/ConnectionLine.vue'
 import ConnectionLineTemp from '@/components/ConnectionLineTemp.vue'
@@ -85,6 +50,41 @@ whenever(keys['delete'], () =>
 )
 </script>
 
+<template>
+  <div class="background" ref="bg"></div>
+  <div class="selection" v-if="isSelecting" :style="style"></div>
+  <TheModulators />
+  <div class="patch" :data-dim="app.isOverlaying">
+    <div class="module-instances">
+      <ModuleInstance
+        v-for="[id, item] in items.modules"
+        :key="id"
+        :module="item"
+        v-model:position="item.position"
+        :style="`z-index: ${items.getSortIndex(id)}`"
+      />
+    </div>
+    <div class="connections">
+      <ConnectionLine
+        v-for="[id, connection] in connections.map"
+        :key="id"
+        :connection="connection"
+        :style="`z-index: ${connections.getSortIndex(id)}`"
+      />
+      <ConnectionLineTemp
+        v-if="
+          connections.tempConnection?.from && connections.tempConnection?.to
+        "
+        :connection="connections.tempConnection"
+        :style="`z-index: ${items.instances.size}`"
+      />
+    </div>
+  </div>
+  <TheEncoders />
+  <ThePagesButtons />
+  <MenuAdd />
+</template>
+
 <style scoped>
 .background {
   width: 100vw;
@@ -101,7 +101,7 @@ whenever(keys['delete'], () =>
   left: 0;
   transition: opacity 100ms ease;
 
-  &.dim {
+  &[data-dim='true'] {
     opacity: 0.3;
   }
 }

@@ -1,13 +1,3 @@
-<template>
-  <div class="module-content" :style="clipStyle">
-    <component
-      :is="component"
-      v-bind="resolvedProps"
-      v-on="updatePropHandlers"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { Module } from '@/types'
@@ -41,7 +31,17 @@ const resolvedProps = computed(() => ({
 }))
 </script>
 
-<style>
+<template>
+  <div class="module-content" :style="clipStyle">
+    <component
+      :is="component"
+      v-bind="resolvedProps"
+      v-on="updatePropHandlers"
+    />
+  </div>
+</template>
+
+<style scoped>
 .module-content {
   position: absolute;
   top: 0;

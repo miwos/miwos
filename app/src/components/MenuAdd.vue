@@ -1,14 +1,3 @@
-<template>
-  <div class="menu-add" v-if="isOpen" :class="`align-${align}`" ref="el">
-    <ModuleDefinitionSearch
-      ref="search"
-      :align-results="align"
-      @select="addModule"
-      @blur="close()"
-    ></ModuleDefinitionSearch>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useApp } from '@/stores/app'
 import { useItems } from '@/stores/items'
@@ -72,6 +61,17 @@ const addModule = (type: ModuleDefinition['id']) => {
   close()
 }
 </script>
+
+<template>
+  <div class="menu-add" v-if="isOpen" :class="`align-${align}`" ref="el">
+    <ModuleDefinitionSearch
+      ref="search"
+      :align-results="align"
+      @select="addModule"
+      @blur="close()"
+    ></ModuleDefinitionSearch>
+  </div>
+</template>
 
 <style scoped>
 .menu-add {

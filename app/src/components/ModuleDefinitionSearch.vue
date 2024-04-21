@@ -1,32 +1,3 @@
-<template>
-  <div class="module-search" :class="`align-results-${alignResults}`">
-    <input
-      class="module-search-input glass pill"
-      ref="input"
-      placeholder="Search…"
-      spellcheck="false"
-      :value="query"
-      @input="query = ($event.target as any).value"
-      @blur="emit('blur')"
-    />
-    <MSelect
-      class="module-search-results"
-      :options="results"
-      theme="none"
-      @update:value="emit('select', $event)"
-    >
-      <template #option="{ id, isFocused }">
-        <div
-          class="module-search-option pill"
-          :class="isFocused ? 'glass-dark' : 'glass'"
-        >
-          {{ id }}
-        </div>
-      </template>
-    </MSelect>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { ModuleDefinition } from '@/types'
@@ -55,6 +26,32 @@ const clear = () => (query.value = '')
 defineExpose({ focus, clear })
 </script>
 
+<template>
+  <div class="module-search" :class="`align-results-${alignResults}`">
+    <input
+      class="input glass pill"
+      ref="input"
+      placeholder="Search…"
+      spellcheck="false"
+      :value="query"
+      @input="query = ($event.target as any).value"
+      @blur="emit('blur')"
+    />
+    <MSelect
+      class="results"
+      :options="results"
+      theme="none"
+      @update:value="emit('select', $event)"
+    >
+      <template #option="{ id, isFocused }">
+        <div class="option pill" :class="isFocused ? 'glass-dark' : 'glass'">
+          {{ id }}
+        </div>
+      </template>
+    </MSelect>
+  </div>
+</template>
+
 <style>
 .module-search {
   display: flex;
@@ -76,34 +73,7 @@ defineExpose({ focus, clear })
   &.align-results-top .m-select-option:first-child {
     margin-top: auto;
   }
-}
 
-.module-search-input::placeholder {
-  font-weight: 400;
-  color: #a1a1a1;
-}
-
-.module-search-results {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  gap: 0.5rem;
-  margin: 0;
-  margin-left: 1.5rem;
-
-  & .m-select-list {
-    gap: 0.5rem;
-  }
-
-  &.overflow {
-    /* Make some space for the scrollbar */
-    padding-right: 7px;
-    margin-right: -15px; /* 7px (padding) + 8px (scrollbar width) */
-  }
-}
-
-.module-search {
   ::-webkit-scrollbar {
     width: 8px;
     background: var(--color-glass-solid);
@@ -118,6 +88,32 @@ defineExpose({ focus, clear })
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: var(--color-glass-dark-solid);
+  }
+}
+
+.input::placeholder {
+  font-weight: 400;
+  color: #a1a1a1;
+}
+
+.results {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+  margin: 0;
+  margin-left: 1.5rem;
+
+  /* TODO: replace */
+  /* & .m-select-list {
+    gap: 0.5rem;
+  } */
+
+  &.overflow {
+    /* Make some space for the scrollbar */
+    padding-right: 7px;
+    margin-right: -15px; /* 7px (padding) + 8px (scrollbar width) */
   }
 }
 </style>

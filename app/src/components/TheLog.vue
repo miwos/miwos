@@ -1,12 +1,3 @@
-<template>
-  <div class="log">
-    <button class="log-clear" @click="log.clear()">Clear</button>
-    <div class="log-content" ref="content">
-      <LogEntry v-for="entry in log.entries" v-bind="entry" />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useLog } from '@/stores/log'
 import { nextTick, ref } from 'vue'
@@ -20,6 +11,15 @@ log.$subscribe(() => nextTick(() => scrollToBottom()))
 const scrollToBottom = () =>
   content.value && (content.value.scrollTop = content.value.scrollHeight)
 </script>
+
+<template>
+  <div class="log">
+    <button class="clear" @click="log.clear()">Clear</button>
+    <div class="content" ref="content">
+      <LogEntry v-for="entry in log.entries" v-bind="entry" />
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .log {
@@ -46,14 +46,14 @@ const scrollToBottom = () =>
   }
 }
 
-.log-clear {
+.clear {
   position: absolute;
   right: 0;
   top: 0;
   padding: 0.5em;
 }
 
-.log-content {
+.content {
   width: 80ch;
   height: calc(var(--lines) * var(--line-height));
   line-height: var(--line-height);

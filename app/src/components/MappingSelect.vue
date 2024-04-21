@@ -1,12 +1,3 @@
-<template>
-  <MSelect
-    class="mapping-select"
-    :options="options"
-    :autoFocus="true"
-    :showUnset="true"
-  />
-</template>
-
 <script setup lang="ts">
 import MSelect from '@/ui/MSelect.vue'
 
@@ -16,6 +7,15 @@ const options = [
   { id: 2, label: 'Map to 3' },
 ]
 </script>
+
+<template>
+  <MSelect
+    class="mapping-select"
+    :options="options"
+    :autoFocus="true"
+    :showUnset="true"
+  />
+</template>
 
 <style scoped>
 .mapping-select {

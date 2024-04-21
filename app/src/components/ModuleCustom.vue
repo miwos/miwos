@@ -1,16 +1,3 @@
-<template>
-  <div class="module-custom">
-    <component
-      :is="component"
-      :module="module"
-      v-bind="resolvedProps"
-      v-on="updatePropHandlers"
-      ref="customEl"
-      @update:size="updateSize"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { Module, Size } from '@/types'
@@ -44,10 +31,23 @@ const updateSize = (size: Size) => {
 }
 </script>
 
+<template>
+  <div class="module-custom">
+    <component
+      :is="component"
+      :module="module"
+      v-bind="resolvedProps"
+      v-on="updatePropHandlers"
+      ref="customEl"
+      @update:size="updateSize"
+    />
+  </div>
+</template>
+
 <style scoped>
 .module-custom {
   /* Pointer events are disable on the module instance, so we have to enable
   them again. */
-  pointer-events: all;
+  pointer-events: auto;
 }
 </style>

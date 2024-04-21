@@ -1,12 +1,12 @@
-<template>
-  <div class="module-outline" v-html="shape.path"></div>
-</template>
-
 <script setup lang="ts">
 import type { Module } from '@/types'
 import type { Shape } from '@miwos/shape'
 defineProps<{ module: Module; shape: Shape }>()
 </script>
+
+<template>
+  <div class="module-outline" v-html="shape.path"></div>
+</template>
 
 <style scoped>
 .module-outline {

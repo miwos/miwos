@@ -1,20 +1,3 @@
-<template>
-  <MNavBar class="transport-menu">
-    <div class="metronome">
-      <div class="metronome-dot" :data-active="metronomeSide === 'left'"></div>
-      <div class="metronome-dot" :data-active="metronomeSide === 'right'"></div>
-    </div>
-    <input
-      type="number"
-      ref="tempoInput"
-      value="120.00"
-      step="1.00"
-      @change="handleChangeTempo(($event.target as HTMLInputElement).value)"
-    />
-    <button @click="togglePlay">{{ isPlaying ? 'stop' : 'start' }}</button>
-  </MNavBar>
-</template>
-
 <script setup lang="ts">
 import { useMidi } from '@/stores/midi'
 import MNavBar from '@/ui/MNavBar.vue'
@@ -35,6 +18,24 @@ const togglePlay = () => {
 }
 </script>
 
+<template>
+  <MNavBar class="transport-menu">
+    <div class="metronome">
+      <div class="metronome-dot" :data-active="metronomeSide === 'left'"></div>
+      <div class="metronome-dot" :data-active="metronomeSide === 'right'"></div>
+    </div>
+    <input
+      class="tempo-input"
+      type="number"
+      ref="tempoInput"
+      value="120.00"
+      step="1.00"
+      @change="handleChangeTempo(($event.target as HTMLInputElement).value)"
+    />
+    <button @click="togglePlay">{{ isPlaying ? 'stop' : 'start' }}</button>
+  </MNavBar>
+</template>
+
 <style scoped>
 .metronome {
   display: flex;
@@ -52,7 +53,7 @@ const togglePlay = () => {
   }
 }
 
-input {
+.tempo-input {
   font-variant-numeric: tabular-nums;
   width: 3.7em;
 

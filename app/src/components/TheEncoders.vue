@@ -1,15 +1,3 @@
-<template>
-  <div class="encoders" :class="{ 'show-labels': app.isMapping }">
-    <MEncoder
-      v-for="(_, i) in 3"
-      :enabled="encoders.has(i)"
-      v-bind="encoders.get(i)"
-      @update:value="updateValue(i, $event)"
-      class="encoder"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useApp } from '@/stores/app'
 import { useItems } from '@/stores/items'
@@ -63,6 +51,18 @@ const updateValue = (slot: number, value: number) => {
 }
 </script>
 
+<template>
+  <div class="encoders" :data-show-labels="app.isMapping">
+    <MEncoder
+      v-for="(_, i) in 3"
+      :enabled="encoders.has(i)"
+      v-bind="encoders.get(i)"
+      class="encoder"
+      @update:value="updateValue(i, $event)"
+    />
+  </div>
+</template>
+
 <style scoped>
 .encoders {
   position: absolute;
@@ -108,7 +108,7 @@ const updateValue = (slot: number, value: number) => {
     transition: opacity 100ms;
   }
 
-  .show-labels &::before {
+  .encoders[data-show-labels='true'] &::before {
     opacity: 1;
   }
 }

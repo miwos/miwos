@@ -1,7 +1,3 @@
-<template>
-  <button class="item-prop-handle" :data-status="status"></button>
-</template>
-
 <script setup lang="ts">
 defineProps<{
   status:
@@ -12,6 +8,10 @@ defineProps<{
     | 'none'
 }>()
 </script>
+
+<template>
+  <button class="item-prop-handle" :data-status="status"></button>
+</template>
 
 <style scoped>
 /* Expose these variables so the modulator menu button can reuse them. */

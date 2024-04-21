@@ -1,7 +1,3 @@
-<template>
-  <canvas ref="canvas"></canvas>
-</template>
-
 <script setup lang="ts">
 import { map } from '@/utils'
 import { onMounted, ref } from 'vue'
@@ -80,8 +76,12 @@ const plotValue = (value: number) => {
 defineExpose({ plotValue })
 </script>
 
+<template>
+  <canvas ref="canvas" class="canvas"></canvas>
+</template>
+
 <style scoped>
-canvas {
+.canvas {
   display: block;
   width: 100%;
   height: 100%;

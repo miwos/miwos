@@ -1,17 +1,3 @@
-<template>
-  <div class="modulate-amount">
-    {{ modulator?.label }} Amount
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      :value="value"
-      @input="emit('update:value', +($event.target as any).value)"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useItems } from '@/stores/items'
 import type { Modulation } from '@/types'
@@ -30,6 +16,21 @@ const modulators = useItems().modulators
 const modulator = computed(() => modulators.get(props.modulation.modulatorId))
 </script>
 
+<template>
+  <div class="modulate-amount">
+    {{ modulator?.label }} Amount
+    <input
+      class="input"
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      :value="value"
+      @input="emit('update:value', +($event.target as any).value)"
+    />
+  </div>
+</template>
+
 <style scoped>
 .modulate-amount {
   border-radius: var(--radius-s);
@@ -38,27 +39,27 @@ const modulator = computed(() => modulators.get(props.modulation.modulatorId))
   font-family: 'Inter';
   font-weight: 400;
   font-size: 14px;
+}
 
-  input {
-    display: block;
-    margin: 0.4rem 0;
+.input {
+  display: block;
+  margin: 0.4rem 0;
 
-    &::-webkit-slider-runnable-track {
-      height: 2px;
-      background: currentColor;
-      border: none;
-      cursor: pointer;
-    }
+  &::-webkit-slider-runnable-track {
+    height: 2px;
+    background: currentColor;
+    border: none;
+    cursor: pointer;
+  }
 
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      border: none;
-      height: 0.85rem;
-      width: 0.85rem;
-      border-radius: 50%;
-      background: currentColor;
-      transform: translateY(-50%);
-    }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 0.85rem;
+    width: 0.85rem;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translateY(-50%);
   }
 }
 </style>

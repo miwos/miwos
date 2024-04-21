@@ -1,20 +1,3 @@
-<template>
-  <div
-    class="connection-point"
-    :class="{
-      'dragged-over': isDraggedOver,
-      dragging: isDragging,
-      active: isActive,
-    }"
-    ref="el"
-    draggable="true"
-    @mousedown.stop
-    @mouseup.stop
-  >
-    <MIcon class="icon" :type="`signal-${point.signal}`" />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useDragDrop } from '@/composables/useDragDrop'
 import { useConnections } from '@/stores/connections'
@@ -22,7 +5,7 @@ import { useItems } from '@/stores/items'
 import type { ConnectionPoint } from '@/types/Connection'
 import { createEmptyImage } from '@/utils'
 import { computed, ref } from 'vue'
-import MIcon from './MIcon.vue'
+import MIcon from '../ui/MIcon.vue'
 
 const props = defineProps<{
   point: ConnectionPoint
@@ -89,6 +72,21 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
 })
 </script>
 
+<template>
+  <div
+    ref="el"
+    class="connection-point"
+    :data-dragged-over="isDraggedOver"
+    :data-dragging="isDragging"
+    :data-active="isActive"
+    draggable="true"
+    @mousedown.stop
+    @mouseup.stop
+  >
+    <MIcon class="icon" :type="`signal-${point.signal}`" />
+  </div>
+</template>
+
 <style scoped>
 .connection-point {
   position: absolute;
@@ -98,12 +96,12 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
   fill: var(--color-connection);
   transition: fill var(--transition-duration-connection);
 
-  &.active {
+  &[data-active='true'] {
     fill: var(--color-active);
   }
 
-  &.dragging .icon,
-  &.dragged-over {
+  &[data-dragging='true'] .icon,
+  &[data-dragged-over='true'] {
     stroke: red;
     stroke-width: 8px;
   }
