@@ -41,7 +41,7 @@ const resolvedProps = computed(() => ({
 }))
 </script>
 
-<style lang="scss">
+<style>
 .module-content {
   position: absolute;
   top: 0;

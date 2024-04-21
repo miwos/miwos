@@ -46,7 +46,7 @@ const angleToValue = (angle: number) => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .m-encoder {
   width: 40px;
   height: 40px;
@@ -56,23 +56,23 @@ const angleToValue = (angle: number) => {
   &.disabled {
     background-color: var(--color-glass);
   }
+}
 
-  &-icon {
-    overflow: visible;
-    width: 100%;
-    height: 100%;
-    transform: rotate(v-bind('angle + `deg`'));
-  }
+.m-encoder-icon {
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+  transform: rotate(v-bind('angle + `deg`'));
+}
 
-  &-dial {
-    stroke: var(--m-encoder-dial-color);
-    stroke-width: 3;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
+.m-encoder-dial {
+  stroke: var(--m-encoder-dial-color);
+  stroke-width: 3;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 
-    .disabled & {
-      stroke: #d5d5d5;
-    }
+  .disabled & {
+    stroke: #d5d5d5;
   }
 }
 </style>

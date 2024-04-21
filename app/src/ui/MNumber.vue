@@ -39,25 +39,23 @@ const focus = () => window.setTimeout(() => input.value?.focus())
 defineExpose({ focus })
 </script>
 
-<style scoped lang="scss">
-.m-input {
-  &-before,
-  &-after {
-    display: flex;
-    align-items: center;
-    color: hsl(0deg 0% 85%);
-  }
-
-  input {
-    flex: 1;
-    min-width: 1em;
-    cursor: ew-resize;
-  }
+<style scoped>
+.m-input-before,
+.m-input-after {
+  display: flex;
+  align-items: center;
+  color: hsl(0deg 0% 85%);
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+input {
+  flex: 1;
+  min-width: 1em;
+  cursor: ew-resize;
+
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 </style>

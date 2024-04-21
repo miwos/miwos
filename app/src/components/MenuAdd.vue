@@ -73,7 +73,7 @@ const addModule = (type: ModuleDefinition['id']) => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .menu-add {
   position: absolute;
   z-index: var(--z-menu);

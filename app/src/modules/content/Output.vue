@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const device = useDevice()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module-output-content {
   pointer-events: all;
   position: absolute;

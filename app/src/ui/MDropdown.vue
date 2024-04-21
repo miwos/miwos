@@ -50,7 +50,7 @@ const currentOptionSlot = ref<HTMLElement>()
 const isExpanded = ref(false)
 const selectTop = ref(0)
 const currentOption = computed(() =>
-  [...props.options].find((v) => v.id === props.value)
+  [...props.options].find((v) => v.id === props.value),
 )
 
 const expand = async () => {
@@ -68,8 +68,8 @@ const expand = async () => {
         ? above
         : below
       : below + height <= window.innerHeight
-      ? below
-      : above
+        ? below
+        : above
 
     selectTop.value = absolutePosition - top // Relative position
   }
@@ -83,21 +83,21 @@ const selectValue = (value: any) => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .m-dropdown {
   position: relative;
   white-space: nowrap;
+}
 
-  &-list {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+.m-dropdown-list {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-  &-current-option {
-    display: block;
-    cursor: pointer;
-  }
+.m-dropdown-current-option {
+  display: block;
+  cursor: pointer;
 }
 
 .m-dropdown[data-theme='default'] {

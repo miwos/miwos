@@ -55,12 +55,12 @@ const status = computed(() => {
   return hasMappingsOnCurrentPage && hasModulations
     ? 'mapped-and-modulated'
     : hasMappingsOnCurrentPage
-    ? 'mapped'
-    : hasModulations
-    ? 'modulated'
-    : hasMappings
-    ? 'mapped-other-page'
-    : 'none'
+      ? 'mapped'
+      : hasModulations
+        ? 'modulated'
+        : hasMappings
+          ? 'mapped-other-page'
+          : 'none'
 })
 
 const showPropsMenu = () => (propsMenuIsVisible.value = true)
@@ -78,7 +78,7 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .modulator {
   position: relative;
 
@@ -99,6 +99,6 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
 }
 
 .modulator-props-menu-handle {
-  margin-left: 12px; // Same as module props, see `shape` package.
+  margin-left: 12px; /* Same as module props, see `shape` package. */
 }
 </style>

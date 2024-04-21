@@ -18,7 +18,7 @@ const clipPath = computed(() => {
 
   const clipPath = document.createElementNS(
     'http://www.w3.org/2000/svg',
-    'clipPath'
+    'clipPath',
   )
   clipPath.id = props.id
   clipPath.appendChild(path)
@@ -28,7 +28,7 @@ const clipPath = computed(() => {
 })
 </script>
 
-<style lang="scss">
+<style>
 .module-mask {
   pointer-events: none;
   position: absolute;

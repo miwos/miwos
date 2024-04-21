@@ -65,7 +65,7 @@ watchDebounced(
 )
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .connection-line {
   position: absolute;
   pointer-events: none;

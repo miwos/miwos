@@ -16,7 +16,7 @@ import MButtonCircle from '@/ui/MButtonCircle.vue'
 const mappings = useMappings()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .pages-buttons {
   position: absolute;
   bottom: 0;
@@ -28,6 +28,8 @@ const mappings = useMappings()
 }
 
 .button {
+  display: block;
+
   .pages-buttons:not(:hover) & {
     transition: background-color 500ms;
   }
@@ -38,6 +40,5 @@ const mappings = useMappings()
   &[aria-selected='true'] {
     background-color: var(--color-mapping);
   }
-  display: block;
 }
 </style>

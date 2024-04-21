@@ -19,10 +19,11 @@ const options = computed(() =>
 )
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .modulate-select {
   --m-select-color-bg: var(--color-modulation);
-  --m-select-color-focus: hsl(46 112% 41%); // Slightly darker modulate color.
+  /* Slightly darker modulate color: */
+  --m-select-color-focus: hsl(46 112% 41%);
 
   width: fit-content;
   color: rgb(0 0 0 / 91%);

@@ -13,8 +13,8 @@ defineProps<{
 }>()
 </script>
 
-<style scoped lang="scss">
-// Expose these variables so the modulator menu button can reuse them.
+<style scoped>
+/* Expose these variables so the modulator menu button can reuse them. */
 :global(:root) {
   --prop-bg-mapped: var(--color-mapping);
   --prop-bg-mapped-other-page: var(--color-glass-dark-solid);

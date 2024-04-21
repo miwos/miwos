@@ -11,7 +11,7 @@ const props = withDefaults(
   {
     min: -1,
     max: 1,
-  }
+  },
 )
 
 const canvas = ref<HTMLCanvasElement>()
@@ -54,7 +54,7 @@ const plotValue = (value: number) => {
     props.min,
     props.max,
     marginHorizontal,
-    height - marginHorizontal
+    height - marginHorizontal,
   )
   const canvasIsFull = drawOffset >= width
   if (canvasIsFull) scrollCanvas()
@@ -80,7 +80,7 @@ const plotValue = (value: number) => {
 defineExpose({ plotValue })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 canvas {
   display: block;
   width: 100%;

@@ -21,7 +21,7 @@ const scrollToBottom = () =>
   content.value && (content.value.scrollTop = content.value.scrollHeight)
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .log {
   --line-height: 1.2em;
   --lines: 10;
@@ -37,26 +37,6 @@ const scrollToBottom = () =>
   border-radius: var(--radius-xs);
   font-size: 10pt;
 
-  &-clear {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 0.5em;
-  }
-
-  &-content {
-    width: 80ch;
-    height: calc(var(--lines) * var(--line-height));
-    line-height: var(--line-height);
-    overflow-y: auto;
-
-    margin: 0;
-    padding: var(--line-height);
-    white-space: pre-wrap;
-    word-break: break-all;
-    font-family: monospace;
-  }
-
   ::-webkit-scrollbar-track {
     background-color: hsl(0deg 0% 12%);
   }
@@ -65,15 +45,30 @@ const scrollToBottom = () =>
     background-color: hsl(0deg 0% 27%);
   }
 }
+
+.log-clear {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 0.5em;
+}
+
+.log-content {
+  width: 80ch;
+  height: calc(var(--lines) * var(--line-height));
+  line-height: var(--line-height);
+  overflow-y: auto;
+
+  margin: 0;
+  padding: var(--line-height);
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+}
 </style>
 
-<style lang="scss">
+<style>
 .log {
-  &-file-link {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
   --color-log-black: black;
   --color-log-white: white;
   --color-log-gray: #7b7b7b;
@@ -153,5 +148,10 @@ const scrollToBottom = () =>
   .mark-string {
     color: var(--color-log-string);
   }
+}
+
+.log-file-link {
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

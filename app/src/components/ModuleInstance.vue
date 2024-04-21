@@ -100,15 +100,15 @@ watch(
 )
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module {
   position: absolute;
   top: v-bind('props.position.y + `px`');
   left: v-bind('props.position.x + `px`');
   pointer-events: none;
+}
 
-  &-custom-component {
-    pointer-events: all;
-  }
+.module-custom-component {
+  pointer-events: all;
 }
 </style>

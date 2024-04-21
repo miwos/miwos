@@ -35,7 +35,7 @@ const togglePlay = () => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .metronome {
   display: flex;
   gap: 0.3rem;
@@ -62,4 +62,3 @@ input {
   }
 }
 </style>
-@/stores/midi

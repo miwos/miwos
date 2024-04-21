@@ -43,7 +43,7 @@ const positionedLabels = computed(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module-label {
   position: absolute;
   top: 0;
@@ -58,18 +58,18 @@ const positionedLabels = computed(() => {
   text-align: center;
 
   font-family: Vevey Positive;
+}
 
-  &-default {
-    text-align: center;
-  }
+.module-label-default {
+  text-align: center;
+}
 
-  &-positioned {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform-origin: top left;
-    transform: translate(var(--x), var(--y)) rotate(var(--angle))
-      translateY(-100%);
-  }
+.module-label-positioned {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  transform: translate(var(--x), var(--y)) rotate(var(--angle))
+    translateY(-100%);
 }
 </style>

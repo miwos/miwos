@@ -63,7 +63,7 @@ const updateValue = (slot: number, value: number) => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .encoders {
   position: absolute;
   top: 50%;

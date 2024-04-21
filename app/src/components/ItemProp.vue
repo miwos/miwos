@@ -101,12 +101,12 @@ const handleStatus = computed(() =>
   isMappedOnCurrentPage.value && modulation.value
     ? 'mapped-and-modulated'
     : isMappedOnCurrentPage.value
-    ? 'mapped'
-    : modulation.value
-    ? 'modulated'
-    : mapping.value
-    ? 'mapped-other-page'
-    : 'none',
+      ? 'mapped'
+      : modulation.value
+        ? 'modulated'
+        : mapping.value
+          ? 'mapped-other-page'
+          : 'none',
 )
 
 const showField = async () => {
@@ -173,43 +173,43 @@ onMouseUpOutside(el, hideField)
 onMouseDownOutside(context, hideContext)
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .item-prop {
   gap: 0.5em;
   height: 2em;
   display: flex;
   align-items: center;
+}
 
-  &-content {
-    position: relative;
-  }
+.item-prop-content {
+  position: relative;
+}
 
-  &-name {
-    font-family: 'Vevey Positive';
-    font-size: 16px;
-    text-transform: capitalize;
-    white-space: nowrap;
-    cursor: pointer;
-  }
+.item-prop-name {
+  font-family: 'Vevey Positive';
+  font-size: 16px;
+  text-transform: capitalize;
+  white-space: nowrap;
+  cursor: pointer;
+}
 
-  // ? How to style fields?
-  // &-field {
-  //   display: flex;
-  //   border-radius: var(--radius-xs);
-  //   width: 6em;
-  //   height: 1.5em;
-  //   padding: 0 0.3em;
-  //   box-sizing: border-box;
-  //   font-weight: 300;
-  // }
+/* ? How to style fields?
+&-field {
+  display: flex;
+  border-radius: var(--radius-xs);
+  width: 6em;
+  height: 1.5em;
+  padding: 0 0.3em;
+  box-sizing: border-box;
+  font-weight: 300;
+} */
 
-  &-context {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    top: v-bind('contextPosition.y + `px`');
-    left: v-bind('contextPosition.x + `px`');
-  }
+.item-prop-context {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  top: v-bind('contextPosition.y + `px`');
+  left: v-bind('contextPosition.x + `px`');
 }
 </style>

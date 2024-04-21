@@ -48,13 +48,13 @@ const getPosition = (index: number) => {
       ? count === 1
         ? positions.right.one
         : count === 2
-        ? positions.right.two[index]
-        : positions.right.three[index]
+          ? positions.right.two[index]
+          : positions.right.three[index]
       : count === 4
-      ? positions.left.one
-      : count === 5
-      ? positions.left.two[index - 3]
-      : positions.left.three[index - 3]
+        ? positions.left.one
+        : count === 5
+          ? positions.left.two[index - 3]
+          : positions.left.three[index - 3]
 
   if (!position) throw new Error(`No position found for prop #${index}`)
 
@@ -63,7 +63,7 @@ const getPosition = (index: number) => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module-props {
   pointer-events: all;
 }

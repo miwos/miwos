@@ -53,7 +53,7 @@ const draw = () => {
 watchEffect(draw)
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .module-delay {
   width: 100%;
   height: 100%;

@@ -85,15 +85,15 @@ whenever(keys['delete'], () =>
 )
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .background {
   width: 100vw;
   height: 100vh;
 }
 
 .patch {
-  // Create a new stacking context, so modules and connections don't
-  // overlay menus and dialogs.
+  /* Create a new stacking context, so modules and connections don't
+  overlay menus and dialogs. */
   isolation: isolate;
 
   position: absolute;

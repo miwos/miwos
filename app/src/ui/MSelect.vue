@@ -108,16 +108,12 @@ onMounted(() => window.addEventListener('keydown', onKeyDown))
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 </script>
 
-<style lang="scss">
+<style>
 .m-select {
   position: relative;
   list-style: none;
   padding-left: 0;
   margin: 0;
-
-  &-option {
-    cursor: pointer;
-  }
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -132,6 +128,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
     border-radius: 10px;
     background: var(--glass-color-darker-solid);
   }
+}
+
+.m-select-option {
+  cursor: pointer;
 }
 
 .m-select[data-theme='default'] {
@@ -172,7 +172,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
   }
 
   &.show-unset .m-select-option[aria-selected='true'] {
-    // Add a little space for the unset button.
+    /* Add a little space for the unset button. */
     padding-right: calc(var(--radius) + 0.1rem);
   }
 

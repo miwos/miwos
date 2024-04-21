@@ -21,7 +21,7 @@ defineProps<{
 }>()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 svg {
   --hit-area-increase: 4px;
 
@@ -30,7 +30,7 @@ svg {
 
   > * {
     stroke: transparent;
-    // The stroke is is drawn on the center so we have to double it.
+    /* The stroke is is drawn on the center so we have to double it. */
     stroke-width: calc(var(--hit-area-increase) * 2);
     paint-order: stroke;
     pointer-events: all;

@@ -8,7 +8,7 @@ import type { Shape } from '@miwos/shape'
 defineProps<{ module: Module; shape: Shape }>()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module-outline {
   position: absolute;
   top: 0;

@@ -28,7 +28,7 @@ const items = useItems()
 const definition = items.definitions.get(props.modulator.type)
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .modulator-props {
   position: absolute;
   padding: 0.6rem 0.8rem;
@@ -36,7 +36,6 @@ const definition = items.definitions.get(props.modulator.type)
   outline: 1px solid rgb(255 255 255 / 38%);
   border-radius: var(--radius-s);
   right: -0.5rem;
-  // opacity: 0.5;
   top: 0;
   z-index: var(--z-menu);
 }

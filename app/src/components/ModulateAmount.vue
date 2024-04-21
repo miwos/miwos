@@ -30,7 +30,7 @@ const modulators = useItems().modulators
 const modulator = computed(() => modulators.get(props.modulation.modulatorId))
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .modulate-amount {
   border-radius: var(--radius-s);
   background-color: var(--color-modulation);
@@ -57,7 +57,6 @@ const modulator = computed(() => modulators.get(props.modulation.modulatorId))
       width: 0.85rem;
       border-radius: 50%;
       background: currentColor;
-      // margin-top: -0.425rem;
       transform: translateY(-50%);
     }
   }

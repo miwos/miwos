@@ -39,7 +39,7 @@ const addModulator = () => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .modulators {
   position: absolute;
   top: 0;
@@ -49,53 +49,53 @@ const addModulator = () => {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
 
-  &-items {
-    display: grid;
-    column-gap: 1.75rem;
-    row-gap: 0.5rem;
+.modulators-items {
+  display: grid;
+  column-gap: 1.75rem;
+  row-gap: 0.5rem;
 
-    &.multi-column {
-      grid-auto-flow: column;
-      grid-template-rows: repeat(3, auto);
+  &.multi-column {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
+  }
+}
+
+.modulators-add {
+  --color: white;
+  --bg: var(--color-glass-dark-solid);
+
+  border-radius: var(--radius-s);
+  background-color: var(--bg);
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0.3rem;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  svg {
+    stroke: var(--color);
+    line {
+      vector-effect: non-scaling-stroke;
+      stroke: 1px;
     }
   }
 
-  &-add {
-    --color: white;
-    --bg: var(--color-glass-dark-solid);
+  &:hover {
+    --bg: var(--color-modulation);
+    --color: black;
+  }
 
-    border-radius: var(--radius-s);
-    background-color: var(--bg);
-    height: 1.5rem;
-    width: 1.5rem;
-    padding: 0.3rem;
-    box-sizing: border-box;
-    cursor: pointer;
-
-    svg {
-      stroke: var(--color);
-      line {
-        vector-effect: non-scaling-stroke;
-        stroke: 1px;
-      }
-    }
+  /* Reverse the color-scheme to draw more attention on an empty modulators
+    list. */
+  .empty & {
+    --bg: var(--color-modulation);
+    --color: black;
 
     &:hover {
-      --bg: var(--color-modulation);
-      --color: black;
-    }
-
-    // Reverse the color-scheme to draw more attention on an empty modulators
-    // list.
-    .empty & {
-      --bg: var(--color-modulation);
-      --color: black;
-
-      &:hover {
-        --color: white;
-        --bg: var(--color-glass-dark-solid);
-      }
+      --color: white;
+      --bg: var(--color-glass-dark-solid);
     }
   }
 }

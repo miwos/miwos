@@ -8,7 +8,7 @@ defineProps<{
 }>()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .prop-button {
   text-transform: capitalize;
   padding: 0 0.75rem;

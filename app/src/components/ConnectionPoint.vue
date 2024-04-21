@@ -89,7 +89,7 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .connection-point {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -97,6 +97,7 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
   left: v-bind('point.position.x + `px`');
   fill: var(--color-connection);
   transition: fill var(--transition-duration-connection);
+
   &.active {
     fill: var(--color-active);
   }

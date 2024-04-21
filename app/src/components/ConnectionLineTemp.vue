@@ -26,7 +26,7 @@ const debug = true
 const path = useConnectionPath(props.connection)
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .connection-line-temp {
   position: absolute;
   pointer-events: none;

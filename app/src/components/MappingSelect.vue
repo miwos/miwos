@@ -17,10 +17,11 @@ const options = [
 ]
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mapping-select {
   --m-select-color-bg: var(--color-mapping);
-  --m-select-color-focus: hsl(155deg 58% 38%); // Slightly darker mapping color.
+  /* Slightly darker mapping color: */
+  --m-select-color-focus: hsl(155deg 58% 38%);
 
   width: fit-content;
   color: rgb(0 0 0 / 91%);

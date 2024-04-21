@@ -56,7 +56,7 @@ const usage = ref<'normal' | 'increased' | 'high'>('normal')
 
 const values = ref<number[]>([])
 const points = computed(() =>
-  values.value.map((value, index) => `${index},${maxMemory - value}`).join(' ')
+  values.value.map((value, index) => `${index},${maxMemory - value}`).join(' '),
 )
 
 const area = computed(() => {
@@ -73,14 +73,14 @@ deviceMemoryBus.on((value) => {
 
   usage.value =
     (Object.keys(usageThresholds) as Array<keyof typeof usageThresholds>).find(
-      (threshold) => value >= usageThresholds[threshold]
+      (threshold) => value >= usageThresholds[threshold],
     ) ?? 'normal'
 
   values.value.push(value)
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .memory-monitor {
   position: relative;
   width: 9rem;
@@ -127,23 +127,22 @@ deviceMemoryBus.on((value) => {
 
   .area {
     fill: var(--color);
-    // opacity: 0.3;
   }
 
   .label {
     position: absolute;
     top: 0;
     right: 0;
-    line-height: 2.5rem; // Match the NavBar
+    line-height: 2.5rem; /* Match the NavBar */
     padding: 0 1em;
 
     text-shadow: 1px 1px var(--color-glass-dark-solid);
+  }
 
-    &-value {
-      // Make sure value won't flicker (as we don't use a monospace)
-      display: inline-block;
-      min-width: 2.1em;
-    }
+  .label-value {
+    /* Make sure value won't flicker (as we don't use a monospace) */
+    display: inline-block;
+    min-width: 2.1em;
   }
 }
 </style>

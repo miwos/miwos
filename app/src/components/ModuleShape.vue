@@ -7,7 +7,7 @@ import type { Shape } from '@miwos/shape'
 defineProps<{ shape: Shape }>()
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .module-shape {
   fill: var(--color-module-bg);
 
