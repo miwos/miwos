@@ -22,11 +22,7 @@ export default class AtomicInt64 extends Atomic {
       throw new Error('OSC AtomicInt64 value is out of bounds')
     }
 
-    let tmp: bigint
-    if (value) {
-      tmp = BigInt.asIntN(64, value)
-    }
-
+    const tmp = value ? BigInt.asIntN(64, value) : undefined
     super(tmp)
   }
 

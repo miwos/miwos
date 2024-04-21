@@ -1,11 +1,11 @@
 import { useBridge } from '@/bridge'
-import {
-  type Item,
-  type Modulator,
-  type ModulatorDefinition,
-  type Module,
-  type ModuleDefinition,
-  type Optional,
+import type {
+  Item,
+  Modulator,
+  ModulatorDefinition,
+  Module,
+  ModuleDefinition,
+  Optional,
 } from '@/types'
 import type {
   ItemDefinition,
@@ -23,7 +23,7 @@ import { useMappings } from './mappings'
 import { useModulations } from './modulations'
 
 const importedShapes = Object.entries(
-  import.meta.glob('@/assets/shapes/*.svg', { eager: true }),
+  import.meta.glob('@/assets/shapes/*.svg', { query: '?raw', eager: true }),
 ).map(([key, module]) => {
   const svg = (module as any).default
   const name = key.split('/').at(-1)?.split('.')[0]!

@@ -1,4 +1,4 @@
-import { MessageArgValue } from "@miwos/osc/src/types"
+import { type MessageArgValue } from "@miwos/osc/src/types"
 
 export interface Message {
   address: string

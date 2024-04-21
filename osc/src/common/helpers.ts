@@ -1,3 +1,4 @@
+import Atomic from '../atomic'
 import {
   isArray,
   isBlob,
@@ -77,14 +78,14 @@ export function prepareAddress(obj: string[] | string): string {
  * into a single array of packed binary data
  */
 export default class EncodeHelper {
-  data = []
+  data: Uint8Array[] = []
   byteLength = 0
 
   /**
    * Packs an item and adds it to the list
    * @param item Any object
    */
-  add(item: any): EncodeHelper {
+  add(item: boolean | number | null | Atomic): EncodeHelper {
     // Skip encoding items which do not need a payload as they are constants
     if (isBoolean(item) || isInfinity(item) || isNull(item)) {
       return this

@@ -49,6 +49,7 @@ import { useProject } from '@/stores/project'
 import { containsRect } from '@/utils'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { ref, watch } from 'vue'
+import type { Module } from '@/types'
 
 const bg = ref<HTMLElement>()
 const connections = useConnections()
@@ -61,10 +62,11 @@ const keys = useMagicKeys()
 
 const selectItems = () => {
   items.selectedIds.clear()
-  for (const [id, { position, size }] of items.instances) {
-    if (!size) continue
-    const { x, y } = position
-    const { width, height } = size
+  for (const [id, instance] of items.instances) {
+    // TODO: cleanup this TS mess!
+    if (!(instance as Module).size) continue
+    const { x, y } = instance.position
+    const { width, height } = (instance as Module).size!
     const moduleRect = { x, y, width, height }
     if (containsRect(rect.value, moduleRect)) items.selectedIds.add(id)
   }

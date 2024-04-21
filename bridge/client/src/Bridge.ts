@@ -1,5 +1,6 @@
-import crc from 'crc/calculators/crc16xmodem'
 import { Message } from '@miwos/osc'
+import { type MessageArgValue } from '@miwos/osc/src/types'
+import crc from 'crc/calculators/crc16xmodem'
 import type { Transport } from './Transport'
 import type { PathParams } from './utils'
 import {
@@ -8,7 +9,6 @@ import {
   EventEmitter,
   parseDirList,
 } from './utils'
-import { MessageArgValue } from '@miwos/osc/src/types'
 
 export interface BridgeOptions {
   responseTimeout?: number

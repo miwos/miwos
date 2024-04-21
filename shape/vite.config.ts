@@ -9,5 +9,4 @@ export default defineConfig({
       fileName: () => `index.js`,
     },
   },
-  plugins: [raw({ match: /\.svg$/ })],
 })

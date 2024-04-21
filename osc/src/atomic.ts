@@ -15,11 +15,9 @@ export default abstract class Atomic {
 
   /**
    * Interpret the given value of this entity as packed binary data
-   * @param method The DataView method to write to the ArrayBuffer
-   * @param byteLength Size of array in bytes
    * @return Packed binary data
    */
-  abstract pack(method: string, byteLength: number): Uint8Array
+  abstract pack(): Uint8Array
 
   /**
    * Unpack binary data from DataView according to the given format

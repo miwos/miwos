@@ -14,7 +14,11 @@ import AtomicString from './atomic/string'
 import AtomicUInt64 from './atomic/uint64'
 import Helper, { prepareAddress, typeTag } from './common/helpers'
 import { isArray, isString, isUndefined } from './common/utils'
-import { MessageArgObject, MessageArgType, MessageArgValue } from './types'
+import {
+  type MessageArgObject,
+  type MessageArgType,
+  type MessageArgValue,
+} from './types'
 
 /**
  * @example
@@ -82,7 +86,7 @@ export class TypedMessage {
       this.args.push(VALUE_FALSE)
     } else if (type === 'I') {
       this.args.push(VALUE_INFINITY)
-    } else {
+    } else if (item) {
       this.args.push(item)
     }
 
@@ -106,7 +110,7 @@ export class TypedMessage {
 
     // followed by zero or more OSC Arguments
     if (this.args.length > 0) {
-      let argument: Atomic | boolean | number
+      let argument: Atomic | boolean | number | null
 
       if (this.args.length > this.types.length) {
         throw new Error('OSC Message argument and type tag mismatch')
@@ -175,7 +179,7 @@ export class TypedMessage {
     }
 
     let { offset } = types
-    let next: Atomic
+    let next: Atomic | null
     let type: string
 
     const args = []
@@ -246,7 +250,7 @@ export class Message extends TypedMessage {
     address?: string[] | string,
     ...args: [MessageArgObject[]] | MessageArgValue[]
   ) {
-    let oscArgs: MessageArgObject[]
+    let oscArgs: MessageArgObject[] | undefined = undefined
 
     if (args.length > 0) {
       if (args[0] instanceof Array) {
