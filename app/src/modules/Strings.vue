@@ -190,28 +190,28 @@ watch(
 }
 
 .midi-in {
-  background-color: var(--color-module-bg);
-  height: 1.5rem;
   width: 1.5rem;
-  border-top-left-radius: 100%;
-  border-top-right-radius: 100%;
+  height: 1.5rem;
   margin-left: calc(var(--fret-width) * 1.5);
   translate: -50%;
+  border-top-right-radius: 100%;
+  border-top-left-radius: 100%;
+  background-color: var(--color-module-bg);
 }
 
 .midi-out {
   grid-column: content;
   justify-self: center;
-  background-color: var(--color-module-bg);
-  height: 1.5rem;
   width: 1.5rem;
-  border-bottom-left-radius: 100%;
+  height: 1.5rem;
   border-bottom-right-radius: 100%;
+  border-bottom-left-radius: 100%;
+  background-color: var(--color-module-bg);
 }
 
 .neck {
-  position: relative;
   display: grid;
+  position: relative;
   grid-template-rows: calc(var(--frets) * var(--fret-height));
   grid-template-columns:
     var(--fret-width-half)
@@ -230,27 +230,27 @@ watch(
 
 .nut {
   grid-column: content;
-  width: var(--board-width);
   justify-self: center;
-  background-color: black;
+  width: var(--board-width);
   border-inline: var(--string-width) solid black;
-  text-align: center;
+  background-color: black;
   font-size: 0.7rem;
   line-height: 1.4;
+  text-align: center;
 }
 
 .board {
-  grid-column: board;
   grid-row: 1/-1;
+  grid-column: board;
   background-color: var(--color-module-bg);
 }
 
 .strings {
   display: block;
-  grid-column: board;
   grid-row: 1/-1;
-  height: 100%;
+  grid-column: board;
   width: 100%;
+  height: 100%;
   overflow: visible;
 }
 .string {
@@ -266,8 +266,8 @@ watch(
 }
 
 .frets {
-  grid-column: 1/-1;
   grid-row: 1/-1;
+  grid-column: 1/-1;
 }
 
 .fret {
@@ -281,23 +281,23 @@ watch(
   scroll-snap-align: center;
 
   &[data-has-mark='true']::before {
+    grid-row: 1;
+    grid-column: 1/-1;
     width: calc(100% - 2 * var(--fret-width));
     height: 0.4rem;
     border-radius: 9999px;
-    content: '';
-    grid-column: 1/-1;
-    grid-row: 1;
     background-color: #afafaf;
+    content: '';
   }
 }
 
 .fret-pressed {
-  grid-column: var(--string);
   grid-row: 1;
-  background-color: black;
+  grid-column: var(--string);
   width: 0.875rem;
   height: 0.875rem;
   border-radius: 9999px;
+  background-color: black;
   transition: background-color var(--transition-active-out) ease-out;
 
   &[data-is-plucked='true'] {

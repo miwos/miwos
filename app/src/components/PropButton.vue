@@ -10,10 +10,10 @@ defineProps<{
 
 <style scoped>
 .prop-button {
-  text-transform: capitalize;
   padding: 0 0.75rem;
-  line-height: 2.2;
   border-radius: var(--radius-xs);
+  line-height: 2.2;
+  text-transform: capitalize;
   cursor: pointer;
 }
 </style>

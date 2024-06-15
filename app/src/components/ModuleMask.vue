@@ -30,9 +30,9 @@ const clipPath = computed(() => {
 
 <style>
 .module-mask {
-  pointer-events: none;
   position: absolute;
   top: 0;
   left: 0;
+  pointer-events: none;
 }
 </style>

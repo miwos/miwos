@@ -111,14 +111,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 <style scoped>
 .select {
   position: relative;
-  list-style: none;
-  padding-left: 0;
   margin: 0;
+  padding-left: 0;
+  list-style: none;
 
   ::-webkit-scrollbar {
     width: 8px;
-    background: var(--glass-color-solid);
     border-radius: 10px;
+    background: var(--glass-color-solid);
   }
   ::-webkit-scrollbar-track {
     -webkit-border-radius: 10px;
@@ -137,16 +137,16 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 .select[data-theme='default'] {
   --radius: var(--radius-s);
   border-radius: var(--radius);
-  white-space: nowrap;
   background-color: var(--m-select-color-bg);
+  white-space: nowrap;
 
   .option {
-    height: 23px;
     display: flex;
     align-items: center;
+    height: 23px;
     padding: 0 var(--radius);
-    cursor: pointer;
     gap: 0.2em;
+    cursor: pointer;
 
     &:first-child {
       border-radius: var(--radius) var(--radius) 0 0;
@@ -179,16 +179,16 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
   .unset {
     --bg: #d9d9d9;
     --color: black;
+    box-sizing: border-box;
 
     position: absolute;
     right: 0;
-    transform: translateX(55%);
     width: 0.85rem;
     height: 0.85rem;
+    padding: 4px;
+    transform: translateX(55%);
     border-radius: 100%;
     background-color: var(--bg);
-    box-sizing: border-box;
-    padding: 4px;
 
     &:hover {
       --bg: var(--color-glass-dark-solid);

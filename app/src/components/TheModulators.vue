@@ -37,13 +37,13 @@ const addModulator = () => {
 
 <style scoped>
 .modulators {
+  display: flex;
   position: absolute;
   top: 0;
   right: 0;
-  margin: 1rem;
-  display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 1rem;
   gap: 1rem;
 }
 
@@ -53,21 +53,21 @@ const addModulator = () => {
   row-gap: 0.5rem;
 
   &[data-multi-column='true'] {
-    grid-auto-flow: column;
     grid-template-rows: repeat(3, auto);
+    grid-auto-flow: column;
   }
 }
 
 .add {
   --color: white;
   --bg: var(--color-glass-dark-solid);
+  box-sizing: border-box;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.3rem;
 
   border-radius: var(--radius-s);
   background-color: var(--bg);
-  height: 1.5rem;
-  width: 1.5rem;
-  padding: 0.3rem;
-  box-sizing: border-box;
   cursor: pointer;
 
   svg {

@@ -53,13 +53,13 @@ defineExpose({ focus, clear })
 <style>
 .module-search {
   display: grid;
+  grid-template-rows: max-content;
   grid-template-columns:
     [search-start] 1.5rem
     [results-start] 1fr [search-end]
     0.5rem [results-end];
-  grid-template-rows: max-content;
-  gap: 0.5rem;
   height: 100%;
+  gap: 0.5rem;
   color: white;
 }
 
@@ -71,30 +71,30 @@ defineExpose({ focus, clear })
 }
 
 .input::placeholder {
-  font-weight: 400;
   color: #a1a1a1;
+  font-weight: 400;
 }
 
 .results {
-  flex: 1;
   display: flex;
-  flex-direction: column;
   grid-column: results;
-  scrollbar-gutter: stable;
+  flex: 1;
+  flex-direction: column;
 
   height: 100%;
-  overflow-y: auto;
-
-  gap: 0.5rem;
   margin: 0;
   margin-left: 1.5rem;
 
   padding-right: 7px;
+  overflow-y: auto;
+
+  gap: 0.5rem;
+  scrollbar-gutter: stable;
 
   &::-webkit-scrollbar {
     width: 8px;
-    background: var(--color-glass-solid);
     border-radius: 10px;
+    background: var(--color-glass-solid);
   }
 
   &::-webkit-scrollbar-track {

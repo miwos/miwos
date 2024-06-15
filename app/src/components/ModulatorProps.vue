@@ -30,14 +30,14 @@ const definition = items.definitions.get(props.modulator.type)
 
 <style scoped>
 .pane {
-  position: absolute;
-  padding: 0.6rem 0.8rem;
-  background-color: var(--color-glass-dark-solid);
-  outline: 1px solid rgb(255 255 255 / 38%);
-  border-radius: var(--radius-s);
-  right: -0.5rem;
-  top: 0;
   z-index: var(--z-menu);
+  position: absolute;
+  top: 0;
+  right: -0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-s);
+  outline: 1px solid rgb(255 255 255 / 38%);
+  background-color: var(--color-glass-dark-solid);
 }
 
 .prop {

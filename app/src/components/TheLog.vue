@@ -25,16 +25,16 @@ const scrollToBottom = () =>
 .log {
   --line-height: 1.2em;
   --lines: 10;
+  z-index: var(--z-panel);
 
   position: absolute;
-  left: 0;
   bottom: 0;
-  z-index: var(--z-panel);
-  background-color: hsl(0deg 0% 12%);
+  left: 0;
 
   margin: 1rem;
 
   border-radius: var(--radius-xs);
+  background-color: hsl(0deg 0% 12%);
   font-size: 10pt;
 
   ::-webkit-scrollbar-track {
@@ -48,22 +48,21 @@ const scrollToBottom = () =>
 
 .clear {
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
   padding: 0.5em;
 }
 
 .content {
   width: 80ch;
   height: calc(var(--lines) * var(--line-height));
-  line-height: var(--line-height);
-  overflow-y: auto;
-
   margin: 0;
   padding: var(--line-height);
+  overflow-y: auto;
+  line-height: var(--line-height);
+  font-family: monospace;
   white-space: pre-wrap;
   word-break: break-all;
-  font-family: monospace;
 }
 </style>
 

@@ -76,9 +76,8 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
 
 <style scoped>
 .modulator {
-  position: relative;
-
   display: flex;
+  position: relative;
   align-items: center;
 
   &:focus {
@@ -87,9 +86,9 @@ onMouseDownOutside(propsMenu, ({ target }: MouseEvent) => {
 }
 
 .plot {
-  height: 50px;
-  width: 120px;
   box-sizing: border-box;
+  width: 120px;
+  height: 50px;
   padding: 5px 0;
   border-radius: var(--radius-s);
 }

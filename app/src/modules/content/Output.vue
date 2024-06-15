@@ -33,11 +33,11 @@ const device = useDevice()
 
 <style scoped>
 .module-output-content {
-  pointer-events: all;
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: all;
 }
 
 .m-dropdown {

@@ -3,12 +3,12 @@
 @import './assets/utilities.css';
 
 @font-face {
-  font-family: 'Vevey Positive';
+  font-style: normal;
+  font-weight: normal;
   src:
     url('./assets/fonts/vevey-positive-webfont.woff2') format('woff2'),
     url('./assets/fonts/vevey-positive-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'Vevey Positive';
 }
 
 :root {
@@ -44,12 +44,12 @@ body {
 }
 
 #app {
-  font-family: Inter;
   background-color: var(--color-background);
   color: var(--color-text);
   font-weight: 200;
-  letter-spacing: 1px;
   font-size: 14px;
+  font-family: Inter;
+  letter-spacing: 1px;
 }
 
 *:focus-visible {

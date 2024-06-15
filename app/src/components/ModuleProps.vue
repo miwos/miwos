@@ -73,8 +73,8 @@ const getPosition = (index: number) => {
   transform: translateY(-50%);
 
   &[data-side='left'] {
-    transform: translate(-100%, -50%);
     flex-direction: row-reverse;
+    transform: translate(-100%, -50%);
   }
 }
 </style>

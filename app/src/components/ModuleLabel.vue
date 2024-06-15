@@ -46,19 +46,19 @@ const positionedLabels = computed(() => {
 
 <style scoped>
 .container {
+  display: flex;
   position: absolute;
   top: 0;
   left: 0;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  white-space: pre-line;
-  text-align: center;
 
   font-family: Vevey Positive;
+  text-align: center;
+  white-space: pre-line;
+  pointer-events: none;
 }
 
 .label {
@@ -66,9 +66,9 @@ const positionedLabels = computed(() => {
     position: absolute;
     top: 0;
     left: 0;
-    transform-origin: top left;
     transform: translate(var(--x), var(--y)) rotate(var(--angle))
       translateY(-100%);
+    transform-origin: top left;
   }
 
   &[data-positioned='false'] {

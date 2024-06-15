@@ -24,14 +24,14 @@ const options = computed(() =>
   --m-select-color-bg: var(--color-modulation);
   /* Slightly darker modulate color: */
   --m-select-color-focus: hsl(46 112% 41%);
+  z-index: var(--z-dialog);
 
   width: fit-content;
   color: rgb(0 0 0 / 91%);
-  font-family: 'Inter';
   font-weight: 400;
   font-size: 14px;
+  font-family: 'Inter';
   letter-spacing: 1px;
   white-space: nowrap;
-  z-index: var(--z-dialog);
 }
 </style>

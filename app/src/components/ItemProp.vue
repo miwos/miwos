@@ -175,10 +175,10 @@ onMouseDownOutside(context, hideContext)
 
 <style scoped>
 .item-prop {
-  gap: 0.5em;
-  height: 2em;
   display: flex;
   align-items: center;
+  height: 2em;
+  gap: 0.5em;
 }
 
 .content {
@@ -186,19 +186,19 @@ onMouseDownOutside(context, hideContext)
 }
 
 .label {
-  font-family: 'Vevey Positive';
   font-size: 16px;
+  font-family: 'Vevey Positive';
   text-transform: capitalize;
   white-space: nowrap;
   cursor: pointer;
 }
 
 .context {
-  position: absolute;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  position: absolute;
   top: v-bind('contextPosition.y + `px`');
   left: v-bind('contextPosition.x + `px`');
+  flex-direction: column;
+  gap: 0.5rem;
 }
 </style>

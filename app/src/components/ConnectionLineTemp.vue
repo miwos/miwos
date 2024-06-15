@@ -28,12 +28,12 @@ const path = useConnectionPath(props.connection)
 <style scoped>
 .connection-line-temp {
   position: absolute;
-  pointer-events: none;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   outline: none;
+  pointer-events: none;
 
   stroke-width: 1px;
   stroke: var(--color-connection);

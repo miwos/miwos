@@ -92,13 +92,12 @@ whenever(keys['delete'], () =>
 }
 
 .patch {
-  /* Create a new stacking context, so modules and connections don't
-  overlay menus and dialogs. */
-  isolation: isolate;
-
   position: absolute;
   top: 0;
   left: 0;
+  /* Create a new stacking context, so modules and connections don't
+  overlay menus and dialogs. */
+  isolation: isolate;
   transition: opacity 100ms ease;
 
   &[data-dim='true'] {
@@ -107,10 +106,10 @@ whenever(keys['delete'], () =>
 }
 
 .selection {
-  position: absolute;
   box-sizing: border-box;
-  pointer-events: none;
-  background: rgb(0 0 0 / 12%);
+  position: absolute;
   border-radius: 7px;
+  background: rgb(0 0 0 / 12%);
+  pointer-events: none;
 }
 </style>

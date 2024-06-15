@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "css.lint.validProperties": ["vector-effect"]
+  "css.lint.validProperties": ["vector-effect"],
+  "css.lint.unknownAtRules": "ignore"
 }

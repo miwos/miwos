@@ -59,9 +59,9 @@ const angleToValue = (angle: number) => {
 }
 
 .icon {
-  overflow: visible;
   width: 100%;
   height: 100%;
+  overflow: visible;
   transform: rotate(v-bind('angle + `deg`'));
 }
 

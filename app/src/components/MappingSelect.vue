@@ -22,14 +22,14 @@ const options = [
   --m-select-color-bg: var(--color-mapping);
   /* Slightly darker mapping color: */
   --m-select-color-focus: hsl(155deg 58% 38%);
+  z-index: var(--z-dialog);
 
   width: fit-content;
   color: rgb(0 0 0 / 91%);
-  font-family: 'Inter';
   font-weight: 400;
   font-size: 14px;
+  font-family: 'Inter';
   letter-spacing: 1px;
   white-space: nowrap;
-  z-index: var(--z-dialog);
 }
 </style>

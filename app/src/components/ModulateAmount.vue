@@ -33,12 +33,12 @@ const modulator = computed(() => modulators.get(props.modulation.modulatorId))
 
 <style scoped>
 .modulate-amount {
+  padding: 0.25rem var(--radius-s);
   border-radius: var(--radius-s);
   background-color: var(--color-modulation);
-  padding: 0.25rem var(--radius-s);
-  font-family: 'Inter';
   font-weight: 400;
   font-size: 14px;
+  font-family: 'Inter';
 }
 
 .input {
@@ -47,19 +47,19 @@ const modulator = computed(() => modulators.get(props.modulation.modulatorId))
 
   &::-webkit-slider-runnable-track {
     height: 2px;
-    background: currentColor;
     border: none;
+    background: currentColor;
     cursor: pointer;
   }
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    border: none;
-    height: 0.85rem;
     width: 0.85rem;
+    height: 0.85rem;
+    transform: translateY(-50%);
+    border: none;
     border-radius: 50%;
     background: currentColor;
-    transform: translateY(-50%);
   }
 }
 </style>

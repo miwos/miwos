@@ -42,28 +42,25 @@ const addModule = (type: ModuleDefinition['id']) => {
 
 <style scoped>
 .menu-add {
-  --item-height: 2.5rem;
-  --item-gap: 0.5rem;
-
   position: fixed;
   top: 20;
   margin-inline: auto;
   padding: 0.5rem;
 
-  --height: 40%;
+  --item-gap: 0.5rem;
+  --item-height: 2.5rem;
   --item-size: calc(var(--item-height) + var(--item-gap));
-  max-height: calc(
-    round(down, var(--height), var(--item-size)) - var(--item-gap)
-  );
+
   height: 100%;
+  max-height: calc(round(down, 40%, var(--item-size)) - var(--item-gap));
 
   &,
   &::backdrop {
+    opacity: 0;
     transition:
       display 200ms allow-discrete,
       overlay 200ms allow-discrete,
       opacity 200ms;
-    opacity: 0;
   }
 
   &[open] {

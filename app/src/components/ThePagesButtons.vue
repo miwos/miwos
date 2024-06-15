@@ -18,12 +18,11 @@ const mappings = useMappings()
 
 <style scoped>
 .pages-buttons {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: 1rem;
-
   display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 1rem;
   border-radius: 1.5rem;
 }
 

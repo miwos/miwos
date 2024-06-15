@@ -70,8 +70,8 @@ const updateValue = (slot: number, value: number) => {
   right: 0;
   width: 80px;
   height: 156px;
-  transform: translateY(-50%);
   margin: 1rem;
+  transform: translateY(-50%);
   counter-reset: encoder;
 }
 
@@ -97,13 +97,13 @@ const updateValue = (slot: number, value: number) => {
 
   &::before {
     position: absolute;
-    transform: translateX(-100%);
-    content: counter(encoder);
     padding-top: 0.67em;
     padding-right: 0.5em;
+    transform: translateX(-100%);
+    content: counter(encoder);
+    color: var(--color-module-bg);
     font-size: 16px;
     font-family: 'Vevey Positive';
-    color: var(--color-module-bg);
     opacity: 0;
     transition: opacity 100ms;
   }

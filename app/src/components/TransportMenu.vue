@@ -45,8 +45,8 @@ const togglePlay = () => {
 .metronome-dot {
   width: 0.6rem;
   height: 0.6rem;
-  border-radius: 0.6rem;
   border: 1px solid yellow;
+  border-radius: 0.6rem;
 
   &[data-active='true'] {
     background-color: yellow;
@@ -54,8 +54,8 @@ const togglePlay = () => {
 }
 
 .tempo-input {
-  font-variant-numeric: tabular-nums;
   width: 3.7em;
+  font-variant-numeric: tabular-nums;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

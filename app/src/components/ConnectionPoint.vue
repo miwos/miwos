@@ -90,9 +90,9 @@ const { isDragging, isDraggedOver } = useDragDrop(el, {
 <style scoped>
 .connection-point {
   position: absolute;
-  transform: translate(-50%, -50%);
   top: v-bind('point.position.y + `px`');
   left: v-bind('point.position.x + `px`');
+  transform: translate(-50%, -50%);
   fill: var(--color-connection);
   transition: fill var(--transition-duration-connection);
 

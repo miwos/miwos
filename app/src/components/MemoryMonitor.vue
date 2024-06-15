@@ -85,8 +85,8 @@ deviceMemoryBus.on((value) => {
   position: relative;
   width: 9rem;
   height: 5rem;
-  border-radius: 1.25rem;
   overflow: hidden;
+  border-radius: 1.25rem;
 
   &[data-usage='normal'] {
     --color: hsl(180 71% 50%);
@@ -133,8 +133,8 @@ deviceMemoryBus.on((value) => {
     position: absolute;
     top: 0;
     right: 0;
-    line-height: 2.5rem; /* Match the NavBar */
     padding: 0 1em;
+    line-height: 2.5rem; /* Match the NavBar */
 
     text-shadow: 1px 1px var(--color-glass-dark-solid);
   }
