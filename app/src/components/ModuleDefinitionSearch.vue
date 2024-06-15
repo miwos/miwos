@@ -5,8 +5,6 @@ import type { ItemDefinition } from '@/types/Item'
 import { ref, watchEffect } from 'vue'
 import MSelect from '../ui/MSelect.vue'
 
-defineProps<{ alignResults: 'top' | 'bottom' }>()
-
 const emit = defineEmits<{
   (e: 'select', type: ModuleDefinition['id']): void
   (e: 'blur'): void
@@ -27,7 +25,7 @@ defineExpose({ focus, clear })
 </script>
 
 <template>
-  <div class="module-search" :class="`align-results-${alignResults}`">
+  <div class="module-search">
     <input
       class="input glass pill"
       ref="input"
@@ -54,40 +52,21 @@ defineExpose({ focus, clear })
 
 <style>
 .module-search {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns:
+    [search-start] 1.5rem
+    [results-start] 1fr [search-end]
+    0.5rem [results-end];
+  grid-template-rows: max-content;
   gap: 0.5rem;
+  height: 100%;
+  color: white;
+}
 
-  /* The lightbox and the search being the only element on the page should
-  provide enough focus. */
-  :focus-visible {
-    outline: none;
-  }
-
-  &.align-results-top {
-    flex-direction: column-reverse;
-  }
-
-  /* `justify-content: flex-end` would break the auto scrollbar
-  see: https://stackoverflow.com/a/37515194/12207499 */
-  &.align-results-top .m-select-option:first-child {
-    margin-top: auto;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-    background: var(--color-glass-solid);
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: var(--color-glass-dark-solid);
+.input {
+  grid-column: search;
+  &:focus {
+    outline-color: var(--color-active);
   }
 }
 
@@ -100,20 +79,32 @@ defineExpose({ focus, clear })
   flex: 1;
   display: flex;
   flex-direction: column;
+  grid-column: results;
+  scrollbar-gutter: stable;
+
+  height: 100%;
+  overflow-y: auto;
 
   gap: 0.5rem;
   margin: 0;
   margin-left: 1.5rem;
 
-  /* TODO: replace */
-  /* & .m-select-list {
-    gap: 0.5rem;
-  } */
+  padding-right: 7px;
 
-  &.overflow {
-    /* Make some space for the scrollbar */
-    padding-right: 7px;
-    margin-right: -15px; /* 7px (padding) + 8px (scrollbar width) */
+  &::-webkit-scrollbar {
+    width: 8px;
+    background: var(--color-glass-solid);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: var(--color-glass-dark-solid);
   }
 }
 </style>
