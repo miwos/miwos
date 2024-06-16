@@ -27,6 +27,13 @@ export const useDevice = defineStore('device', () => {
   const midi = useMidi()
   const deviceMemoryBus = useEventBus<number>('device-memory')
 
+  bridge.on('/open', async () => {
+    isConnected.value = true
+    window.postMessage({ method: 'deviceConnected' })
+    await items.updateDefinitions()
+    await midi.updateInfo()
+    project.load()
+  })
   bridge.on('/close', () => (isConnected.value = false))
 
   bridge.on('/log/:type', ({ args: [text] }, { type }) => {
@@ -47,23 +54,17 @@ export const useDevice = defineStore('device', () => {
     deviceMemoryBus.emit(memory),
   )
 
-  const open = async () => {
-    await bridge.open({ baudRate: 9600 })
-    isConnected.value = true
-
-    await items.updateDefinitions()
-    await midi.updateInfo()
-
-    project.load()
-    window.postMessage({ method: 'deviceConnected' })
+  const open = () => {
+    bridge.open({ baudRate: 9600, usbVendorId: 5824, usbProductId: 1161 })
   }
 
-  const close = async () => {
-    await bridge.close()
-    isConnected.value = false
+  const close = () => {
+    bridge.close()
   }
 
-  const restart = () => bridge.request('/lua/restart', [])
+  const restart = () => {
+    bridge.request('/lua/restart', [])
+  }
 
   const update = <A extends keyof OscRequestMessages>(
     address: A,
@@ -99,6 +100,9 @@ export const useDevice = defineStore('device', () => {
     if (!isConnected.value) return
     return bridge.notify(address, args ?? [])
   }
+
+  // Init
+  open()
 
   return {
     midiDevices,

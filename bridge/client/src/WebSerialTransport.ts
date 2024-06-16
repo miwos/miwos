@@ -1,6 +1,11 @@
 import type { Transport, TransportDataHandler } from './Transport'
 import { SlipEncoder, SlipDecoder } from './utils/web-serial-slip'
 
+export type OpenOptions = SerialOptions & {
+  usbVendorId: number
+  usbProductId: number
+}
+
 export class WebSerialTransport implements Transport {
   private port: SerialPort | undefined
   private reader: ReadableStreamDefaultReader | undefined
@@ -10,16 +15,69 @@ export class WebSerialTransport implements Transport {
   private dataHandler: TransportDataHandler | undefined
   private openHandler: (() => any) | undefined
   private closeHandler: (() => any) | undefined
+  private autoConnectIsSetup = false
 
-  async open(options: SerialOptions = { baudRate: 9600 }) {
-    this.port = await navigator.serial.requestPort()
-    this.port.addEventListener('connect', () => this.openHandler?.())
+  async open(options: OpenOptions) {
+    const { usbVendorId, usbProductId } = options
+
+    // First, try to automatically connect to a port that the user already has
+    // granted permission to.
+    const ports = await navigator.serial.getPorts()
+    this.port = ports.find((port) => {
+      const info = port.getInfo()
+      return (
+        info.usbVendorId === usbVendorId && info.usbProductId === usbProductId
+      )
+    })
+
+    // If no port is found, request the user. But since this requires a user
+    // gesture (which might or might not have happened) we try-catch it.
+    try {
+      this.port ??= await navigator.serial.requestPort({
+        filters: [{ usbVendorId, usbProductId }],
+      })
+    } catch (e) {}
+
+    if (this.port) this.setupPort(this.port, options)
+
+    // In case the port is unplugged and then plugged back in again, or if the
+    // user hasn't plugged in the device yet, we will also listen for any new
+    // connections.
+    if (!this.autoConnectIsSetup) {
+      navigator.serial.addEventListener('connect', (event) => {
+        console.log('connect', event)
+        const port = event.target as SerialPort
+        const info = port.getInfo()
+        const isCorrectPort =
+          info.usbVendorId === usbVendorId && info.usbProductId === usbProductId
+        if (isCorrectPort) this.setupPort(port, options)
+      })
+      this.autoConnectIsSetup = true
+    }
+  }
+
+  async close() {
+    this.reader?.cancel()
+    // Ignore any errors.
+    await this.readableStreamClosed?.catch(() => {})
+
+    this.writer?.close()
+    await this.writableStreamClosed
+
+    await this.port?.close()
+    this.closeHandler?.()
+  }
+
+  private async setupPort(port: SerialPort, options: SerialOptions) {
+    this.port = port
     this.port.addEventListener('disconnect', () => this.closeHandler?.())
     await this.port.open(options)
 
     this.setupReader()
     this.setupWriter()
     this.listen()
+
+    this.openHandler?.()
   }
 
   private setupWriter() {
@@ -69,16 +127,5 @@ export class WebSerialTransport implements Transport {
 
   onOpen(handler: () => any) {
     this.openHandler = handler
-  }
-
-  async close() {
-    this.reader?.cancel()
-    // Ignore any errors.
-    await this.readableStreamClosed?.catch(() => {})
-
-    this.writer?.close()
-    await this.writableStreamClosed
-
-    await this.port?.close()
   }
 }
