@@ -69,6 +69,10 @@ export class WebSerialTransport implements Transport {
   }
 
   private async setupPort(port: SerialPort, options: SerialOptions) {
+    // `setupPort` should only be called on closed ports, but sometimes when
+    // working with HMR in vite, it is called for an already opened port ...
+    if (port && this.portIsOpen(port)) return
+
     this.port = port
     this.port.addEventListener('disconnect', () => this.closeHandler?.())
     await this.port.open(options)
@@ -116,6 +120,11 @@ export class WebSerialTransport implements Transport {
   async write(data: Uint8Array) {
     await this.writer?.write(data)
   }
+
+  private portIsOpen(port: SerialPort) {
+    return port.writable && port.writable
+  }
+
 
   onData(handler: TransportDataHandler) {
     this.dataHandler = handler
