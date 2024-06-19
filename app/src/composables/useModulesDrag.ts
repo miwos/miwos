@@ -16,11 +16,12 @@ export const useModulesDrag = (
   let groupRect: Rect | undefined
   let groupDelta: Point | undefined
   let group: Module[] = []
-  const prevModulePositions = new Map<Module['id'], Point>()
   const modulePositions = new Map<Module['id'], Point>()
   const moduleDeltas = new Map<Module['id'], Point>()
 
   const startDrag = (modules: Module[], point: Point) => {
+    document.body.dataset.dragging = 'true'
+
     group = modules
 
     // Conceptually we do not move the individual modules but the whole group. So
@@ -36,8 +37,6 @@ export const useModulesDrag = (
     modulePositions.clear()
     moduleDeltas.clear()
     for (const { id, position } of group) {
-      // Store the original positions, so we can cancel the drag.
-      prevModulePositions.set(id, { x: position.x, y: position.y })
       // Store individual deltas relative to the group's rectangle, so we can
       // figure out the individual positions while dragging.
       moduleDeltas.set(id, {
@@ -73,7 +72,10 @@ export const useModulesDrag = (
     }
   }
 
-  const endDrag = () => (group = [])
+  const endDrag = () => {
+    document.body.dataset.dragging = `false`
+    group = []
+  }
 
   const handleMouseMove = (event: MouseEvent) => {
     event.preventDefault()

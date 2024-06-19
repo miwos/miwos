@@ -8,7 +8,6 @@ import { useItems } from './items'
 export const useApp = defineStore('app', () => {
   const showPropFields = ref(false)
   const isMapping = ref(false)
-  const isOverlaying = ref(false)
 
   const bridge = useBridge()
   const device = useDevice()
@@ -49,7 +48,7 @@ export const useApp = defineStore('app', () => {
     }
   })
 
-  return { showPropFields, isMapping, isOverlaying }
+  return { showPropFields, isMapping }
 })
 
 if (import.meta.hot)

@@ -8,14 +8,14 @@ defineProps<{ shape: Shape }>()
 </template>
 
 <style scoped>
-.module-shape {
-  fill: var(--color-module-bg);
+/* Note: `:deep()` inside css nesting causes issues, so we keep it flat. */
 
-  &::v-deep(svg) {
-    display: block;
-    path {
-      pointer-events: auto;
-    }
-  }
+.module-shape :deep(svg) {
+  display: block;
+}
+
+.module-shape :deep(svg .shape) {
+  fill: var(--color-module-bg);
+  pointer-events: auto;
 }
 </style>

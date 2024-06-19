@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
+import { onClickNoDrag } from '@/composables/onClickNoDrag'
 import { useModulesDrag } from '@/composables/useModulesDrag'
 import { useItems } from '@/stores/items'
 import { useProject } from '@/stores/project'
 import type { Module, Point } from '@/types'
-import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import ConnectionPoints from './ConnectionPoints.vue'
 import ModuleContent from './ModuleContent.vue'
 import ModuleCustom from './ModuleCustom.vue'
 import ModuleLabel from './ModuleLabel.vue'
 import ModuleMask from './ModuleMask.vue'
-import ModuleOutline from './ModuleOutline.vue'
 import ModuleProps from './ModuleProps.vue'
 import ModuleShape from './ModuleShape.vue'
+import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
 
 const props = defineProps<{ position: Point; module: Module }>()
 
@@ -52,15 +52,24 @@ const shape = computed(() => {
 })
 
 const el = ref<HTMLElement>()
+const dragHandle = ref<HTMLElement>()
 const maskId = `module-${props.module.id}-mask`
 
 const isSelected = computed(() => items.selectedIds.has(props.module.id))
 
 onMouseUpOutside(el, () => {
-  if (!items.isDragging && !project.isSelecting) items.selectedIds.clear()
+  if (!items.isDragging && !project.isSelecting) unselect()
 })
 
-useModulesDrag(el, props.module)
+const select = () => {
+  items.selectedIds.clear()
+  items.selectedIds.add(props.module.id)
+}
+
+const unselect = () => items.selectedIds.clear()
+
+useModulesDrag(dragHandle, props.module)
+onClickNoDrag(dragHandle, select)
 
 watch(
   () => props.position,
@@ -69,7 +78,7 @@ watch(
 </script>
 
 <template>
-  <div ref="el" class="module">
+  <div ref="el" class="module" :data-selected="isSelected">
     <template v-if="customComponent">
       <ModuleCustom :component="customComponent" :module="module" />
       <ConnectionPoints :item="module" />
@@ -77,12 +86,7 @@ watch(
 
     <template v-else>
       <ModuleMask v-if="shape" :shape="shape" :id="maskId" />
-      <ModuleOutline
-        v-if="shape && isSelected"
-        :module="module"
-        :shape="shape"
-      />
-      <ModuleShape v-if="shape" :shape="shape" />
+      <ModuleShape v-if="shape" ref="dragHandle" :shape="shape" tabindex="0" />
       <ModuleContent
         v-if="contentComponent"
         :component="contentComponent"
@@ -106,5 +110,10 @@ watch(
   top: v-bind('props.position.y + `px`');
   left: v-bind('props.position.x + `px`');
   pointer-events: none;
+  transition: opacity 100ms;
+}
+
+.patch[data-selection='true'] .module[data-selected='false'] {
+  opacity: 0.25;
 }
 </style>

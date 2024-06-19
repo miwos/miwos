@@ -28,10 +28,11 @@ const keys = useMagicKeys()
 const selectItems = () => {
   items.selectedIds.clear()
   for (const [id, instance] of items.instances) {
-    // TODO: cleanup this TS mess!
-    if (!(instance as Module).size) continue
+    if (instance.category !== 'modules') continue
     const { x, y } = instance.position
-    const { width, height } = (instance as Module).size!
+    const definition = items.definitions.get(instance.type)!
+    const shape = items.shapes.get(definition?.shape ?? definition.id)!
+    const { width, height } = shape.size
     const moduleRect = { x, y, width, height }
     if (containsRect(rect.value, moduleRect)) items.selectedIds.add(id)
   }
@@ -54,7 +55,10 @@ whenever(keys['delete'], () =>
   <div class="background" ref="bg"></div>
   <div class="selection" v-if="isSelecting" :style="style"></div>
   <TheModulators />
-  <div class="patch" :data-dim="app.isOverlaying">
+  <div
+    class="patch"
+    :data-selection="project.isSelecting || items.selectedIds.size > 0"
+  >
     <div class="module-instances">
       <ModuleInstance
         v-for="[id, item] in items.modules"
@@ -95,21 +99,24 @@ whenever(keys['delete'], () =>
   position: absolute;
   top: 0;
   left: 0;
+  /* ? Since we're using Dialog/Popover do we still need this? */
   /* Create a new stacking context, so modules and connections don't
   overlay menus and dialogs. */
   isolation: isolate;
-  transition: opacity 100ms ease;
-
-  &[data-dim='true'] {
-    opacity: 0.3;
-  }
 }
 
 .selection {
   box-sizing: border-box;
   position: absolute;
-  border-radius: 7px;
+  border: 1px dotted white;
+  border-radius: 5px;
   background: rgb(0 0 0 / 12%);
   pointer-events: none;
+}
+</style>
+
+<style>
+body[data-dragging='true'] * {
+  user-select: none;
 }
 </style>

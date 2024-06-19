@@ -1,6 +1,9 @@
 <template>
-  <svg class="connection-line" :class="{ active: isActive }">
-    <path class="selected" v-if="isSelected" :d="path?.data" />
+  <svg
+    class="connection-line"
+    :data-active="isActive"
+    :data-selected="isSelected"
+  >
     <path class="display" :d="path?.data" />
     <path class="hit-area" ref="hitArea" :d="path?.data" :style="hitAreaDash" />
     <g v-if="debug">
@@ -69,12 +72,11 @@ watchDebounced(
   height: 100vh;
   outline: none;
   pointer-events: none;
-}
+  transition: opacity 100ms;
 
-.selected {
-  stroke: rgb(0 0 0 / 16%);
-  stroke-width: 8px;
-  fill: none;
+  .patch[data-selection='true'] &[data-selected='false'] {
+    opacity: 0.25;
+  }
 }
 
 .display {
@@ -82,7 +84,8 @@ watchDebounced(
   stroke: var(--color-connection);
   transition: stroke var(--transition-duration-connection);
   fill: none;
-  .active & {
+
+  .connection-line[data-active='true'] & {
     stroke: var(--color-active);
   }
 }

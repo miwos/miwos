@@ -1,12 +1,14 @@
+import { useItems } from '@/stores/items'
 import { useEventListener, type MaybeComputedElementRef } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
 export const useSelection = (
-  el: MaybeComputedElementRef<HTMLElement | null | undefined>
+  el: MaybeComputedElementRef<HTMLElement | null | undefined>,
 ) => {
   let startPoint = { x: 0, y: 0 }
   const rect = ref({ x: 0, y: 0, width: 0, height: 0 })
   const isSelecting = ref(false)
+  const items = useItems()
 
   const style = computed(() => ({
     top: rect.value.y + 'px',
@@ -16,6 +18,8 @@ export const useSelection = (
   }))
 
   const handleMouseMove = (event: MouseEvent) => {
+    document.body.dataset.dragging = 'true'
+
     const point = {
       x: Math.max(0, Math.min(event.clientX, window.innerWidth)),
       // Subtract 1px, otherwise chrome will crop it.
@@ -36,9 +40,10 @@ export const useSelection = (
     window.removeEventListener('mousemove', handleMouseMove)
     window.removeEventListener('mouseup', cancel)
     isSelecting.value = false
+    document.body.dataset.dragging = 'false'
   }
 
-  useEventListener<MouseEvent>(el, 'mousedown', (event) => {
+  useEventListener(el, 'mousedown', (event) => {
     startPoint = { x: event.clientX, y: event.clientY }
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', cancel)
