@@ -1,6 +1,7 @@
 <template>
   <svg
     class="connection-line"
+    tabindex="0"
     :data-active="isActive"
     :data-selected="isSelected"
   >
@@ -10,7 +11,7 @@
       ref="hitArea"
       :d="path?.data"
       :style="hitAreaDash"
-      @click="select"
+      @click="handleClick"
     />
     <g v-if="debug">
       <circle
@@ -70,14 +71,19 @@ watchDebounced(
   { debounce: 100, immediate: true },
 )
 
-const select = () => {
-  connections.selectedIds.clear()
+const select = (shouldClear = true) => {
+  if (shouldClear) connections.selectedIds.clear()
   connections.selectedIds.add(props.connection.id)
 }
 
 const unselect = () => connections.selectedIds.clear()
 
-onMouseUpOutside(hitArea, unselect)
+const handleClick = (event: MouseEvent) => select(!event.shiftKey)
+
+onMouseUpOutside(hitArea, (event) => {
+  if (event.shiftKey) return
+  unselect()
+})
 </script>
 
 <style scoped>

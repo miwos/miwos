@@ -57,19 +57,21 @@ const maskId = `module-${props.module.id}-mask`
 
 const isSelected = computed(() => items.selectedIds.has(props.module.id))
 
-onMouseUpOutside(el, () => {
-  if (!items.isDragging && !project.isSelecting) unselect()
+onMouseUpOutside(el, (event) => {
+  if (items.isDragging || project.isSelecting) return
+  if (event.shiftKey) return
+  unselect()
 })
 
-const select = () => {
-  items.selectedIds.clear()
+const select = (shouldClear = true) => {
+  if (shouldClear) items.selectedIds.clear()
   items.selectedIds.add(props.module.id)
 }
 
 const unselect = () => items.selectedIds.clear()
 
 useModulesDrag(dragHandle, props.module)
-onClickNoDrag(dragHandle, select)
+onClickNoDrag(dragHandle, (event) => select(!event.shiftKey))
 
 watch(
   () => props.position,
