@@ -36,6 +36,7 @@ export const deserializeConnection = (
 export const useConnections = defineStore('connections', () => {
   const map = ref(new Map<Id, Connection>())
   const tempConnection = ref<TemporaryConnection>()
+  const selectedIds = ref(new Set<Id>())
 
   const device = useDevice()
   const items = useItems()
@@ -107,6 +108,7 @@ export const useConnections = defineStore('connections', () => {
     map.value.delete(id)
     if (updateDevice && connection)
       device.update('/r/connections/remove', serializeConnection(connection))
+    selectedIds.value.delete(id)
     return connection
   }
 
@@ -128,9 +130,9 @@ export const useConnections = defineStore('connections', () => {
     const connectionPoints = bothAreThru
       ? sortPointsByPosition(startPoint, point)
       : (!startPoint.thru && startPoint.direction === 'out') ||
-        (!point.thru && point.direction === 'in')
-      ? [startPoint, point]
-      : [point, startPoint]
+          (!point.thru && point.direction === 'in')
+        ? [startPoint, point]
+        : [point, startPoint]
 
     const [from, to] = connectionPoints
     startPoint = undefined
@@ -142,6 +144,7 @@ export const useConnections = defineStore('connections', () => {
     map,
     tempConnection,
     activeIds,
+    selectedIds,
     serialize,
     deserialize,
     get,

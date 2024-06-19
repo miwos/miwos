@@ -5,7 +5,13 @@
     :data-selected="isSelected"
   >
     <path class="display" :d="path?.data" />
-    <path class="hit-area" ref="hitArea" :d="path?.data" :style="hitAreaDash" />
+    <path
+      class="hit-area"
+      ref="hitArea"
+      :d="path?.data"
+      :style="hitAreaDash"
+      @click="select"
+    />
     <g v-if="debug">
       <circle
         v-for="{ x, y } in path?.controls"
@@ -19,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMouseUpOutside } from '@/composables/onMouseUpOutside'
 import { useConnectionPath } from '@/composables/useConnectionPath'
 import { useConnections } from '@/stores/connections'
 import { useItems } from '@/stores/items'
@@ -38,6 +45,7 @@ const debug = false
 
 const isSelected = computed(
   () =>
+    connections.selectedIds.has(props.connection.id) ||
     items.selectedIds.has(from.value.itemId) ||
     items.selectedIds.has(to.value.itemId),
 )
@@ -61,6 +69,15 @@ watchDebounced(
   },
   { debounce: 100, immediate: true },
 )
+
+const select = () => {
+  connections.selectedIds.clear()
+  connections.selectedIds.add(props.connection.id)
+}
+
+const unselect = () => connections.selectedIds.clear()
+
+onMouseUpOutside(hitArea, unselect)
 </script>
 
 <style scoped>
@@ -94,6 +111,7 @@ watchDebounced(
   pointer-events: stroke;
   stroke-width: 20px;
   fill: none;
+  cursor: pointer;
   &:focus {
     outline: none;
   }

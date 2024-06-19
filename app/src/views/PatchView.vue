@@ -13,7 +13,7 @@ import { useItems } from '@/stores/items'
 import { useProject } from '@/stores/project'
 import { containsRect } from '@/utils'
 import { useMagicKeys, whenever } from '@vueuse/core'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Module } from '@/types'
 
 const bg = ref<HTMLElement>()
@@ -24,6 +24,11 @@ const items = useItems()
 
 const { style, rect, cancel, isSelecting } = useSelection(bg)
 const keys = useMagicKeys()
+const hasSelection = computed(() => {
+  const hasSelectedItems = items.selectedIds.size > 0
+  const hasSelectedConnections = connections.selectedIds.size > 0
+  return project.isSelecting || hasSelectedItems || hasSelectedConnections
+})
 
 const selectItems = () => {
   items.selectedIds.clear()
@@ -46,19 +51,17 @@ whenever(keys['escape'], () => {
   cancel()
 })
 
-whenever(keys['delete'], () =>
-  items.selectedIds.forEach((id) => items.remove(id)),
-)
+whenever(keys['delete'], () => {
+  items.selectedIds.forEach((id) => items.remove(id))
+  connections.selectedIds.forEach((id) => connections.remove(id))
+})
 </script>
 
 <template>
   <div class="background" ref="bg"></div>
   <div class="selection" v-if="isSelecting" :style="style"></div>
   <TheModulators />
-  <div
-    class="patch"
-    :data-selection="project.isSelecting || items.selectedIds.size > 0"
-  >
+  <div class="patch" :data-selection="hasSelection">
     <div class="module-instances">
       <ModuleInstance
         v-for="[id, item] in items.modules"
