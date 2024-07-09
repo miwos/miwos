@@ -49,7 +49,7 @@ deviceMemoryBus.on((value) => {
 </script>
 
 <template>
-  <div class="memory-monitor glass" :data-usage="usage">
+  <div class="memory-monitor" :data-usage="usage">
     <div class="label">
       Memory:
       <span class="value">{{ Math.floor(values.at(-1) ?? 0) }}</span
@@ -69,7 +69,7 @@ deviceMemoryBus.on((value) => {
       />
 
       <line
-        v-for="n in (steps - 1) / 4 + 1"
+        v-for="n in (steps - 1) / verticalGuides"
         :x1="n * verticalGuidesDistance - verticalGuideOffsetSteps"
         y1="0"
         :x2="n * verticalGuidesDistance - verticalGuideOffsetSteps"
@@ -83,13 +83,11 @@ deviceMemoryBus.on((value) => {
 <style scoped>
 .memory-monitor {
   position: relative;
-  width: 9rem;
-  height: 5rem;
-  overflow: hidden;
-  border-radius: 1.25rem;
+  width: 100%;
+  height: 100%;
 
   &[data-usage='normal'] {
-    --color: hsl(180 71% 50%);
+    --color: rgb(0, 209, 255);
   }
 
   &[data-usage='increased'] {
@@ -103,6 +101,7 @@ deviceMemoryBus.on((value) => {
   svg {
     width: 100%;
     height: 100%;
+    overflow: visible;
 
     line,
     polyline {
@@ -111,7 +110,7 @@ deviceMemoryBus.on((value) => {
   }
 
   .guide {
-    stroke: rgb(34 34 34 / 19%);
+    stroke: hsl(0deg 0% 40% / 50%);
   }
 
   .line,

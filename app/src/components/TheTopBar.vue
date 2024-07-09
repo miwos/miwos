@@ -4,7 +4,6 @@ import { useProject } from '@/stores/project'
 import MButtonCircle from '@/ui/MButtonCircle.vue'
 import MNavBar from '@/ui/MNavBar.vue'
 import { computed } from 'vue'
-import MemoryMonitor from './MemoryMonitor.vue'
 import TransportMenu from './TransportMenu.vue'
 
 const device = useDevice()
@@ -39,7 +38,6 @@ const statusText = computed(() =>
       <button @click="restart">Restart</button>
     </MNavBar>
     <TransportMenu />
-    <MemoryMonitor />
   </div>
 </template>
 

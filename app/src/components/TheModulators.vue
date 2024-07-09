@@ -74,7 +74,7 @@ const addModulator = () => {
     stroke: var(--color);
     line {
       vector-effect: non-scaling-stroke;
-      stroke: 1px;
+      stroke-width: 1px;
     }
   }
 
