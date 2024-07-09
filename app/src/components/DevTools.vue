@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import ErrorIcon from '@/assets/icons/error.svg?component'
 import WarningIcon from '@/assets/icons/warning.svg?component'
-import RamIcon from '@/assets/icons/ram.svg?component'
+import MemoryIcon from '@/assets/icons/memory.svg?component'
 import BarTabLeft from '@/assets/icons/bar-tab-left.svg?component'
 import BarTabRight from '@/assets/icons/bar-tab-right.svg?component'
 
 import { TabsRoot, TabList, TabTrigger, TabContent } from '@ark-ui/vue'
 import DevToolsMemory from './DevToolsMemory.vue'
+import { useDevice } from '@/stores/device'
 
+const device = useDevice()
 </script>
 
 <template>
@@ -34,7 +36,7 @@ import DevToolsMemory from './DevToolsMemory.vue'
         <TabTrigger value="memory" class="tab-trigger">
           <BarTabLeft class="tab-side" />
           <div class="tab">
-            <RamIcon class="icon" />
+            <MemoryIcon class="icon memory-icon" :data-usage="device.memoryUsage" />
             <span style="padding-left: 0.2em">Low</span>
           </div>
         </TabTrigger>
@@ -65,6 +67,23 @@ import DevToolsMemory from './DevToolsMemory.vue'
 
   &:deep(path) {
     vector-effect: non-scaling-stroke;
+  }
+}
+
+.memory-icon {
+  &[data-usage='normal'] {
+    --color: rgb(0, 209, 255);
+  }
+  &[data-usage='increased'] {
+    --color: orange;
+  }
+  &[data-usage='high'] {
+    --color: red;
+  }
+
+  &:deep([data-name="bg"]) {
+    fill: var(--color);
+    transition: fill 1000ms ease-in-out;
   }
 }
 

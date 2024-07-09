@@ -1,28 +1,29 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useEventBus } from '@vueuse/core'
+import { useDevice } from '@/stores/device';
 
+const device = useDevice()
 const deviceMemoryBus = useEventBus<number>('device-memory')
 
-const steps = 13
+const steps = 25
 const maxMemory = 400
 const width = steps - 1
 const height = maxMemory
 
-const horizontalGuides = 6
-const horizontalGuideDistance = height / horizontalGuides
-const verticalGuides = 4
-const verticalGuidesDistance = width / verticalGuides
-let verticalGuideOffsetSteps = 0
+const gridIntervalHorizontal = 50
+const gridIntervalVertical = 3
 
-const usageThresholds = {
-  high: 300, // kb
-  increased: 250, // kb
-}
+let verticalGuideOffset = ref(0)
+const verticalGuidesCount = computed(() => {
+  const count = Math.floor(width / gridIntervalVertical)
+  // If we don't have any vertical guide offset the last line would lie on the
+  // border.
+  const drawLastLine = verticalGuideOffset.value > 0
+  return drawLastLine ? count : count - 1
+})
 
-const usage = ref<'normal' | 'increased' | 'high'>('normal')
-
-const values = ref<number[]>([])
+const values = ref<number[]>(Array(steps).fill(0))
 const points = computed(() =>
   values.value.map((value, index) => `${index},${maxMemory - value}`).join(' '),
 )
@@ -33,25 +34,17 @@ const area = computed(() => {
 })
 
 deviceMemoryBus.on((value) => {
-  if (values.value.length === steps) {
-    values.value.shift()
-    verticalGuideOffsetSteps =
-      (verticalGuideOffsetSteps + 1) % (verticalGuides - 1)
-  }
+  verticalGuideOffset.value++
+  if (verticalGuideOffset.value >= gridIntervalVertical) verticalGuideOffset.value = 0
 
-  usage.value =
-    (Object.keys(usageThresholds) as Array<keyof typeof usageThresholds>).find(
-      (threshold) => value >= usageThresholds[threshold],
-    ) ?? 'normal'
-
+  values.value.shift()
   values.value.push(value)
 })
 </script>
 
 <template>
-  <div class="memory-monitor" :data-usage="usage">
+  <div class="memory-monitor" :data-usage="device.memoryUsage">
     <div class="label">
-      Memory:
       <span class="value">{{ Math.floor(values.at(-1) ?? 0) }}</span
       >kb
     </div>
@@ -60,19 +53,19 @@ deviceMemoryBus.on((value) => {
       <polyline :points="points" class="line" />
 
       <line
-        v-for="n in horizontalGuides - 1"
+        v-for="n in Math.round(height / gridIntervalHorizontal) - 1"
         x1="0"
-        :y1="n * horizontalGuideDistance"
+        :y1="n * gridIntervalHorizontal"
         :x2="width"
-        :y2="n * horizontalGuideDistance"
+        :y2="n * gridIntervalHorizontal"
         class="guide"
       />
 
       <line
-        v-for="n in (steps - 1) / verticalGuides"
-        :x1="n * verticalGuidesDistance - verticalGuideOffsetSteps"
+        v-for="n in verticalGuidesCount"
+        :x1="n * gridIntervalVertical - verticalGuideOffset"
         y1="0"
-        :x2="n * verticalGuidesDistance - verticalGuideOffsetSteps"
+        :x2="n * gridIntervalVertical - verticalGuideOffset"
         :y2="height"
         class="guide"
       />
@@ -82,21 +75,20 @@ deviceMemoryBus.on((value) => {
 
 <style scoped>
 .memory-monitor {
-  position: relative;
-  width: 100%;
-  height: 100%;
-
+  --color-guide: hsl(0deg 0% 40% / 50%);
   &[data-usage='normal'] {
     --color: rgb(0, 209, 255);
   }
-
   &[data-usage='increased'] {
     --color: orange;
   }
-
   &[data-usage='high'] {
     --color: red;
   }
+
+  position: relative;
+  width: 100%;
+  height: 100%;
 
   svg {
     width: 100%;
@@ -110,7 +102,7 @@ deviceMemoryBus.on((value) => {
   }
 
   .guide {
-    stroke: hsl(0deg 0% 40% / 50%);
+    stroke: var(--color-guide);
   }
 
   .line,
@@ -131,7 +123,7 @@ deviceMemoryBus.on((value) => {
   .label {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     padding: 0 1em;
     line-height: 2.5rem; /* Match the NavBar */
 
@@ -142,6 +134,8 @@ deviceMemoryBus.on((value) => {
     /* Make sure value won't flicker (as we don't use a monospace) */
     display: inline-block;
     min-width: 2.1em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
   }
 }
 </style>

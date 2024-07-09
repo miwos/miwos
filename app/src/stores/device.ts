@@ -19,6 +19,11 @@ export const useDevice = defineStore('device', () => {
     // Todo: handle USB port's midi devices 5-13
     { id: 4, label: 'USB' },
   ]
+  const memoryUsageThresholds = [
+    { value: 300, type: 'high' },
+    { value: 250, type: 'increased' },
+  ] as const
+  const memoryUsage = ref<'normal' | 'increased' | 'high'>('normal')
 
   const bridge = useBridge()
   const project = useProject()
@@ -50,9 +55,10 @@ export const useDevice = defineStore('device', () => {
     log.log('info', new TextDecoder().decode(data))
   })
 
-  bridge.on('/n/info/memory', ({ args: [memory] }) =>
-    deviceMemoryBus.emit(memory),
-  )
+  bridge.on('/n/info/memory', ({ args: [memory] }) => {
+    deviceMemoryBus.emit(memory)
+    memoryUsage.value = memoryUsageThresholds.find((threshold) => memory >= threshold.value)?.type ?? 'normal'
+  })
 
   const open = () => {
     bridge.open({ baudRate: 9600, usbVendorId: 5824, usbProductId: 1161 })
@@ -107,6 +113,7 @@ export const useDevice = defineStore('device', () => {
   return {
     midiDevices,
     isConnected,
+    memoryUsage,
     open,
     close,
     restart,
