@@ -1,4 +1,5 @@
 import PatchView from '@/views/PatchView.vue'
+import PlaygroundView from '@/views/PlaygroundView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -8,6 +9,11 @@ const router = createRouter({
       path: '/',
       name: 'patch',
       component: PatchView,
+    },
+    {
+      path: '/playground',
+      name: 'playground',
+      component: PlaygroundView,
     },
   ],
 })

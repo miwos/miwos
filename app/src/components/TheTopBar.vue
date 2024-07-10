@@ -45,6 +45,8 @@ const statusText = computed(() =>
 .top-bar {
   display: flex;
   position: absolute;
+  top: 0;
+  left: 0;
   padding: 1rem;
   gap: 1rem;
   /* pointer-events: none; */

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useEventBus } from '@vueuse/core'
-import { useDevice } from '@/stores/device';
+import { useDevice } from '@/stores/device'
 
 const device = useDevice()
 const deviceMemoryBus = useEventBus<number>('device-memory')
@@ -35,7 +35,8 @@ const area = computed(() => {
 
 deviceMemoryBus.on((value) => {
   verticalGuideOffset.value++
-  if (verticalGuideOffset.value >= gridIntervalVertical) verticalGuideOffset.value = 0
+  if (verticalGuideOffset.value >= gridIntervalVertical)
+    verticalGuideOffset.value = 0
 
   values.value.shift()
   values.value.push(value)
@@ -50,7 +51,7 @@ deviceMemoryBus.on((value) => {
     </div>
     <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="none">
       <polyline :points="area" class="area" />
-      <polyline :points="points" class="line" />
+      <!-- <polyline :points="points" class="line" /> -->
 
       <line
         v-for="n in Math.round(height / gridIntervalHorizontal) - 1"
@@ -76,6 +77,10 @@ deviceMemoryBus.on((value) => {
 <style scoped>
 .memory-monitor {
   --color-guide: hsl(0deg 0% 40% / 50%);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
   &[data-usage='normal'] {
     --color: rgb(0, 209, 255);
   }
@@ -85,10 +90,6 @@ deviceMemoryBus.on((value) => {
   &[data-usage='high'] {
     --color: red;
   }
-
-  position: relative;
-  width: 100%;
-  height: 100%;
 
   svg {
     width: 100%;

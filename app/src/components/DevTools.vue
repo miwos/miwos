@@ -7,6 +7,7 @@ import BarTabRight from '@/assets/icons/bar-tab-right.svg?component'
 
 import { TabsRoot, TabList, TabTrigger, TabContent } from '@ark-ui/vue'
 import DevToolsMemory from './DevToolsMemory.vue'
+import DevToolsLogs from './DevToolsLogs.vue'
 import { useDevice } from '@/stores/device'
 
 const device = useDevice()
@@ -14,8 +15,10 @@ const device = useDevice()
 
 <template>
   <nav class="dev-tools glass">
-    <TabsRoot  defaultValue="logs" lazyMount unmountOnExit>
-      <TabContent value="logs" class="tab-content" data-first>Logs</TabContent>
+    <TabsRoot defaultValue="logs" lazyMount unmountOnExit>
+      <TabContent value="logs" class="tab-content" data-first>
+        <DevToolsLogs />
+      </TabContent>
       <TabContent value="memory" class="tab-content">
         <DevToolsMemory />
       </TabContent>
@@ -36,7 +39,10 @@ const device = useDevice()
         <TabTrigger value="memory" class="tab-trigger">
           <BarTabLeft class="tab-side" />
           <div class="tab">
-            <MemoryIcon class="icon memory-icon" :data-usage="device.memoryUsage" />
+            <MemoryIcon
+              class="icon memory-icon"
+              :data-usage="device.memoryUsage"
+            />
             <span style="padding-left: 0.2em">Low</span>
           </div>
         </TabTrigger>
@@ -48,7 +54,7 @@ const device = useDevice()
 <style scoped>
 .dev-tools {
   --radius-bar: calc(2.5rem / 2);
-  --panel-bg: var(--color-glass-dark-solid);
+  --panel-bg: #292929;
 
   display: flex;
   position: absolute;
@@ -81,7 +87,7 @@ const device = useDevice()
     --color: red;
   }
 
-  &:deep([data-name="bg"]) {
+  &:deep([data-name='bg']) {
     fill: var(--color);
     transition: fill 1000ms ease-in-out;
   }
@@ -143,7 +149,7 @@ const device = useDevice()
   left: 0;
   width: 60ch;
   height: 10lh;
-  padding: 0.25rem;
+  /* padding: 0.25rem; */
   transform: translateY(-100%);
   border-top-right-radius: 0.5rem;
   border-top-left-radius: 0.5rem;
@@ -152,13 +158,16 @@ const device = useDevice()
   background-color: var(--panel-bg);
 
   > * {
-    border-radius: 0.3rem;
     overflow: hidden;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.5);
+    border-radius: 0.5rem;
   }
 
   &[data-first] {
     border-bottom-left-radius: 0;
+    > * {
+      border-bottom-left-radius: 0;
+    }
   }
 }
-
 </style>

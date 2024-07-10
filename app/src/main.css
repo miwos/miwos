@@ -27,6 +27,28 @@
   --color-glass-dark-solid: #353535;
   --color-connection: white;
 
+  --color-log-black: black;
+  --color-log-white: white;
+  --color-log-gray: #7b7b7b;
+  --color-log-red: red;
+  --color-log-green: rgb(32 203 80);
+  --color-log-blue: blue;
+  --color-log-yellow: yellow;
+  --color-log-magenta: magenta;
+  --color-log-cyan: cyan;
+
+  --color-log-info: var(--color-log-white);
+  --color-log-warn: var(--color-log-yellow);
+  --color-log-error: var(--color-log-red);
+  --color-log-success: var(--color-log-green);
+
+  --color-log-key: var(--color-log-green);
+  --color-log-specialKey: var(--color-log-cyan);
+  --color-log-complexType: #ff4cf5;
+  --color-log-number: tomato;
+  --color-log-boolean: rgb(81 130 255);
+  --color-log-string: var(--color-log-yellow);  
+
   --glass-blur: 20px;
 
   --radius-xs: 4px;

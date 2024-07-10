@@ -24,6 +24,8 @@ export const useDevice = defineStore('device', () => {
     { value: 250, type: 'increased' },
   ] as const
   const memoryUsage = ref<'normal' | 'increased' | 'high'>('normal')
+  type LogType = 'info' | 'warn' | 'error' | 'dump'
+  const logs = ref<{ type: LogType, value: any }[]>([])
 
   const bridge = useBridge()
   const project = useProject()
@@ -42,13 +44,13 @@ export const useDevice = defineStore('device', () => {
   bridge.on('/close', () => (isConnected.value = false))
 
   bridge.on('/log/:type', ({ args: [text] }, { type }) => {
-    if (['info', 'warn', 'error'].includes(type)) {
-      log.log(type as LogType, text)
-    } else if (type === 'dump') {
-      log.dump(luaToJson(text))
-    } else if (type === 'stack') {
-      // log.stack(text)
+    const value = type === 'dump' ? luaToJson(text) : text
+    if (!['info', 'warn', 'error', 'dump'].includes(type)) {
+      console.warn(`unknown log typ '${type}'`)
+      return
     }
+    log.dump( luaToJson(text))
+    logs.value.push({ type: type as LogType, value })
   })
 
   bridge.on('/data/unknown', (data) => {
@@ -114,6 +116,7 @@ export const useDevice = defineStore('device', () => {
     midiDevices,
     isConnected,
     memoryUsage,
+    logs,
     open,
     close,
     restart,

@@ -14,7 +14,8 @@ import { useProject } from '@/stores/project'
 import { containsRect } from '@/utils'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import type { Module } from '@/types'
+import DevTools from '@/components/DevTools.vue'
+import TheTopBar from '@/components/TheTopBar.vue'
 
 const bg = ref<HTMLElement>()
 const connections = useConnections()
@@ -90,6 +91,8 @@ whenever(keys['delete'], () => {
   <TheEncoders />
   <ThePagesButtons />
   <MenuAdd />
+  <DevTools />
+  <TheTopBar />
 </template>
 
 <style scoped>

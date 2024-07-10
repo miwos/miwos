@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import TheLog from './components/TheLog.vue'
-import TheTopBar from './components/TheTopBar.vue'
-import DevTools from './components/DevTools.vue'
 
 // TODO: add undo/redo again, this time with some sort of snapshots or state
 // diffing instead of the more error-prone command pattern.
@@ -12,8 +9,5 @@ import DevTools from './components/DevTools.vue'
 </script>
 
 <template>
-  <TheTopBar />
   <RouterView />
-  <DevTools />
-  <div id="dialog-layer"></div>
 </template>

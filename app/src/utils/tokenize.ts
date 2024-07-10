@@ -1,4 +1,10 @@
-import type { TokenType } from './types'
+export type TokenType =
+  | 'specialKey'
+  | 'key'
+  | 'complexType'
+  | 'number'
+  | 'boolean'
+  | 'string'
 
 export const tokenizeKey = (key: string): [value: any, token: TokenType] => {
   if (/^(_G|_VERSION)$/.test(key)) {
