@@ -5,7 +5,7 @@ import LogDumpTable from './LogDumpTable.vue'
 
 const props = defineProps<{
   value: Record<any, any>
-  index?: number
+  index?: any
 }>()
 
 const isArray = Array.isArray(props.value)
@@ -16,10 +16,11 @@ const isArray = Array.isArray(props.value)
     <summary class="summary">
       <span class="chevron-container"><span class="chevron">▶</span></span>
       <span v-if="index !== undefined" class="index">
-        <LogDumpKey :value="`[${index + 1}]`" /> =
+        <LogDumpKey :value="index" /> =
       </span>
       <!-- Array summary -->
-      <template v-if="isArray"
+      <template v-if="isArray && !value.length">{}</template>
+      <template v-else-if="isArray"
         >({{ value.length }}) {
         <div class="summary-wrap">
           <template v-for="(v, i) of value">
@@ -37,7 +38,10 @@ const isArray = Array.isArray(props.value)
         <div class="summary-wrap">
           <template v-for="(v, k, i) of value">
             <LogDumpKey :value="k" /> =
-            <template v-if="Array.isArray(v)">array({{ v.length }})</template>
+            <template v-if="Array.isArray(v) && !v.length">{}</template>
+            <template v-else-if="Array.isArray(v)"
+              >array({{ v.length }})</template
+            >
             <template v-else-if="typeof v === 'object'">{…}</template>
             <template v-else><LogDumpValue :value="v" /></template>
             <template v-if="i < Object.keys(value).length - 1">, </template>
@@ -52,7 +56,7 @@ const isArray = Array.isArray(props.value)
           <LogDumpTable :value="v" :index="k" class="nested-table" />
         </template>
         <template v-else
-          ><LogDumpKey :value="isArray ? `[${k + 1}]` : k" /> =
+          ><LogDumpKey :value="k" /> =
           <LogDumpValue :value="v" />
         </template>
       </div>
@@ -89,7 +93,7 @@ const isArray = Array.isArray(props.value)
 }
 
 .chevron-container {
-  width: 2ch;
+  min-width: 2ch;
 }
 
 .chevron {

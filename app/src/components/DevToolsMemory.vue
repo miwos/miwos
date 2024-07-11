@@ -2,6 +2,11 @@
 import { computed, ref } from 'vue'
 import { useEventBus } from '@vueuse/core'
 import { useDevice } from '@/stores/device'
+import DevToolsTabMenu from './DevToolsTabMenu.vue'
+
+import CloseIcon from '@/assets/icons/close.svg?component'
+
+const emit = defineEmits<{ close: [] }>()
 
 const device = useDevice()
 const deviceMemoryBus = useEventBus<number>('device-memory')
@@ -45,12 +50,14 @@ deviceMemoryBus.on((value) => {
 
 <template>
   <div class="memory-monitor" :data-usage="device.memoryUsage">
+    <DevToolsTabMenu>
+      <button @click="emit('close')"><CloseIcon /></button>
+    </DevToolsTabMenu>
     <div class="label">
       <span class="value">{{ Math.floor(values.at(-1) ?? 0) }}</span
       >kb
     </div>
     <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="none">
-      <polyline :points="area" class="area" />
       <!-- <polyline :points="points" class="line" /> -->
 
       <line
@@ -70,13 +77,15 @@ deviceMemoryBus.on((value) => {
         :y2="height"
         class="guide"
       />
+
+      <polyline :points="area" class="area" />
     </svg>
   </div>
 </template>
 
 <style scoped>
 .memory-monitor {
-  --color-guide: hsl(0deg 0% 40% / 50%);
+  --color-guide: var(--color-log-gray);
 
   position: relative;
   width: 100%;
@@ -119,6 +128,7 @@ deviceMemoryBus.on((value) => {
 
   .area {
     fill: var(--color);
+    mix-blend-mode: lighten;
   }
 
   .label {

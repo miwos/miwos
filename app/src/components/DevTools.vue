@@ -9,18 +9,23 @@ import { TabsRoot, TabList, TabTrigger, TabContent } from '@ark-ui/vue'
 import DevToolsMemory from './DevToolsMemory.vue'
 import DevToolsLogs from './DevToolsLogs.vue'
 import { useDevice } from '@/stores/device'
+import { ref } from 'vue'
 
 const device = useDevice()
+
+const activeTab = ref<string>('')
+
+const close = () => (activeTab.value = '')
 </script>
 
 <template>
   <nav class="dev-tools glass">
-    <TabsRoot defaultValue="logs" lazyMount unmountOnExit>
+    <TabsRoot v-model="activeTab" lazyMount unmountOnExit>
       <TabContent value="logs" class="tab-content" data-first>
-        <DevToolsLogs />
+        <DevToolsLogs @close="close" />
       </TabContent>
       <TabContent value="memory" class="tab-content">
-        <DevToolsMemory />
+        <DevToolsMemory @close="close" />
       </TabContent>
       <TabList class="tab-list">
         <TabTrigger value="logs" class="tab-trigger">
@@ -148,7 +153,7 @@ const device = useDevice()
   top: 0;
   left: 0;
   width: 60ch;
-  height: 10lh;
+  height: 12.5lh;
   /* padding: 0.25rem; */
   transform: translateY(-100%);
   border-top-right-radius: 0.5rem;
@@ -156,6 +161,8 @@ const device = useDevice()
   border-bottom-right-radius: 0.5rem;
   border-radius: 0.5rem;
   background-color: var(--panel-bg);
+  font-size: 0.76rem;
+  line-height: 1.4;
 
   > * {
     overflow: hidden;
