@@ -6,7 +6,7 @@ import { useEventBus } from '@vueuse/core'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useItems } from './items'
-import { useLog } from './log'
+import { useLogs } from './logs'
 import { useProject } from './project'
 import { useMidi } from './midi'
 
@@ -24,13 +24,11 @@ export const useDevice = defineStore('device', () => {
     { value: 250, type: 'increased' },
   ] as const
   const memoryUsage = ref<'normal' | 'increased' | 'high'>('normal')
-  type LogType = 'info' | 'warn' | 'error' | 'dump'
-  const logs = ref<{ type: LogType, value: any }[]>([])
 
   const bridge = useBridge()
   const project = useProject()
   const items = useItems()
-  const log = useLog()
+  const log = useLogs()
   const midi = useMidi()
   const deviceMemoryBus = useEventBus<number>('device-memory')
 
@@ -49,8 +47,7 @@ export const useDevice = defineStore('device', () => {
       console.warn(`unknown log typ '${type}'`)
       return
     }
-    log.dump( luaToJson(text))
-    logs.value.push({ type: type as LogType, value })
+    log.log(type as LogType, value)
   })
 
   bridge.on('/data/unknown', (data) => {
@@ -59,7 +56,9 @@ export const useDevice = defineStore('device', () => {
 
   bridge.on('/n/info/memory', ({ args: [memory] }) => {
     deviceMemoryBus.emit(memory)
-    memoryUsage.value = memoryUsageThresholds.find((threshold) => memory >= threshold.value)?.type ?? 'normal'
+    memoryUsage.value =
+      memoryUsageThresholds.find((threshold) => memory >= threshold.value)
+        ?.type ?? 'normal'
   })
 
   const open = () => {
@@ -116,7 +115,6 @@ export const useDevice = defineStore('device', () => {
     midiDevices,
     isConnected,
     memoryUsage,
-    logs,
     open,
     close,
     restart,

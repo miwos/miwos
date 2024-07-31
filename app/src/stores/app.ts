@@ -1,6 +1,6 @@
 import { useBridge } from '@/bridge'
 import { useDevice } from '@/stores/device'
-import { useLog } from '@/stores/log'
+import { useLogs } from '@/stores/logs'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useItems } from './items'
@@ -11,7 +11,7 @@ export const useApp = defineStore('app', () => {
 
   const bridge = useBridge()
   const device = useDevice()
-  const log = useLog()
+  const log = useLogs()
   const items = useItems()
 
   window.addEventListener('message', async ({ data }) => {
