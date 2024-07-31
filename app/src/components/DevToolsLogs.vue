@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { useDevice } from '@/stores/device'
-import { useLog } from '@/stores/log'
-import TheLog from './TheLog.vue'
-import LogText from './LogText.vue'
-import LogDump from './LogDump.vue'
 import DevToolsTabMenu from './DevToolsTabMenu.vue'
+import LogDump from './LogDump.vue'
+import LogText from './LogText.vue'
 
 import ClearIcon from '@/assets/icons/clear.svg?component'
 import CloseIcon from '@/assets/icons/close.svg?component'
+import { useLogs } from '@/stores/logs'
 
-const device = useDevice()
-
+const logs = useLogs()
 const emit = defineEmits<{ close: [] }>()
-
-const clear = () => (device.logs = [])
 </script>
 
 <template>
   <div class="logs">
     <DevToolsTabMenu>
-      <button @click="clear"><ClearIcon /></button>
+      <button @click="logs.clear()"><ClearIcon /></button>
       <button @click="emit('close')"><CloseIcon /></button>
     </DevToolsTabMenu>
     <div class="logs-content">
-      <template v-for="(log, i) of device.logs">
+      <template v-for="(log, i) of logs.entries">
         <LogDump v-if="log.type === 'dump'" :value="log.value" />
         <LogText v-else :type="log.type" :text="log.value" :count="0" />
-        <div class="divider" v-if="i < device.logs.length - 1"></div>
+        <div class="divider" v-if="i < logs.entries.length - 1"></div>
       </template>
     </div>
   </div>

@@ -13,9 +13,11 @@ export const tokenizeKey = (key: string): [value: any, token: TokenType] => {
   } else if (/^\#(table|(light)?function)\#$/.test(key)) {
     // Complex data type representation
     return [`${key.slice(1, -1)}`, 'complexType']
-  } else if (/^\[\d+\]$/.test(key)) {
+  } else if (!isNaN(key as any)) {
     // Number
-    return [key.slice(1, -1), 'number']
+    // Note: because js object keys can only be strings, we loose the number
+    // information from lua and do a quick-and-dirty check for a number string.
+    return [key, 'number']
   } else if (/^(true|false)$/.test(key)) {
     // Boolean
     return [key, 'boolean']

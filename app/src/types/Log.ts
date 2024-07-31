@@ -1,7 +1,5 @@
 export type LogType = 'info' | 'warn' | 'error' | 'dump'
 
-export interface LogEntry {
-  text: string
-  type: LogType
-  count: number
-}
+export type LogEntry =
+  | { type: 'dump'; value: any; count: number }
+  | { type: 'info' | 'warn' | 'error'; value: string; count: number }
