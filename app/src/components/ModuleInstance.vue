@@ -82,7 +82,11 @@ watch(
 <template>
   <div ref="el" class="module" :data-selected="isSelected">
     <template v-if="customComponent">
-      <ModuleCustom :component="customComponent" :module="module" />
+      <ModuleCustom
+        :component="customComponent"
+        :module="module"
+        ref="dragHandle"
+      />
       <ConnectionPoints :item="module" />
     </template>
 
