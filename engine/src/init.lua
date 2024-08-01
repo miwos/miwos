@@ -92,5 +92,7 @@ logUsedMemory()
 
 Miwos.switchView(PropsView())
 
+Midi.start()
+
 -- require('Test')
 -- Test.runFile('/lua/tests/Utils-test.lua')
