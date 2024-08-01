@@ -10,6 +10,8 @@
       --fret-height: ${fretHeight}px;
     `"
   >
+    <ModuleProps :module="module" />
+
     <div class="midi-in"></div>
     <div class="nut">{{ topmostFret }}</div>
     <div class="neck" ref="neck">
@@ -50,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import ModuleProps from '@/components/ModuleProps.vue'
 import type { Module, Size } from '@/types'
 import { asArray, asHashTable } from '@/utils'
 import { useScroll } from '@vueuse/core'
@@ -105,7 +108,7 @@ effect(() => {
   const { height = 0 } = el.value?.getBoundingClientRect() ?? {}
   props.module.inputs = [{ position: { x: fretWidth * 1.5, y: 0 } }]
   props.module.outputs = [
-    { position: { x: (fretWidth * strings.value) / 2, y: height } },
+    { position: { x: (fretWidth * strings.value) / 2, y: height }, angle: 270 },
   ]
 })
 
@@ -304,6 +307,10 @@ watch(
     background-color: var(--color-active);
     transition: background-color var(--transition-active-in) ease-in;
   }
+}
+
+.module-props {
+  position: absolute;
 }
 
 ::-webkit-scrollbar {

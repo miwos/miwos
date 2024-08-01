@@ -1,15 +1,16 @@
 ---@class ModuleStrings : Module
 local Strings = Miwos.defineModule('Strings', {
-  shape = 'Chord',
+  shape = 'Strings',
   inputs = { 'midi' },
   outputs = { 'midi' },
   props = {
     note = Prop.Number({ value = 6, min = 1, max = 96, step = 1 }),
     tuning = Prop.Value({ value = { 38, 45, 50, 55, 57, 62 } }), --DADGAD
     chord = Prop.Value({ value = { [2] = 3 } }),
-    -- pattern = Prop.Value({ value = { { 1, 3 }, { 2, 4 }, { 3, 5 }, { 4, 6 } } }),
-    pattern = Prop.Value({ value = { 1, 2, 3, 4, 5, 6 } }),
+    pattern = Prop.Value({ value = { { 1, 3 }, { 2, 4 }, { 3, 5 }, { 4, 6 } } }),
+    -- pattern = Prop.Value({ value = { 1, 2, 3, 4, 5, 6 } }),
     step = Prop.Value({ value = 0 }),
+    playPause = Prop.Button({ toggle = true }),
   },
 })
 
@@ -64,14 +65,14 @@ function Strings:destroy()
   Timer.cancel(self.scheduleTimer)
 end
 
-Strings:event('clock:start', function(self)
+Strings:event('prop[playPause]:change', function(self, value)
   ---@cast self ModuleStrings
-  self:schedule()
-end)
-
-Strings:event('clock:stop', function(self)
-  ---@cast self ModuleStrings
-  Timer.cancel(self.scheduleTimer)
+  if value then
+    self.nextNoteTime = Timer.ticks()
+    self:schedule()
+  else
+    Timer.cancel(self.scheduleTimer)
+  end
 end)
 
 Strings:event('input[1]:noteOn', function(self, note)
