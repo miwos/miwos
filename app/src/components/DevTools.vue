@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import ErrorIcon from '@/assets/icons/error.svg?component'
-import WarningIcon from '@/assets/icons/warning.svg?component'
-import MemoryIcon from '@/assets/icons/memory.svg?component'
 import BarTabLeft from '@/assets/icons/bar-tab-left.svg?component'
 import BarTabRight from '@/assets/icons/bar-tab-right.svg?component'
+import ErrorIcon from '@/assets/icons/error.svg?component'
+import MemoryIcon from '@/assets/icons/memory.svg?component'
+import WarningIcon from '@/assets/icons/warning.svg?component'
 
-import { TabsRoot, TabList, TabTrigger, TabContent } from '@ark-ui/vue'
-import DevToolsMemory from './DevToolsMemory.vue'
-import DevToolsLogs from './DevToolsLogs.vue'
 import { useDevice } from '@/stores/device'
+import { useLogs } from '@/stores/logs'
+import { TabContent, TabList, TabsRoot, TabTrigger } from '@ark-ui/vue'
 import { ref } from 'vue'
+import DevToolsLogs from './DevToolsLogs.vue'
+import DevToolsMemory from './DevToolsMemory.vue'
 
 const device = useDevice()
+const logs = useLogs()
 
 const activeTab = ref<string>('')
 
@@ -31,12 +33,12 @@ const close = () => (activeTab.value = '')
         <TabTrigger value="logs" class="tab-trigger">
           <div class="tab" style="gap: 0.5rem">
             <div class="counter">
-              <ErrorIcon class="icon" />
-              <span style="padding-left: 0.2em">3</span>
+              <ErrorIcon class="icon" :data-disabled="!logs.errorCount" />
+              <span style="padding-left: 0.2em">{{ logs.errorCount }}</span>
             </div>
             <div class="counter">
-              <WarningIcon class="icon" />
-              <span style="padding-left: 0.1em">2</span>
+              <WarningIcon class="icon" :data-disabled="!logs.warnCount" />
+              <span style="padding-left: 0.1em">{{ logs.warnCount }}</span>
             </div>
           </div>
           <BarTabRight class="tab-side" />
@@ -79,6 +81,16 @@ const close = () => (activeTab.value = '')
   &:deep(path) {
     vector-effect: non-scaling-stroke;
   }
+
+  &:deep([data-name='bg']) {
+    transition: fill 250ms;
+  }
+}
+
+.icon[data-disabled='true'] {
+  &:deep([data-name='bg']) {
+    fill: #9b9b9b;
+  }
 }
 
 .memory-icon {
@@ -101,6 +113,7 @@ const close = () => (activeTab.value = '')
 .counter {
   display: flex;
   align-items: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .tab-list {

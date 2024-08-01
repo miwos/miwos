@@ -21,7 +21,7 @@ const emit = defineEmits<{ close: [] }>()
     <div class="logs-content">
       <template v-for="(log, i) of logs.entries">
         <LogDump v-if="log.type === 'dump'" :value="log.value" />
-        <LogText v-else :type="log.type" :text="log.value" :count="0" />
+        <LogText v-else :type="log.type" :text="log.value" :count="log.count" />
         <div class="divider" v-if="i < logs.entries.length - 1"></div>
       </template>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createColorize } from '@/utils/createColorize';
+import { createColorize } from '@/utils/createColorize'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -38,12 +38,17 @@ const html = computed(() =>
 
 <template>
   <div class="log-text">
+    <span v-if="props.count > 1" class="counter">{{ count }}x</span>
     <span :style="`color: var(--color-log-${type})`" v-html="html"></span>
-    <span v-if="props.count > 1" class="mark-yellow"> (x{{ count }})</span>
   </div>
 </template>
 
 <style scoped>
+.counter {
+  margin-right: 1ch;
+  color: var(--color-log-gray);
+}
+
 :deep(.log-file-link) {
   text-decoration: underline;
   cursor: pointer;

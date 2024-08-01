@@ -5,6 +5,9 @@ import { ref } from 'vue'
 export const useLogs = defineStore('logs', () => {
   const entries = ref<LogEntry[]>([])
 
+  const errorCount = ref(0)
+  const warnCount = ref(0)
+
   const log = <
     T extends LogType,
     V = T extends 'dump' ? Record<string, any> : string,
@@ -27,15 +30,22 @@ export const useLogs = defineStore('logs', () => {
     } else if (type) {
       entries.value.push({ type, value: value as string, count: 1 })
     }
+
+    if (type === 'error') errorCount.value += 1
+    else if (type === 'warn') warnCount.value += 1
   }
 
   const info = (text: string) => log('info', text)
   const warn = (text: string) => log('warn', text)
   const error = (text: string) => log('error', text)
   const dump = (value: Record<string, any>) => log('dump', value)
-  const clear = () => (entries.value = [])
+  const clear = () => {
+    entries.value = []
+    errorCount.value = 0
+    warnCount.value = 0
+  }
 
-  return { entries, log, info, warn, error, dump, clear }
+  return { entries, errorCount, warnCount, log, info, warn, error, dump, clear }
 })
 
 if (import.meta.hot)
