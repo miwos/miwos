@@ -11,6 +11,7 @@
     "ws": "^8.17.0"
   },
   "dependencies": {
-    "launch-editor": "^2.6.1"
+    "launch-editor": "^2.6.1",
+    "mitt": "^3.0.1"
   }
 }
