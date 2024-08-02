@@ -1,24 +1,54 @@
+local tunings = {
+  { label = 'Normal', pitches = { 40, 45, 50, 55, 59, 64 } },
+  { label = 'DADGAD', pitches = { 38, 45, 50, 55, 57, 62 } },
+  { label = 'FACGCE', pitches = { 41, 45, 48, 55, 60, 64 } },
+  { label = 'Open A', pitches = { 40, 45, 49, 52, 57, 64 } },
+  { label = 'Open B', pitches = { 47, 42, 47, 54, 59, 63 } },
+  { label = 'Open C', pitches = { 48, 43, 48, 55, 60, 64 } },
+  { label = 'Open D', pitches = { 38, 45, 50, 54, 57, 62 } },
+  { label = 'Open E', pitches = { 40, 47, 52, 56, 59, 64 } },
+  { label = 'Open F', pitches = { 41, 45, 48, 53, 60, 65 } },
+  { label = 'Open G', pitches = { 38, 43, 50, 55, 59, 62 } },
+}
+
+local tuningLabels = {}
+for index, value in ipairs(tunings) do
+  tuningLabels[index] = value.label
+end
+
+---@class ModuleStringProps
+---@field note number
+---@field tunings {label: string, pitches: number[]}[]
+---@field tuning number
+---@field chord table<number, number>
+---@field pattern table<number, number | number[]>
+---@field step number
+---@field playPause boolean
+
 ---@class ModuleStrings : Module
+---@field props ModuleStringProps
 local Strings = Miwos.defineModule('Strings', {
   shape = 'Strings',
   inputs = { 'midi' },
   outputs = { 'midi' },
   props = {
     note = Prop.Number({ value = 6, min = 1, max = 96, step = 1 }),
-    tuning = Prop.Value({ value = { 38, 45, 50, 55, 57, 62 } }), --DADGAD
+    tunings = Prop.Value({ value = tunings }),
+    tuning = Prop.Select({
+      value = 1, -- Normal tuning
+      options = tuningLabels,
+    }),
     chord = Prop.Value({ value = { [2] = 3 } }),
     pattern = Prop.Value({ value = { { 1, 3 }, { 2, 4 }, { 3, 5 }, { 4, 6 } } }),
     -- pattern = Prop.Value({ value = { 1, 2, 3, 4, 5, 6 } }),
     step = Prop.Value({ value = 0 }),
-    playPause = Prop.Button({ toggle = true }),
+    playPause = Prop.Button({ toggle = true, value = false }),
   },
 })
 
 function Strings:setup()
   self.lastNoteInTime = 0
   self.maxNoteInterval = 100 -- ms
-  -- self.props.tuning = { 40, 45, 50, 55, 59, 64 } -- EADGBE
-  -- self.props.tuning = { 38, 45, 50, 55, 57, 62 } --DADGAD
 
   self.noteInputTimer = nil
   self.scheduleTimer = nil
@@ -32,6 +62,7 @@ end
 
 function Strings:schedule()
   self.scheduleTimer = Timer.delay(function()
+    local stringPitches = tunings[self.props.tuning].pitches
     local ticks = Timer.ticks()
     while self.nextNoteTime < ticks + self.scheduleAheadTime do
       self.props.step = self.props.step + 1
@@ -41,7 +72,7 @@ function Strings:schedule()
 
       for _, string in ipairs(strings) do
         local fret = (self.props.chord and self.props.chord[string]) or 0
-        local pitch = self.props.tuning[string] + fret
+        local pitch = stringPitches[string] + fret
 
         local noteOn = Midi.NoteOn(pitch, 127, 1)
         self:output(1, noteOn:schedule(self.nextNoteTime, true))
@@ -95,13 +126,15 @@ end)
 ---@param notes table<number>
 ---@return table
 function Strings:findFrettedChords(notes)
+  local stringPitches = tunings[self.props.tuning].pitches
+
   -- All possible locations of each note in the chord, stored as a table
   -- of { string = fret }.
   local notePositions = {}
   for _, notePitch in ipairs(notes) do
     local positions = {}
     local hasPosition = false
-    for string, stringPitch in ipairs(self.props.tuning) do
+    for string, stringPitch in ipairs(stringPitches) do
       local fret = notePitch - stringPitch
       if fret >= 0 and fret <= 12 then
         positions[string] = fret

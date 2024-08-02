@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import ModuleProps from '@/components/ModuleProps.vue'
+import { useItems } from '@/stores/items'
 import type { Module, Size } from '@/types'
 import { asArray, asHashTable } from '@/utils'
 import { useScroll } from '@vueuse/core'
@@ -61,7 +62,7 @@ import { computed, effect, onMounted, ref, watch } from 'vue'
 const props = defineProps<{
   module: Module
   note: number
-  tuning: number[]
+  tuning: number
   chord: number[] | undefined
   step: number
   pattern: (number | number[])[]
@@ -72,7 +73,12 @@ const emit = defineEmits<{
 const el = ref<HTMLElement | undefined>()
 const fretElements = ref<HTMLElement[] | undefined>()
 
-const strings = computed(() => props.tuning.length)
+const definition = useItems().definitions.get(props.module.type)
+const tunings = computed(() => definition?.props.tunings.options.value)
+const strings = computed(() => {
+  const tuningIndex = props.tuning - 1 // zero-based index
+  return tunings.value[tuningIndex]?.pitches.length
+})
 const frets = 12
 const neck = ref<HTMLElement | undefined>()
 const visibleFrets = 7

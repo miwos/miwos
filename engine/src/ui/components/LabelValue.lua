@@ -34,7 +34,7 @@ end
 
 function LabelValue:draw()
   local props = self.props
-  local display = self.children.display --[=[@as Display]=]
+  local display = self.children.display --[[@as Display]]
 
   -- Clear
   display:drawRectangle(
@@ -58,14 +58,18 @@ end
 
 LabelValue:event('prop[value]:change', function(self)
   ---@cast self LabelValue
+  local lastView = self.view
   self.view = self.Views.Value
   self:draw()
   Timer.cancel(self.viewTimer)
 
+  if lastView ~= self.view then self:emit('showValue') end
+
   self.viewTimer = Timer.delay(function()
     self.view = self.Views.Label
+    self:emit('showLabel')
     self:draw()
-  end, option(self.props.valueViewDuration, 1000))
+  end, option(self.props.valueViewDuration, 3000))
 end)
 
 function LabelValue:unmount()

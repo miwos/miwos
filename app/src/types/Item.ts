@@ -24,11 +24,16 @@ export interface ItemSerialized {
   position?: [x: number, y: number]
 }
 
+export interface PropDefinition {
+  type: string
+  options: Record<string, any>
+}
+
 export interface ItemDefinition {
   id: string
   category: ItemCategory
   label?: string
-  props: Record<string, { type: string; options: Record<string, any> }>
+  props: Record<string, PropDefinition>
   inputs: { signal: Signal; position?: Point; angle?: number }[]
   outputs: { signal: Signal; position?: Point; angle?: number }[]
   shape?: Shape['id']

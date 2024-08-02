@@ -1,6 +1,7 @@
 local Number = require('ui.components.Number')
 local Button = require('ui.components.Button')
 local Component = require('Component')
+local Select = require('ui.components.Select')
 
 ---@class ValueProps
 ---@field value any
@@ -9,6 +10,7 @@ local Component = require('Component')
 ---@field Number fun(props: NumberProps)
 ---@field Button fun(props: ButtonProps)
 ---@field Value fun(props: ValueProps)
+---@field Select fun(props: SelectProps)
 Prop = {}
 
 setmetatable(Prop, {
@@ -54,5 +56,16 @@ Miwos.defineProp('Value', {
   -- TODO: allow Props that don't implement `modulateValue()`
   modulateValue = function(value)
     return value
+  end,
+})
+
+Miwos.defineProp('Select', {
+  component = Select,
+  modulateValue = function(value, modulation, amount, options)
+    local min = 1
+    local max = #options.options
+    local modulationRange = max * (amount / 2)
+    local newValue = math.floor(value + modulationRange * modulation)
+    return math.min(math.max(newValue, min), max)
   end,
 })

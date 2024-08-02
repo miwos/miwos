@@ -28,13 +28,17 @@ const encoders = computed(() => {
     const definition = items.definitions.get(item.type)
     if (!definition) continue
 
-    const propOptions = definition.props[prop]?.options
-    if (!propOptions) continue
+    const propDefinition = definition.props[prop]
+    if (!propDefinition) continue
 
-    const { min, max, step, value: defaultValue } = propOptions
-    const value = item.props[prop]
+    const { type, options } = propDefinition
+    const [min, max, step] =
+      type === 'Select'
+        ? [1, options.options.length, 1] // one-based index
+        : [options.min, options.max, options.step]
 
-    encoders.set(slot, { min, max, step, value: value ?? defaultValue })
+    const value = item.props[prop] ?? options.value
+    encoders.set(slot, { min, max, step, value: value })
   }
 
   return encoders
