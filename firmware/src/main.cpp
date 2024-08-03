@@ -14,6 +14,8 @@
 #include <lua/TimerLib.h>
 #include <lua/UtilsLib.h>
 
+#define DEBUG
+
 #if defined(DEBUG) && defined(DEBUG_LOOP)
 uint32_t lastLoopTime = 0;
 uint32_t maxLoopInterval = 0;
@@ -28,8 +30,20 @@ SlipSerial serial(Serial);
 
 void setup() {
   Serial.begin(9600);
-  // Activate this if you don't want to miss any serial when debugging:
-  // while (!Serial) {}
+
+#if defined(DEBUG)
+  while (!Serial) {
+  }
+#endif
+
+  if (CrashReport) {
+    while (!Serial) {
+    }
+    serial.beginPacket();
+    serial.print(CrashReport);
+    serial.endPacket();
+    delay(5000);
+  }
 
   Lua::onSetup([]() {
     BridgeLib::install();

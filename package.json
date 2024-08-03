@@ -1,6 +1,8 @@
 {
   "name": "@miwos/miwos",
+  "type": "module",
   "scripts": {
-    "dev": "pnpm -r --parallel --filter \"@miwos/app\" --filter \"@miwos/engine\" run dev"
+    "dev": "pnpm -r --parallel --filter \"@miwos/app\" --filter \"@miwos/engine\" run dev",
+    "addr2line": "node addr2line.js"
   }
 }

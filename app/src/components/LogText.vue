@@ -44,6 +44,10 @@ const html = computed(() =>
 </template>
 
 <style scoped>
+.log-text {
+  white-space: pre-wrap;
+}
+
 .counter {
   margin-right: 1ch;
   color: var(--color-log-gray);
